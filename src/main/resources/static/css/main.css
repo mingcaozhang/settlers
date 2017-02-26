@@ -1,0 +1,86 @@
+body {
+    font: 20px  'IM Fell Double Pica', serif;
+    line-height: 1.8;
+    color: #474e5d;
+}
+p {font-size: 16px;}
+.margin {margin-bottom: 45px;}
+.bg-1 {
+    background-color: #c0b48c; /* Tan #c0b58c*/
+    color: #ffffff;
+}
+.bg-2 {
+    background-color: #474e5d; /* Dark Blue */
+    color: #ffffff;
+}
+.bg-3 {
+    background-color: #ffffff; /* White */
+    color: #555555;
+}
+.bg-4 {
+    background-color: #2f2f2f; /* Black Gray */
+    color: #fff;
+}
+.container-fluid {
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+.navbar {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    letter-spacing: 5px;
+    background-color: #5c4e3d;
+}
+.navbar-default .navbar-brand{
+    font-family: 'IM Fell English SC', serif;
+    font-size: 70px;
+    color: #d4ad11;
+}
+.navbar-default .navbar-brand:hover {
+    color: #ecc113 !important;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #d4ad11;
+    font-size: 16px;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+    color: #ecc113;
+}
+
+.login-box{
+
+    background: #2c313a;
+    border:2px solid #2c313a;
+    box-shadow:0 0 10px #2c313a;
+    padding-bottom: 20px;
+
+}
+.login-box h3{
+    margin-bottom: 30px;
+
+}
+
+.login-box p{
+    margin-top: 10px;
+
+}
+
+.margin{
+    font-size: 50px;
+    color: #5c4e3d;
+    font-family: 'IM Fell English SC', serif;
+}
+
+.about_us p{
+    font-size: 30px;
+}
+.about_us .row{
+    margin: 0px 200px 0px 200px;
+}
