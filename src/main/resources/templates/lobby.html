@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danklers of Catan</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css" />
+    <link href="https://fonts.googleapis.com/css?family=Berkshire+Swash|IM+Fell+Double+Pica|IM+Fell+English+SC|Quintessential" rel="stylesheet"/>
+</head>
+
+<body>
+<!-- NAVBAR -->
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Lords of Catan</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">ABOUT US</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid" style="padding: 0px;">
+<!-- LOBBY -->
+<section class="lobby">
+    <div class="lobby-bar" style="border-right: 2px;">
+        <div class="col-sm-8" style="background-color:#2c313a;"> <h3>Lobby</h3></div>
+        <div class="col-sm-4" style="background-color:#2c313a;"> <h3>Player List</h3></div>
+    </div>
+    <div class="lobby-list">
+        <div class="col-sm-8" style="background-color:#2c313a;"> </div>
+        <div class="col-sm-4" style="background-color:#2c313a;"> </div>
+    </div>
+</section>
+</div>
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+    <p>&copy; 2017 <a target="_blank" href="https://github.com/comp307/speakup">Lords of Catan</a> | All rights reserved
+    </p>
+</footer>
+
+
+
+</body>
+</html>
