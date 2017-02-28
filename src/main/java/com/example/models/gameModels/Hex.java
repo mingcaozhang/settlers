@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.models.gameModels;
 
 /**
  * Created by G on 17/02/27.
@@ -13,7 +13,7 @@ public abstract class Hex extends Geometry{
         return null; // NOT DONE
     }
     @Override
-    public Geometry getIntersectionNeighbours() {
+    public Intersection getIntersectionNeighbours() {
         return null; // NOT DONE
     }
     @Override

@@ -1,33 +1,32 @@
-package com.example.models;
-
+package com.example.models.gameModels;
 
 /**
  * Created by G on 17/02/27.
  */
-public class Edge extends Geometry{
+public class Intersection extends Geometry {
 
+    private HarbourKind aHarbour;
+    private IntersectionUnit aOccupant;
     private boolean isOccupied;
-    private EdgeUnit aOccupant;
 
-    public Edge(int x, int y)
+
+    public Intersection(int x, int y,HarbourKind pHarbour)
     {
         super(x,y);
+        aHarbour = pHarbour;
         isOccupied = false;
     }
 
-    public boolean getOccupancyFlag()
-    {
-       return isOccupied;
-    }
+    public boolean getOccupancyFlag(){return isOccupied;}
 
-    public void setOccupant(EdgeUnit pOccupant)
+    public void setOccupant(IntersectionUnit pOccupant)
     {
         aOccupant = pOccupant;
         isOccupied = true;
     }
-    public EdgeUnit removeOccupant()
+    public IntersectionUnit removeOccupant()
     {
-        EdgeUnit tempUnit = aOccupant;
+        IntersectionUnit tempUnit = aOccupant;
         aOccupant = null;
         isOccupied = false;
         return tempUnit;
