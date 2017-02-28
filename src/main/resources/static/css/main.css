@@ -21,10 +21,12 @@ p {font-size: 16px;}
     background-color: #2f2f2f; /* Black Gray */
     color: #fff;
 }
+
 .container-fluid {
     padding-top: 70px;
     padding-bottom: 70px;
 }
+
 .navbar {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -35,41 +37,61 @@ p {font-size: 16px;}
     letter-spacing: 5px;
     background-color: #5c4e3d;
 }
+
 .navbar-default .navbar-brand{
     font-family: 'IM Fell English SC', serif;
     font-size: 70px;
-    color: #d4ad11;
+    color: #ecc113 !important;
 }
 .navbar-default .navbar-brand:hover {
-    color: #ecc113 !important;
-    background-color: transparent;
+    opacity: 0.75;
 }
 
 .navbar-default .navbar-nav > li > a {
-    color: #d4ad11;
+    color: #ecc113 !important;
     font-size: 16px;
 }
 
 .navbar-default .navbar-nav > li > a:hover {
-    color: #ecc113;
+    opacity: 0.75;
 }
 
-.login-box{
-
+.login-bar{
     background: #2c313a;
     border:2px solid #2c313a;
     box-shadow:0 0 10px #2c313a;
     padding-bottom: 20px;
-
 }
-.login-box h3{
+
+.login-bar h3{
     margin-bottom: 30px;
-
 }
 
-.login-box p{
+.login-bar p{
     margin-top: 10px;
+}
 
+.lobby-bar{
+    box-shadow:0 0 10px #2c313a;
+}
+
+.lobby-bar h3{
+    color : white;
+}
+
+.create-account {
+    background-color:  #474e5d; /* Dark Blue */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.create-account:hover {
+    background: #3071A9
 }
 
 .margin{
