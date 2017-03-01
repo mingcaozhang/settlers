@@ -4,8 +4,12 @@ import java.util.Map;
 
 import com.example.forms.Login;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.validation.Valid;
 
 
 @Controller
@@ -15,16 +19,20 @@ public class WelcomeController {
     private String message = "MAxi";
 
     @RequestMapping(value="/", method=RequestMethod.GET)
-    public String welcome(Login login, Map<String, Object> model) {
-        model.put("message", this.message);
+    public String welcome(Login login) {
+
         return "welcome";
     }
 
     @RequestMapping(value="/", method=RequestMethod.POST)
-    public String login(Login login, Map<String, Object> model)
+    public String login(@Valid Login login, BindingResult bindingResult, Model model)
     {
-        model.put("message", login.getUsername());
-        return "welcome";
+        if(bindingResult.hasErrors())
+        {
+            return "welcome";
+        }
+        model.addAttribute("message", login.getUsername());
+        return "/register";
     }
 
 }
