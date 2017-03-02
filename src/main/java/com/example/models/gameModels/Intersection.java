@@ -37,7 +37,7 @@ public class Intersection extends Geometry {
         return null; // NOT DONE
     }
     @Override
-    public Geometry getIntersectionNeighbours() {
+    public Intersection getIntersectionNeighbours() {
         return null; // NOT DONE
     }
     @Override
