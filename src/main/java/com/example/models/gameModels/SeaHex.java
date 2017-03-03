@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.models.gameModels;
 
 /**
  * Created by G on 17/02/27.
@@ -25,8 +25,8 @@ public class SeaHex extends Hex {
     }
 
     @Override
-    public TerrainKind getTerrainType() {
-        return TerrainKind.Sea;
+    public TerrainType getTerrainType() {
+        return TerrainType.Sea;
     }
 
 

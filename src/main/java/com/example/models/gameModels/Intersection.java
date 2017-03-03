@@ -1,16 +1,16 @@
-package com.example.models;
+package com.example.models.gameModels;
 
 /**
  * Created by G on 17/02/27.
  */
 public class Intersection extends Geometry {
 
-    private HarbourKind aHarbour;
+    private HarbourType aHarbour;
     private IntersectionUnit aOccupant;
     private boolean isOccupied;
 
 
-    public Intersection(int x, int y,HarbourKind pHarbour)
+    public Intersection(int x, int y,HarbourType pHarbour)
     {
         super(x,y);
         aHarbour = pHarbour;
@@ -37,7 +37,7 @@ public class Intersection extends Geometry {
         return null; // NOT DONE
     }
     @Override
-    public Geometry getIntersectionNeighbours() {
+    public Intersection getIntersectionNeighbours() {
         return null; // NOT DONE
     }
     @Override

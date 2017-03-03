@@ -1,29 +1,33 @@
 package com.example.forms;
-
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class Login {
-
-    private String aUsername;
-    private String aPassword;
+    @NotNull
+    @Size(min=4, max=35)
+    private String username;
+    @NotNull
+    @Size(min=4, max=35)
+    private String password;
 
     public String getUsername()
     {
-        return aUsername;
+        return username;
     }
 
     public String getPassword()
     {
-        return aPassword;
+        return password;
     }
 
     public void setUsername(String username)
     {
-        this.aUsername = username;
+        this.username = username;
     }
 
     public void setPassword(String password)
     {
-        this.aPassword = password;
+        this.password = password;
     }
 
 }

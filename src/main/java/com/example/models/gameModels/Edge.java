@@ -1,4 +1,4 @@
-package com.example.models;
+package com.example.models.gameModels;
 
 
 /**
@@ -38,7 +38,7 @@ public class Edge extends Geometry{
         return null; // NOT DONE
     }
     @Override
-    public Geometry getIntersectionNeighbours() {
+    public Intersection getIntersectionNeighbours() {
         return null; // NOT DONE
     }
     @Override

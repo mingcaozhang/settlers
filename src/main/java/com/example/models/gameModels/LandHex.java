@@ -1,18 +1,18 @@
-package com.example.models;
+package com.example.models.gameModels;
 
 /**
  * Created by G on 17/02/27.
  */
 public class LandHex extends Hex {
 
-    private TerrainKind aKind;
+    private TerrainType aType;
     private int aProductionNumber;
     private boolean hasMerchant;
     private boolean hasRobber;
 
-    public LandHex(int x, int y, int pProd, TerrainKind pKind){
+    public LandHex(int x, int y, int pProd, TerrainType pType){
         super(x,y);
-        aKind = pKind;
+        aType = pType;
         aProductionNumber = pProd;
         hasMerchant = false;
         hasRobber = false;
@@ -43,8 +43,8 @@ public class LandHex extends Hex {
     }
 
     @Override
-    public TerrainKind getTerrainType() {
-        return aKind;
+    public TerrainType getTerrainType() {
+        return aType;
     }
 
 
