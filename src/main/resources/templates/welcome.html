@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Danklers of Catan</title>
@@ -54,14 +54,16 @@
             <div class="login-box col-xs-2 col-xs-offset-5">
                 <div class="panel-body  text-center" >
                     <h3>LOGIN</h3>
-                    <!--/*@thymesVar id="LoginForm" type=""*/-->
-                    <form>
+                    
+                    <!--/*@thymesVar id="login" type="com.example.forms.Login"*/-->
+                    <form action="#" th:action="@{/}" th:object="${login}" method="post">
                         <div class="form-group">
-                            <input type="text"  class="form-control" id="usr" placeholder="Enter email"/>
+                            <input type="text" th:field="*{username}" class="form-control"  placeholder="Enter email"/>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" id="pwd" placeholder="Enter password"/>
+                            <input type="text" th:field="*{password}" class="form-control"  placeholder="Enter password"/>
                         </div>
+                        <td><button type="submit">Submit post</button></td>
                     </form>
                 </div>
                 <p>Don't have an account?  <a>Join Here.</a></p>
@@ -103,7 +105,7 @@
 
 <!-- Footer -->
 <footer class="container-fluid bg-4 text-center">
-    <p>&copy; 2017 <a target="_blank" href="https://github.com/comp307/speakup">Lords of Catan</a> | All rights reserved
+    <p>&copy; 2017 <a target="_blank" href="https://github.com/invalidsword/settlers">Lords of Catan</a> | All rights reserved
     </p>
 </footer>
 
