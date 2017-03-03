@@ -10,6 +10,8 @@ public class City extends IntersectionUnit {
     private static final List<City> aCities = new ArrayList<City>();
     private boolean hasMetropolis;
     private Metropolis aMetropolis;
+    private boolean hasWall;
+    private Wall aWall;
 
     static {
         int maxCities = 16;
@@ -21,6 +23,8 @@ public class City extends IntersectionUnit {
     private City() {
         hasMetropolis = false;
         aMetropolis = null;
+        hasWall = false;
+        aWall = null;
     }
 
     public void addMetropolis(ImprovementType pType){
@@ -35,6 +39,13 @@ public class City extends IntersectionUnit {
         assert aMetropolis != null;
         aMetropolis = null;
         hasMetropolis = false;
+    }
+
+    public void addWall(){
+        assert hasWall == false;
+        assert aWall == null;
+        //aMetropolis;
+        hasWall = true;
     }
 
     @Override

@@ -9,11 +9,14 @@ public abstract class OwnableUnit {
     private Player aOwner;
     private Player.Color aColor;
 
-    public Player getOwner(){return aOwner; }
     public void setOwner(Player pOwner)
     {
         aOwner = pOwner;
         aColor = pOwner.getColor();
+    }
+
+    public Player getOwner(){
+        return aOwner;
     }
 
     public abstract List getUnits();
