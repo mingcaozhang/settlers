@@ -1,6 +1,6 @@
 package com.example.models.gameModels;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 /**
  * Created by G on 17/02/28.
@@ -17,14 +17,14 @@ public class Player {
     private boolean hasAqueduct;
     private boolean hasFortress;
     private boolean hasTradingHouse;
-    private List<City> aCities;
-    private List<Road> aRoads;
-    private List<Ship> aShips;
-    private List<Settlement> aSettlements;
-    private List<BasicKnight> aBasicKnights;
-    private List<StrongKnight> aStrongKnights;
-    private List<MightyKnight> aMightyKnights;
-    private List<Wall> aWalls;
+    private Queue<City> aCities;
+    private Queue<Road> aRoads;
+    private Queue<Ship> aShips;
+    private Queue<Settlement> aSettlements;
+    private Queue<BasicKnight> aBasicKnights;
+    private Queue<StrongKnight> aStrongKnights;
+    private Queue<MightyKnight> aMightyKnights;
+    private Queue<Wall> aWalls;
 
     public Player(String pUsername, Color pColor){
         aUsername = pUsername;
@@ -51,4 +51,31 @@ public class Player {
     public int getIndex(){
         return aIndex;
     }
+
+    public void getRoads(Queue<Road> pRoads){
+        aRoads = pRoads;
+    }
+
+    public void getCities(Queue<City> pCities){
+        aCities = pCities;
+    }
+
+    public void getSettlements(Queue<Settlement> pSettlements){
+        aSettlements = pSettlements;
+    }
+
+    public void getShips(Queue<Ship> pShips){
+        aShips = pShips;
+    }
+
+    public void getWalls(Queue<Wall> pWalls){
+        aWalls = pWalls;
+    }
+
+    public void getBasicKnights(Queue<BasicKnight> pBasicKnights){
+        aBasicKnights = pBasicKnights;
+    }
+
+
+
 }

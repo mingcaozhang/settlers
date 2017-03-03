@@ -2,14 +2,14 @@ package com.example.models.gameModels;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 /**
  * Created by G on 17/03/02.
  */
 public class CommodityCard extends StealableCard {
-    private static final Map<CommodityType, ArrayList<CommodityCard>> aCommodities = new HashMap<CommodityType, ArrayList<CommodityCard>>();
+    private static final Map<CommodityType, Queue<CommodityCard>> aCommodities = new HashMap<CommodityType, Queue<CommodityCard>>();
     public enum CommodityType implements StealableCard.StealableType{
         Coin,Cloth,Paper
     }
@@ -17,7 +17,7 @@ public class CommodityCard extends StealableCard {
     static{
         int maxCommodityCards = 12;
         for (CommodityType type : CommodityType.values()){
-            ArrayList<CommodityCard> aCommodityCards = new ArrayList<CommodityCard>();
+            Queue<CommodityCard> aCommodityCards = new LinkedList<CommodityCard>();
             for (int i = 0; i < maxCommodityCards; i++){
                 aCommodityCards.add(new CommodityCard(type));
             }

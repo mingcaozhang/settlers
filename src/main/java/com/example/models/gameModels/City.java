@@ -1,13 +1,13 @@
 package com.example.models.gameModels;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by G on 17/02/28.
  */
 public class City extends IntersectionUnit {
-    private static final List<City> aCities = new ArrayList<City>();
+    private static final Queue<City> aCities = new LinkedList<City>();
     private boolean hasMetropolis;
     private Metropolis aMetropolis;
     private boolean hasWall;
@@ -49,8 +49,8 @@ public class City extends IntersectionUnit {
     }
 
     @Override
-    public List<City> getUnits() {
-        List<City> aCopy = new ArrayList<City>();
+    public Queue<City> getUnits() {
+        Queue<City> aCopy = new LinkedList<City>();
         aCopy = aCities;
         return aCopy;
     }

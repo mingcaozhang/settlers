@@ -1,13 +1,13 @@
 package com.example.models.gameModels;
 import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 /**
  * Created by G on 17/03/02.
  */
 public class BasicKnight extends Knight {
-    private static final List<BasicKnight> aKnights = new ArrayList<BasicKnight>();
+    private static final Queue<BasicKnight> aKnights = new LinkedList<BasicKnight>();
     static{
         int maxKnights = 8;
         for(int i = 0; i < maxKnights; i++){
@@ -19,8 +19,8 @@ public class BasicKnight extends Knight {
         super(1);
     }
 
-    public List<BasicKnight> getUnits(){
-        List<BasicKnight> aCopy = new ArrayList<BasicKnight>();
+    public Queue<BasicKnight> getUnits(){
+        Queue<BasicKnight> aCopy = new LinkedList<BasicKnight>();
         aCopy = aKnights;
         return aCopy;
     }

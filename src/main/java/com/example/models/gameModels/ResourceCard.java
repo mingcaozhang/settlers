@@ -1,14 +1,12 @@
 package com.example.models.gameModels;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by G on 17/03/02.
  */
 public class ResourceCard extends StealableCard{
-    private static final Map<ResourceType, ArrayList<ResourceCard>> aResources = new HashMap<ResourceType, ArrayList<ResourceCard>>();
+    private static final Map<ResourceType, Queue<ResourceCard>> aResources = new HashMap<ResourceType, Queue<ResourceCard>>();
     public enum ResourceType implements StealableCard.StealableType {
         Wool,Lumber,Ore,Brick,Grain
     }
@@ -16,7 +14,7 @@ public class ResourceCard extends StealableCard{
     static{
         int maxResourceCards = 19;
         for (ResourceType type : ResourceType.values()){
-            ArrayList<ResourceCard> aResourceCards = new ArrayList<ResourceCard>();
+            LinkedList<ResourceCard> aResourceCards = new LinkedList<>();
             for (int i = 0; i < maxResourceCards; i++){
                 aResourceCards.add(new ResourceCard(type));
             }

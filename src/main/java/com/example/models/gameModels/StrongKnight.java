@@ -1,13 +1,13 @@
 package com.example.models.gameModels;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by G on 17/03/02.
  */
 public class StrongKnight extends Knight{
-    private static List<StrongKnight> aKnights = new ArrayList<StrongKnight>();
+    private static Queue<StrongKnight> aKnights = new LinkedList<StrongKnight>();
     static{
         int maxKnights = 8;
         for(int i = 0; i < maxKnights; i++){
@@ -19,8 +19,8 @@ public class StrongKnight extends Knight{
         super(2);
     }
 
-    public List<StrongKnight> getUnits(){
-        List<StrongKnight> aCopy = new ArrayList<StrongKnight>();
+    public Queue<StrongKnight> getUnits(){
+        Queue<StrongKnight> aCopy = new LinkedList<StrongKnight>();
         aCopy = aKnights;
         return aCopy;
     }
