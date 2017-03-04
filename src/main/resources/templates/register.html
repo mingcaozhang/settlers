@@ -42,13 +42,21 @@
             <div class="login-box col-xs-2 col-xs-offset-5">
                 <div class="panel-body  text-center" >
                     <h3>LOGIN</h3>
-                    <form>
+                    
+                    
+                    <!--/*@thymesVar id="login" type="com.example.forms.Login"*/-->
+                    <form action="#" th:action="@{/register}" th:object="${login}" method="post">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="usr" placeholder="Enter email"/>
+                            <input type="text" th:field="*{username}" class="form-control"  placeholder="Enter email"/>
+
                         </div>
+                        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Title error message</p>
                         <div class="form-group">
-                            <input type="password" class="form-control" id="pwd" placeholder="Enter password"/>
+                            <input type="text" th:field="*{password}" class="form-control"  placeholder="Enter password"/>
+
                         </div>
+                        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Title error message</p>
+                        <td><button type="submit">Submit post</button></td>
                     </form>
                 </div>
                 <p>Don't have an account?  <a>Join Here.</a></p>
