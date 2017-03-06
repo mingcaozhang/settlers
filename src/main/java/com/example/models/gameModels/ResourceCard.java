@@ -6,7 +6,7 @@ import java.util.*;
  * Created by G on 17/03/02.
  */
 public class ResourceCard extends StealableCard{
-    private static final Map<ResourceType, Queue<ResourceCard>> aResources = new HashMap<ResourceType, Queue<ResourceCard>>();
+    private static final HashMap<ResourceType, Queue<ResourceCard>> aResources = new HashMap<ResourceType, Queue<ResourceCard>>();
     public enum ResourceType implements StealableCard.StealableType {
         Wool,Lumber,Ore,Brick,Grain
     }
@@ -20,6 +20,10 @@ public class ResourceCard extends StealableCard{
             }
             aResources.put(type, aResourceCards);
         }
+    }
+
+    public static HashMap<ResourceType, Queue<ResourceCard>> getResources(){
+        return aResources;
     }
 
     private ResourceCard(ResourceType pResourceType){

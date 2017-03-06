@@ -19,7 +19,13 @@ public class Intersection extends Geometry {
         isOccupied = false;
     }
 
-    public boolean getOccupancyFlag(){return isOccupied;}
+    public boolean getOccupancyFlag(){
+        return isOccupied;
+    }
+
+    public IntersectionUnit getOccupant(){
+        return aOccupant;
+    }
 
     public void setOccupant(IntersectionUnit pOccupant)
     {
