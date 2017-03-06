@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 
+import static java.sql.JDBCType.NULL;
+
 /* Handles all user authentications */
 @Controller
 public class AuthenticationController {
@@ -26,39 +28,46 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
     @RequestMapping(value="/", method= RequestMethod.POST)
-    public String login(@Valid Login login, BindingResult bindingResult, Model model)
+    public String login(Login login, Model model)
     {
-        if(bindingResult.hasErrors())
+
+        try {
+            User loginUser = userRepository.getByUsername(login.getUsername());
+            if(loginUser.comparePassword(login.getPassword()))
+            {
+                return "redirect:/lobby";
+            }
+        }
+        catch (NullPointerException e)
         {
+            login.setValidStatus(false);
             return "home";
         }
 
-        User newUser = new User(login.getUsername(),login.getPassword());
-        userRepository.save(newUser);
-
-        model.addAttribute("message", login.getUsername());
-        return "register";
+        login.setValidStatus(false);
+        return "home";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String regpage(Login login)
+    public String regpage(Register register, Model model)
     {
+
         return "register";
     }
 
     @RequestMapping(value="/register", method = RequestMethod.POST)
-    public String register(@Valid Login login, BindingResult bindingResult, Model model)
+    public String register(@Valid Register register, BindingResult bindingResult, Model model)
     {
         if(bindingResult.hasErrors())
         {
-            return "home";
+            return "register";
         }
-
-        User newUser = new User(login.getUsername(),login.getPassword());
+        String confirm = register.getConfirm();
+        User newUser = new User(register.getUsername(),register.getPassword());
         userRepository.save(newUser);
 
-        model.addAttribute("message", login.getUsername());
-        return "home";
+        model.addAttribute("message", register.getUsername());
+        return "redirect:/";
     }
 
 }
