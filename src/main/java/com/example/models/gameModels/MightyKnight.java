@@ -19,7 +19,7 @@ public class MightyKnight extends Knight {
         super(3);
     }
 
-    public Queue<MightyKnight> getUnits(){
+    public static Queue<MightyKnight> getUnits(){
         Queue<MightyKnight> aCopy = new LinkedList<MightyKnight>();
         aCopy = aKnights;
         return aCopy;

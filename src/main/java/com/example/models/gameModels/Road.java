@@ -18,8 +18,7 @@ public final class Road extends EdgeUnit {
     private Road(){
     }
 
-    @Override
-    public Queue<Road> getUnits(){
+    public static Queue<Road> getUnits(){
         Queue<Road> aCopy = new LinkedList<Road>();
         aCopy = aRoads;
         return aCopy;
