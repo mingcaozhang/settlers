@@ -11,8 +11,9 @@ public class Register {
     @NotNull
     @Size(min=4, max=20)
     private String password;
-
-    private String confirmpassword;
+    @NotNull
+    @Size(min=4, max=20)
+    private String confirm;
 
     public String getUsername()
     {
@@ -24,9 +25,9 @@ public class Register {
         return password;
     }
 
-    public String getConfirmPassword()
+    public String getConfirm()
     {
-        return confirmpassword;
+        return confirm;
     }
 
     public void setUsername(String username)
@@ -39,8 +40,8 @@ public class Register {
         this.password = password;
     }
 
-    public void setConfirmPassword(String confirmpassword)
+    public void setConfirm(String confirm)
     {
-        this.confirmpassword = confirmpassword;
+        this.confirm = confirm;
     }
 }
