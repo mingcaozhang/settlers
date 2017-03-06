@@ -89,59 +89,35 @@ public class Player {
     public boolean hasTradingHouse(){return aTradingHouse;}
 
     public boolean canGetWall(){
-        if(aWalls.isEmpty())
-            return false;
-        else
-            return true;
+        return !aWalls.isEmpty();
     }
 
     public boolean canGetRoad(){
-        if(aRoads.isEmpty())
-            return false;
-        else
-            return true;
+        return !aRoads.isEmpty();
     }
 
     public boolean canGetCity(){
-        if(aCities.isEmpty())
-            return false;
-        else
-            return true;
+        return !aCities.isEmpty();
     }
 
     public boolean canGetShip(){
-        if(aShips.isEmpty())
-            return false;
-        else
-            return true;
+        return !aShips.isEmpty();
     }
 
     public boolean canGetSettlement(){
-        if(aSettlements.isEmpty())
-            return false;
-        else
-            return true;
+        return !aSettlements.isEmpty();
     }
 
     public boolean canGetBasicKnight(){
-        if(aBasicKnights.isEmpty())
-            return false;
-        else
-            return true;
+        return !aBasicKnights.isEmpty();
     }
 
     public boolean canGetStrongKnight(){
-        if(aStrongKnights.isEmpty())
-            return false;
-        else
-            return true;
+        return !aStrongKnights.isEmpty();
     }
 
     public boolean canGetMightyKnight(){
-        if(aMightyKnights.isEmpty())
-            return false;
-        else
-            return true;
+        return !aMightyKnights.isEmpty();
     }
 
     public Road giveRoad(){
@@ -171,5 +147,5 @@ public class Player {
     public MightyKnight giveMightyKnight(){
         return aMightyKnights.remove();
     }
-    
+
 }

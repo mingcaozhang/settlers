@@ -28,6 +28,7 @@ public abstract class Hex extends Geometry{
             aVillain = true;
     }
 
+    @Override
     public void setEdgeNeighbours(Edge[][] pEdges){
         int x = this.getCoordinates().getX()*2;
         int y = this.getCoordinates().getY()*2;
