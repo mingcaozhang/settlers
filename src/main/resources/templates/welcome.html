@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Danklers of Catan: Extreme MayMay Edition</title>
+    <title>Danklers of Catan</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
@@ -59,14 +59,10 @@
                     <form action="#" th:action="@{/}" th:object="${login}" method="post">
                         <div class="form-group">
                             <input type="text" th:field="*{username}" class="form-control"  placeholder="Enter email"/>
-
                         </div>
-                        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Title error message</p>
                         <div class="form-group">
                             <input type="text" th:field="*{password}" class="form-control"  placeholder="Enter password"/>
-
                         </div>
-                        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Title error message</p>
                         <td><button type="submit">Submit post</button></td>
                     </form>
                 </div>
@@ -107,7 +103,6 @@
     </div>
 </section>
 
-
 <!-- Footer -->
 <footer class="container-fluid bg-4 text-center">
     <p>&copy; 2017 <a target="_blank" href="https://github.com/invalidsword/settlers">Lords of Catan</a> | All rights reserved
@@ -118,6 +113,7 @@
 
 </body>
 </html>
+
 
 
 
