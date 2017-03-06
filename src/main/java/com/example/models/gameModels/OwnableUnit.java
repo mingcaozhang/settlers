@@ -18,6 +18,4 @@ public abstract class OwnableUnit {
     public Player getOwner(){
         return aOwner;
     }
-
-    public abstract Queue getUnits();
 }

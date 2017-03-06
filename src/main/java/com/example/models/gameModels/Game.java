@@ -78,10 +78,30 @@ public class Game {
 
     private void barbarianAttack(){
         assert (aBarbarianPosition == 0);
+        calculateStrengths();
         if (aBarbarianStrength > aArmyStrength){
             defenseLoss();
         }
         defenseVictory();
+    }
+
+    private void calculateStrengths(){
+        aBarbarianStrength = 0;
+        aArmyStrength = 0;
+        for (int i = 0; i < 20; i++){
+            for (int j = 0; j < 20; j++){
+                if (aIntersections[i][j].getOccupancyFlag()) {
+                    if (aIntersections[i][j].getOccupant().getClass() == City.class) {
+                        aBarbarianStrength += 1;
+                    }
+                    else if (aIntersections[i][j].getOccupant().getClass().getSuperclass() == Knight.class){
+                        if (((Knight)aIntersections[i][j].getOccupant()).getState()){
+                            aArmyStrength += ((Knight)aIntersections[i][j].getOccupant()).getStrength();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void defenseVictory(){

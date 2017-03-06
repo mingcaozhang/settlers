@@ -19,7 +19,7 @@ public class StrongKnight extends Knight{
         super(2);
     }
 
-    public Queue<StrongKnight> getUnits(){
+    public static Queue<StrongKnight> getUnits(){
         Queue<StrongKnight> aCopy = new LinkedList<StrongKnight>();
         aCopy = aKnights;
         return aCopy;

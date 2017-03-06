@@ -48,8 +48,7 @@ public class City extends IntersectionUnit {
         hasWall = true;
     }
 
-    @Override
-    public Queue<City> getUnits() {
+    public static Queue<City> getUnits() {
         Queue<City> aCopy = new LinkedList<City>();
         aCopy = aCities;
         return aCopy;
