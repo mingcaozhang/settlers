@@ -33,16 +33,64 @@ public class Edge extends Geometry{
         return tempUnit;
     }
 
-    @Override
-    public Hex getHexNeighbours() {
-        return null; // NOT DONE
+    public void setEdgeNeighbours(Edge[][] pEdges){
+        int x = this.getCoordinates().getX();
+        int y = this.getCoordinates().getY();
+
+        if(x%2==0) { // EDGES ARE VERTICAL
+            EdgeNeighbours.add(pEdges[x+1][y+1]);
+            EdgeNeighbours.add(pEdges[x+1][y-1]);
+            EdgeNeighbours.add(pEdges[x-1][y+1]);
+            EdgeNeighbours.add(pEdges[x-1][y-1]);
+        }
+        else {
+            EdgeNeighbours.add(pEdges[x-2][y]);
+            EdgeNeighbours.add(pEdges[x+2][y]);
+            if(pEdges[x+1][y+1]==null){ // EDGES RIGHT SIDE IS DOWN
+                EdgeNeighbours.add(pEdges[x - 1][y+1]);
+                EdgeNeighbours.add(pEdges[x + 1][y-1]);
+            }
+            else {  // EDGES LEFT SIDE IS DOWN
+                EdgeNeighbours.add(pEdges[x - 1][y-1]);
+                EdgeNeighbours.add(pEdges[x + 1][y+1]);
+            }
+        }
     }
-    @Override
-    public Intersection getIntersectionNeighbours() {
-        return null; // NOT DONE
+
+    public void setHexNeighbours(Hex[][] pHexes, Edge[][] pEdges ){
+        int x = this.getCoordinates().getX();
+        int y = this.getCoordinates().getY();
+
+        if(x%2==0) { // EDGES ARE VERTICAL
+            x=x/2;
+            y=y/2;
+            HexNeighbours.add(pHexes[x-1][y]);
+            HexNeighbours.add(pHexes[x+1][y]);
+        }
+        else if(pEdges[x+1][y+1]==null){ // EDGES RIGHT SIDE IS DOWN
+            EdgeNeighbours.add(pEdges[x - 1][y+1]);
+            EdgeNeighbours.add(pEdges[x + 1][y-1]);
+        }
+        else {  // EDGES LEFT SIDE IS DOWN
+            EdgeNeighbours.add(pEdges[x - 1][y-1]);
+            EdgeNeighbours.add(pEdges[x + 1][y+1]);
+        }
+
+
+
+        }
     }
+
     @Override
-    public Edge getEdgeNeighbours() {
-        return null; // NOT DONE
+    public void setIntersectionNeighbours(Intersection[][] pIntersections){
+        int x = this.getCoordinates().getX();
+        int y = this.getCoordinates().getY();
+
+        IntersectionNeighbours.add(pIntersections[x][y]);
+        IntersectionNeighbours.add(pIntersections[x][y-1]);
+        IntersectionNeighbours.add(pIntersections[x+1][y]);
+        IntersectionNeighbours.add(pIntersections[x+1][y]);
+        IntersectionNeighbours.add(pIntersections[x-1][y-1]);
+        IntersectionNeighbours.add(pIntersections[x-1][y-1]);
     }
 }

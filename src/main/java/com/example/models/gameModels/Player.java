@@ -12,11 +12,11 @@ public class Player {
     private int aVPs;
     private int aGold;
     private int aRouteLength;
-    private boolean hasMerchant;
-    private boolean hasLongestTradeRoute;
-    private boolean hasAqueduct;
-    private boolean hasFortress;
-    private boolean hasTradingHouse;
+    private boolean aMerchant;
+    private boolean aLongestTradeRoute;
+    private boolean aAqueduct;
+    private boolean aFortress;
+    private boolean aTradingHouse;
     private Queue<City> aCities;
     private Queue<Road> aRoads;
     private Queue<Ship> aShips;
@@ -33,11 +33,11 @@ public class Player {
         aVPs = 0;
         aGold = 0;
         aRouteLength = 0;
-        hasMerchant = false;
-        hasLongestTradeRoute = false;
-        hasAqueduct = false;
-        hasFortress = false;
-        hasTradingHouse = false;
+        aMerchant = false;
+        aLongestTradeRoute = false;
+        aAqueduct = false;
+        aFortress = false;
+        aTradingHouse = false;
     }
 
     public enum Color{
@@ -47,6 +47,8 @@ public class Player {
     public Color getColor(){
         return aColor;
     }
+
+    public String getUsername(){ return aUsername; }
 
     public int getIndex(){
         return aIndex;
@@ -76,6 +78,98 @@ public class Player {
         aBasicKnights = pBasicKnights;
     }
 
+    public boolean hasMerchant(){return aMerchant;}
 
+    public boolean hasLongestTradeRoute(){return aLongestTradeRoute;}
 
+    public boolean hasAqueduct(){return aAqueduct;}
+
+    public boolean hasFortress(){return aFortress;}
+
+    public boolean hasTradingHouse(){return aTradingHouse;}
+
+    public boolean canGetWall(){
+        if(aWalls.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    public boolean canGetRoad(){
+        if(aRoads.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    public boolean canGetCity(){
+        if(aCities.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    public boolean canGetShip(){
+        if(aShips.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    public boolean canGetSettlement(){
+        if(aSettlements.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    public boolean canGetBasicKnight(){
+        if(aBasicKnights.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    public boolean canGetStrongKnight(){
+        if(aStrongKnights.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    public boolean canGetMightyKnight(){
+        if(aMightyKnights.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    public Road giveRoad(){
+        return aRoads.remove();
+    }
+
+    public Settlement giveSettlement(){
+        return aSettlements.remove();
+    }
+
+    public City giveCity(){
+        return aCities.remove();
+    }
+
+    public Ship giveShip(){
+        return aShips.remove();
+    }
+
+    public BasicKnight giveBasicKnight(){
+        return aBasicKnights.remove();
+    }
+
+    public StrongKnight giveStrongKnight(){
+        return aStrongKnights.remove();
+    }
+
+    public MightyKnight giveMightyKnight(){
+        return aMightyKnights.remove();
+    }
+    
 }

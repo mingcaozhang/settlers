@@ -1,5 +1,7 @@
 package com.example.models.gameModels;
 
+import java.util.Queue;
+
 /**
  * Created by G on 17/02/27.
  */
@@ -33,15 +35,15 @@ public class Intersection extends Geometry {
     }
 
     @Override
-    public Hex getHexNeighbours() {
+    public Queue<Hex> getHexNeighbours() {
         return null; // NOT DONE
     }
     @Override
-    public Intersection getIntersectionNeighbours() {
+    public Queue<Intersection> getIntersectionNeighbours() {
         return null; // NOT DONE
     }
     @Override
-    public Edge getEdgeNeighbours() {
+    public Queue<Edge> getEdgeNeighbours() {
         return null; // NOT DONE
     }
 }

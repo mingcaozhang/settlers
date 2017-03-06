@@ -7,5 +7,5 @@ public class TradeCard extends ProgressCard {
     public enum TradeType implements ProgresssType{
         CommercialHarbour, MasterMerchant, Merchant,MerchantFleet, ResourceMonopoly, TradeMonopoly
     }
-    public TradeCard(TradeType pTradeType){super(pTradeType);}
+    public TradeCard(TradeType pTradeType,String pDescription){super(pTradeType,pDescription);}
 }

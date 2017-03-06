@@ -5,10 +5,14 @@ package com.example.models.gameModels;
  */
 public class ProgressCard extends Card {
     public interface ProgresssType {}
+    private final String aDescription;
     private final ProgresssType aProgressType;
     public ProgresssType getType(){return aProgressType;}
-    protected ProgressCard(ProgresssType pProgressType){
+    public String getDescription(){return aDescription;}
+    protected ProgressCard(ProgresssType pProgressType, String pDescription){
+        aDescription = pDescription;
         aProgressType = pProgressType;
     }
+
 
 }
