@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css" />
     <link href="https://fonts.googleapis.com/css?family=Berkshire+Swash|IM+Fell+Double+Pica|IM+Fell+English+SC|Quintessential" rel="stylesheet"/>
 </head>
@@ -60,12 +62,18 @@
                     <div class="player-box col-sm-8" style="padding: 0px; margin: 0px;">
                         <div class="panel-body text-center" style="height: 500px;">
                             <h1>Gameroom name</h1>
+                            <table class="table table-striped">
+                                <tbody id="connections">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+
                 </div>
             </div>
 
-            <button type="button" class="btn btn-primary" style="margin-top: 20px; font-size: 30px;">Ready</button>
+            <button id="ready" type="button" class="btn btn-primary" style="margin-top: 20px; font-size: 30px;">Ready</button>
+            <button id="go" type="button" class="btn btn-primary" style="margin-top: 20px; font-size: 30px;">Ready</button>
 
             <!-- Trigger the exit lobby modal with a button -->
             <button type="button" class="btn btn-primary" style="margin-top: 20px; font-size: 30px; margin-left: 1159px;" data-toggle="modal" data-target="#myModal">Exit</button>
@@ -99,7 +107,7 @@
     </p>
 </footer>
 
-
+<script th:src="@{/js/gameConnect.js}"></script>
 
 </body>
 </html>
