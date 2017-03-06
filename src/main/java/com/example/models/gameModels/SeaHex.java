@@ -25,8 +25,8 @@ public class SeaHex extends Hex {
     }
 
     @Override
-    public TerrainKind getTerrainType() {
-        return TerrainKind.Sea;
+    public TerrainType getTerrainType() {
+        return TerrainType.Sea;
     }
 
 

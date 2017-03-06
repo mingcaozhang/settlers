@@ -19,6 +19,7 @@ public class Metropolis {
 
     private Metropolis(ImprovementType pImprovementType){
         aImprovementType = pImprovementType;
+
     }
 
     public static Metropolis getMetropolis(ImprovementType pType){
