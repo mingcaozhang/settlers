@@ -9,7 +9,7 @@ import java.util.Map;
 @Controller
 public class LobbyController {
 
-    @RequestMapping(value="/lobby", method = RequestMethod.GET)
+    @RequestMapping(value="/lobby", method= RequestMethod.GET)
     public String lobby(Map<String, Object> model) {
 
         return "lobby";
