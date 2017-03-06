@@ -31,107 +31,107 @@
 </nav>
 
 <div class="container-fluid bg-5" style="margin: 0px; padding-bottom: 0px;">
-    <!-- LOBBY -->
-    <section class="lobby">
-        <div class="lobby-bar" style="border-right: 2px;">
+<!-- LOBBY -->
+<section class="lobby">
+    <div class="lobby-bar" style="border-right: 2px;">
+    </div>
+    <!-- ROOMS -->
+    <section class="rooms">
+        <div class="container-fluid bg-2 text-center" style="padding: 0px;">
+            <div class="row">
+                <div class="lobby-box col-sm-8" style="padding: 0px; margin: 0px;">
+                    <div class="panel-body text-center" style="height: 500px;">
+                        <h1>Lobby</h1>
+                        <div class="scroll">
+                        <form>
+                            <button type="button" class="room-btn">Room 1</button>
+                            <button type="button" class="room-btn">Room 2</button>
+                            <button type="button" class="room-btn">Room 3</button>
+                            <button type="button" class="room-btn">Room 4</button>
+                            <button type="button" class="room-btn">Room 5</button>
+                            <button type="button" class="room-btn">Room 6</button>
+                            <button type="button" class="room-btn">Room 7</button>
+                            <button type="button" class="room-btn">Room 8</button>
+                            <button type="button" class="room-btn">Room 9</button>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="player-box col-sm-4" style="padding: 0px; margin: 0px;">
+                    <div class="panel-body text-center" style="height: 500px;">
+                        <h1>Player List</h1>
+                        <div class="scroll">
+                            <form>
+                                <button type="button" class="player-btn">HaeChan</button>
+                                <button type="button" class="player-btn">George</button>
+                                <button type="button" class="player-btn">Dale</button>
+                                <button type="button" class="player-btn">Ming</button>
+                                <button type="button" class="player-btn">Billy</button>
+                                <button type="button" class="player-btn">Bernard</button>
+                                <button type="button" class="player-btn">Jorg</button>
+                                <button type="button" class="player-btn">Nirmal</button>
+                                <button type="button" class="player-btn">Vybihal</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- ROOMS -->
-        <section class="rooms">
-            <div class="container-fluid bg-2 text-center" style="padding: 0px;">
-                <div class="row">
-                    <div class="lobby-box col-sm-8" style="padding: 0px; margin: 0px;">
-                        <div class="panel-body text-center" style="height: 500px;">
-                            <h1>Lobby</h1>
-                            <div class="scroll">
-                                <form>
-                                    <button type="button" class="room-btn">Room 1</button>
-                                    <button type="button" class="room-btn">Room 2</button>
-                                    <button type="button" class="room-btn">Room 3</button>
-                                    <button type="button" class="room-btn">Room 4</button>
-                                    <button type="button" class="room-btn">Room 5</button>
-                                    <button type="button" class="room-btn">Room 6</button>
-                                    <button type="button" class="room-btn">Room 7</button>
-                                    <button type="button" class="room-btn">Room 8</button>
-                                    <button type="button" class="room-btn">Room 9</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="player-box col-sm-4" style="padding: 0px; margin: 0px;">
-                        <div class="panel-body text-center" style="height: 500px;">
-                            <h1>Player List</h1>
-                            <div class="scroll">
-                                <form>
-                                    <button type="button" class="player-btn">HaeChan</button>
-                                    <button type="button" class="player-btn">George</button>
-                                    <button type="button" class="player-btn">Dale</button>
-                                    <button type="button" class="player-btn">Ming</button>
-                                    <button type="button" class="player-btn">Billy</button>
-                                    <button type="button" class="player-btn">Bernard</button>
-                                    <button type="button" class="player-btn">Jorg</button>
-                                    <button type="button" class="player-btn">Nirmal</button>
-                                    <button type="button" class="player-btn">Vybihal</button>
-                                </form>
-                            </div>
-                        </div>
+        <!-- Trigger the create game modal with a button -->
+        <button type="button" class="btn btn-primary" style="margin-top: 20px; font-size: 30px;" data-toggle="modal" data-target="#myModal1">Create Game</button>
+        <!-- Modal -->
+        <div class="modal" id="myModal1" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="color: black">Create Game</h4>
+                    </div>
+                    <div class="modal-body" style="color: black">
+                        <p>Title of the game room</p>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="usr" placeholder="Enter room name"/>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-primary">Create</a>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Trigger the create game modal with a button -->
-            <button type="button" class="btn btn-primary" style="margin-top: 20px; font-size: 30px;" data-toggle="modal" data-target="#myModal1">Create Game</button>
-            <!-- Modal -->
-            <div class="modal" id="myModal1" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title" style="color: black">Create Game</h4>
-                        </div>
-                        <div class="modal-body" style="color: black">
-                            <p>Title of the game room</p>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="usr" placeholder="Enter username"/>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="#" class="btn btn-primary">Create</a>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        </div>
+        <!-- Trigger the exit lobby modal with a button -->
+        <button type="button" class="btn btn-primary" style="margin-top: 20px; font-size: 30px; margin-left: 1159px;" data-toggle="modal" data-target="#myModal2">Exit</button>
+        <!-- Modal -->
+        <div class="modal" id="myModal2" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="color: black">Exit Lobby</h4>
+                    </div>
+                    <div class="modal-body" style="color: black">
+                        <p>Are you sure you want to exit the lobby?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="http://localhost:8080" class="btn btn-primary">Exit</a>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Trigger the exit lobby modal with a button -->
-            <button type="button" class="btn btn-primary" style="margin-top: 20px; font-size: 30px; margin-left: 1159px;" data-toggle="modal" data-target="#myModal2">Exit</button>
-            <!-- Modal -->
-            <div class="modal" id="myModal2" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title" style="color: black">Exit Lobby</h4>
-                        </div>
-                        <div class="modal-body" style="color: black">
-                            <p>Are you sure you want to exit the lobby?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="http://localhost:8080" class="btn btn-primary">Exit</a>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </section>
+</section>
 </div>
 
 <!-- Footer -->
 <footer class="container-fluid bg-4 text-center">
-    <p>&copy; 2017 <a target="_blank" href="https://github.com/invalidsword/settlers">Lords of Catan</a> | All rights reserved
+    <p>&copy; 2017 <a target="_blank" href="https://github.com/comp307/speakup">Lords of Catan</a> | All rights reserved
     </p>
 </footer>
 
