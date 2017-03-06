@@ -50,4 +50,19 @@ public class GameManager {
         assert (aGame != null);
         aGame.rollDice();
     }
+
+    public static void placeSettlement(Player pPlayer, Intersection pIntersection){
+        assert (aGame != null);
+        aGame.placeSettlement(pPlayer, pIntersection);
+    }
+
+    public static void placeCity(Player pPlayer, Intersection pIntersection){
+        assert (aGame != null);
+        aGame.placeCity(pPlayer, pIntersection);
+    }
+
+    public static void placeRoad(Player pPlayer, Intersection pIntersection){
+        assert (aGame != null);
+        aGame.placeCity(pPlayer, pIntersection);
+    }
 }
