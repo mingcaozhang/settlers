@@ -18,7 +18,21 @@ public class LandHex extends Hex {
         hasRobber = false;
     }
 
+    public int getProductionNumber(){
+        return aProductionNumber;
+    }
 
+    public boolean getRobberFlag(){
+        return hasRobber;
+    }
+
+    public void updateRobberFlag()
+    {
+        if(hasRobber==true)
+            hasRobber = false;
+        else
+            hasRobber = true;
+    }
 
     public boolean getMerchantFlag(){
         return hasMerchant;
