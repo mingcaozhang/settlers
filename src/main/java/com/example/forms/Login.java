@@ -1,13 +1,14 @@
 package com.example.forms;
-
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class Login {
-
+    @NotNull
+    @Size(min=4, max=35)
     private String username;
-
+    @NotNull
+    @Size(min=4, max=35)
     private String password;
-
-    private boolean validStatus = true;
 
     public String getUsername()
     {
@@ -28,9 +29,5 @@ public class Login {
     {
         this.password = password;
     }
-
-    public boolean getValidStatus(){ return validStatus;}
-
-    public void setValidStatus(boolean status){ validStatus = status;}
 
 }

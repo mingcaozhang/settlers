@@ -1,0 +1,2 @@
+Design: No more Harbour class, replaced by enum HarbourKind.
+Wall & Metropolis no longer IntersectionUnits, now belong to cities.

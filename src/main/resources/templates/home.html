@@ -60,7 +60,6 @@
                         <div class="form-group">
                             <input type="text" th:field="*{username}" class="form-control"  placeholder="Enter email"/>
                         </div>
-
                         <div class="form-group">
                             <input type="password" th:field="*{password}" class="form-control"  placeholder="Enter password"/>
                             <p th:if="${!login.getValidStatus()}" style="color: red;"> Wrong username or password.</p>
@@ -71,6 +70,7 @@
                         </div>
 
                         <td><button class="login-button"  type="submit">SUBMIT</button></td>
+
                     </form>
                 </div>
                 <p>Don't have an account?  <a th:href="@{/register}">Join Here.</a></p>

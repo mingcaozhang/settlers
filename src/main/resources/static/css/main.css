@@ -185,6 +185,42 @@ input[type="checkbox"] {
     font-family: 'IM Fell English SC', serif;
 }
 
+.die1{
+    float: left;
+    width: 70px;
+    background: darkred;
+    border: #999 1px solid;
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+    color: gold;
+    margin: 5px;
+}
+
+.die2{
+    float: left;
+    width: 70px;
+    background: gold;
+    border: #999 1px solid;
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+    color: darkred;
+    margin: 5px;
+}
+
+.eventDie{
+    float: left;
+    width: 70px;
+    background: ghostwhite;
+    border: #999 1px solid;
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+    color: black;
+    margin: 5px;
+}
+
 .about_us p{
     font-size: 30px;
 }
