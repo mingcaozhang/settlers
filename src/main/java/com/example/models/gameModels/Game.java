@@ -1,4 +1,5 @@
 package com.example.models.gameModels;
+import java.time.Clock;
 import java.util.*;
 
 /**
@@ -22,6 +23,8 @@ public class Game {
     private DiceNumber aRedDice;
     private DiceNumber aYellowDice;
     private EventType aEventDice;
+    private Player currentPlayer;
+    private Queue<Player> aPlayerQueue;
 
     public Game(int pVPsToWin, Map<String, Player> pPlayers, int pID, Hex[][] pHexes, Edge[][] pEdges, Intersection[][] pIntersections, HashMap<Integer,ArrayList<LandHex>> pLandHexes ){
         aID = pID;
@@ -40,6 +43,10 @@ public class Game {
         aCommodityCards = new HashMap<CommodityCard.CommodityType, Queue<CommodityCard>>();
         aResourceCards = ResourceCard.getResources();
         aCommodityCards = CommodityCard.getCommodities();
+        for (Player player : aPlayers.values()){
+            aPlayerQueue.add(player);
+        }
+        currentPlayer = aPlayerQueue.peek();
     }
 
     public void rollDice(){
@@ -146,6 +153,52 @@ public class Game {
             return true;
         }
         return false;
+    }
+
+    public void placeSettlement(Player pPlayer, Intersection pIntersection){
+        if (pPlayer != currentPlayer){
+            //do nothing
+        }
+        else {
+            assert (!pIntersection.getOccupancyFlag());
+            assert (pPlayer.canGetSettlement());
+            Settlement settlement = pPlayer.giveSettlement();
+            pIntersection.setOccupant(settlement);
+
+            Queue<Hex> neighbours = pIntersection.getHexNeighbours();
+            for (Hex hex : neighbours){
+                payout(pPlayer, hex.getTerrainType(), false);
+            }
+        }
+    }
+
+    public void placeCity(Player pPlayer, Intersection pIntersection){
+        if (pPlayer != currentPlayer){
+            //do nothing
+        }
+        else{
+            assert(!pIntersection.getOccupancyFlag());
+            assert(pPlayer.canGetCity());
+            City city = pPlayer.giveCity();
+            pIntersection.setOccupant(city);
+
+            Queue<Hex> neighbours = pIntersection.getHexNeighbours();
+            for (Hex hex : neighbours){
+                payout(pPlayer, hex.getTerrainType(), true);
+            }
+        }
+    }
+
+    public void placeRoad(Player pPlayer, Edge pEdge){
+        if (pPlayer != currentPlayer){
+            //do nothing
+        }
+        else{
+            assert(!pEdge.getOccupancyFlag());
+            assert(pPlayer.canGetRoad());
+            Road road = pPlayer.giveRoad();
+            pEdge.setOccupant(road);
+        }
     }
 
     public enum GamePhase{
