@@ -1,5 +1,7 @@
 package com.example.models.gameModels;
 
+import com.sun.org.apache.bcel.internal.generic.LAND;
+
 import java.util.*;
 
 /**
@@ -19,8 +21,24 @@ public class GameManager {
     }
 
     public static void createGame(int pVPsToWin, Map<String, Player> pPlayers){
-        Game newGame = new Game(pVPsToWin, pPlayers, aCount++);
-        //add this game to psql db
+        Hex[][] pHexes = new Hex[20][20];
+        Edge[][] pEdges = new Edge[20][20];
+        Intersection[][] pIntersections = new Intersection[20][20];
+        HashMap<Integer, ArrayList<LandHex>> pLandHexes = new HashMap<Integer, ArrayList<LandHex>>();
+
+        for (int k = 2; k < 13; k++){
+            pLandHexes.put(k, new ArrayList<LandHex>());
+        }
+
+        for (int i = 0; i < 20; i++){
+            for (int j = 0; j < 20; j++){
+                if (pHexes[i][j].getTerrainType() != TerrainType.Sea || pHexes[i][j].getTerrainType() != TerrainType.Desert || pHexes[i][j].getTerrainType() != null){
+                     pLandHexes.get(((LandHex)pHexes[i][j]).getProductionNumber()).add((LandHex)pHexes[i][j]);
+                }
+            }
+        }
+
+        Game newGame = new Game(pVPsToWin, pPlayers, aCount++, pHexes, pEdges, pIntersections, pLandHexes);
         aGame = newGame;
     }
 
@@ -31,10 +49,5 @@ public class GameManager {
     public static void rollDice(){
         assert (aGame != null);
         aGame.rollDice();
-    }
-
-    public static void checkBarbarianStep(){
-        assert (aGame != null);
-        aGame.checkBarbarian();
     }
 }

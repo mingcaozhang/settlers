@@ -1,5 +1,7 @@
 package com.example.models.gameModels;
 
+import java.util.Queue;
+
 /**
  * Created by G on 17/02/27.
  */
@@ -22,6 +24,6 @@ public abstract class Geometry {
         public int getY(){return y;}
     }
     public abstract Edge getEdgeNeighbours();
-    public abstract Intersection getIntersectionNeighbours();
+    public abstract Queue<Intersection> getIntersectionNeighbours();
     public abstract Hex getHexNeighbours();
 }

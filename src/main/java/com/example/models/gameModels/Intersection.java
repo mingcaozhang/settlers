@@ -1,5 +1,5 @@
 package com.example.models.gameModels;
-
+import java.util.Queue;
 /**
  * Created by G on 17/02/27.
  */
@@ -17,7 +17,13 @@ public class Intersection extends Geometry {
         isOccupied = false;
     }
 
-    public boolean getOccupancyFlag(){return isOccupied;}
+    public boolean getOccupancyFlag(){
+        return isOccupied;
+    }
+
+    public IntersectionUnit getOccupant(){
+        return aOccupant;
+    }
 
     public void setOccupant(IntersectionUnit pOccupant)
     {
@@ -37,7 +43,7 @@ public class Intersection extends Geometry {
         return null; // NOT DONE
     }
     @Override
-    public Intersection getIntersectionNeighbours() {
+    public Queue<Intersection> getIntersectionNeighbours() {
         return null; // NOT DONE
     }
     @Override

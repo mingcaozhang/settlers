@@ -1,4 +1,7 @@
 package com.example.models.gameModels;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Queue;
 import java.util.LinkedList;
 
@@ -17,6 +20,8 @@ public class Player {
     private boolean hasAqueduct;
     private boolean hasFortress;
     private boolean hasTradingHouse;
+    private HashMap<ResourceCard.ResourceType, Queue<ResourceCard>> aResourceCards;
+    private HashMap<CommodityCard.CommodityType, Queue<CommodityCard>> aCommodityCards;
     private Queue<City> aCities;
     private Queue<Road> aRoads;
     private Queue<Ship> aShips;
@@ -38,6 +43,8 @@ public class Player {
         hasAqueduct = false;
         hasFortress = false;
         hasTradingHouse = false;
+        aResourceCards = new HashMap<ResourceCard.ResourceType, Queue<ResourceCard>>();
+        aCommodityCards = new HashMap<CommodityCard.CommodityType, Queue<CommodityCard>>();
     }
 
     public enum Color{
@@ -52,27 +59,39 @@ public class Player {
         return aIndex;
     }
 
-    public void getRoads(Queue<Road> pRoads){
+    public void addCard(ResourceCard pResourceCard){
+        aResourceCards.get(pResourceCard.getType()).add(pResourceCard);
+    }
+
+    public void addCard(CommodityCard pCommodityCard){
+        aCommodityCards.get(pCommodityCard.getType()).add(pCommodityCard);
+    }
+
+    public void addGold(){
+        aGold += 2;
+    }
+
+    public void setRoads(Queue<Road> pRoads){
         aRoads = pRoads;
     }
 
-    public void getCities(Queue<City> pCities){
+    public void setCities(Queue<City> pCities){
         aCities = pCities;
     }
 
-    public void getSettlements(Queue<Settlement> pSettlements){
+    public void setSettlements(Queue<Settlement> pSettlements){
         aSettlements = pSettlements;
     }
 
-    public void getShips(Queue<Ship> pShips){
+    public void setShips(Queue<Ship> pShips){
         aShips = pShips;
     }
 
-    public void getWalls(Queue<Wall> pWalls){
+    public void setWalls(Queue<Wall> pWalls){
         aWalls = pWalls;
     }
 
-    public void getBasicKnights(Queue<BasicKnight> pBasicKnights){
+    public void setBasicKnights(Queue<BasicKnight> pBasicKnights){
         aBasicKnights = pBasicKnights;
     }
 
