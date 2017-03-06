@@ -13,16 +13,34 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-    private final String aUsername;
-    private final String aPassword;
+    private String username;
+    private String password;
     //private List<Integer> aGameIds;
     //private UserStatus aStatus;
 
-    public User(String pUsername,String pPassword){
-        aUsername = pUsername;
-        aPassword = pPassword;
+    public User(){
+
+    }
+
+    public User(String username,String password){
+        this.username = username;
+        this.password = password;
         //aStatus = UserStatus.Offline;
         //aGameIds = new ArrayList<Integer>();
+    }
+
+    public String getUsername(){return username;}
+
+    public boolean comparePassword(String pPassword)
+    {
+        if(pPassword.equals(password))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 /*
     public void updateStatus(UserStatus pStatus) {
