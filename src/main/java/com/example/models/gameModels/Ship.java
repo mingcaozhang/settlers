@@ -1,12 +1,12 @@
 package com.example.models.gameModels;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 /**
  * Created by G on 17/02/27.
  */
 public class Ship extends EdgeUnit{
 
-    private static final List<Ship> aShips = new ArrayList<Ship>();
+    private static final Queue<Ship> aShips = new LinkedList<Ship>();
 
     static{
         int maxShips = 60;
@@ -19,8 +19,8 @@ public class Ship extends EdgeUnit{
     }
 
     @Override
-    public List<Ship> getUnits(){
-        List<Ship> aCopy = new ArrayList<Ship>();
+    public Queue<Ship> getUnits(){
+        Queue<Ship> aCopy = new LinkedList<Ship>();
         aCopy = aShips;
         return aCopy;
     }

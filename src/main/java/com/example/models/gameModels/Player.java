@@ -1,6 +1,6 @@
 package com.example.models.gameModels;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 /**
  * Created by G on 17/02/28.
@@ -12,19 +12,19 @@ public class Player {
     private int aVPs;
     private int aGold;
     private int aRouteLength;
-    private boolean hasMerchant;
-    private boolean hasLongestTradeRoute;
-    private boolean hasAqueduct;
-    private boolean hasFortress;
-    private boolean hasTradingHouse;
-    private List<City> aCities;
-    private List<Road> aRoads;
-    private List<Ship> aShips;
-    private List<Settlement> aSettlements;
-    private List<BasicKnight> aBasicKnights;
-    private List<StrongKnight> aStrongKnights;
-    private List<MightyKnight> aMightyKnights;
-    private List<Wall> aWalls;
+    private boolean aMerchant;
+    private boolean aLongestTradeRoute;
+    private boolean aAqueduct;
+    private boolean aFortress;
+    private boolean aTradingHouse;
+    private Queue<City> aCities;
+    private Queue<Road> aRoads;
+    private Queue<Ship> aShips;
+    private Queue<Settlement> aSettlements;
+    private Queue<BasicKnight> aBasicKnights;
+    private Queue<StrongKnight> aStrongKnights;
+    private Queue<MightyKnight> aMightyKnights;
+    private Queue<Wall> aWalls;
 
     public Player(String pUsername, Color pColor){
         aUsername = pUsername;
@@ -33,11 +33,11 @@ public class Player {
         aVPs = 0;
         aGold = 0;
         aRouteLength = 0;
-        hasMerchant = false;
-        hasLongestTradeRoute = false;
-        hasAqueduct = false;
-        hasFortress = false;
-        hasTradingHouse = false;
+        aMerchant = false;
+        aLongestTradeRoute = false;
+        aAqueduct = false;
+        aFortress = false;
+        aTradingHouse = false;
     }
 
     public enum Color{
@@ -48,7 +48,104 @@ public class Player {
         return aColor;
     }
 
+    public String getUsername(){ return aUsername; }
+
     public int getIndex(){
         return aIndex;
     }
+
+    public void getRoads(Queue<Road> pRoads){
+        aRoads = pRoads;
+    }
+
+    public void getCities(Queue<City> pCities){
+        aCities = pCities;
+    }
+
+    public void getSettlements(Queue<Settlement> pSettlements){
+        aSettlements = pSettlements;
+    }
+
+    public void getShips(Queue<Ship> pShips){
+        aShips = pShips;
+    }
+
+    public void getWalls(Queue<Wall> pWalls){
+        aWalls = pWalls;
+    }
+
+    public void getBasicKnights(Queue<BasicKnight> pBasicKnights){
+        aBasicKnights = pBasicKnights;
+    }
+
+    public boolean hasMerchant(){return aMerchant;}
+
+    public boolean hasLongestTradeRoute(){return aLongestTradeRoute;}
+
+    public boolean hasAqueduct(){return aAqueduct;}
+
+    public boolean hasFortress(){return aFortress;}
+
+    public boolean hasTradingHouse(){return aTradingHouse;}
+
+    public boolean canGetWall(){
+        return !aWalls.isEmpty();
+    }
+
+    public boolean canGetRoad(){
+        return !aRoads.isEmpty();
+    }
+
+    public boolean canGetCity(){
+        return !aCities.isEmpty();
+    }
+
+    public boolean canGetShip(){
+        return !aShips.isEmpty();
+    }
+
+    public boolean canGetSettlement(){
+        return !aSettlements.isEmpty();
+    }
+
+    public boolean canGetBasicKnight(){
+        return !aBasicKnights.isEmpty();
+    }
+
+    public boolean canGetStrongKnight(){
+        return !aStrongKnights.isEmpty();
+    }
+
+    public boolean canGetMightyKnight(){
+        return !aMightyKnights.isEmpty();
+    }
+
+    public Road giveRoad(){
+        return aRoads.remove();
+    }
+
+    public Settlement giveSettlement(){
+        return aSettlements.remove();
+    }
+
+    public City giveCity(){
+        return aCities.remove();
+    }
+
+    public Ship giveShip(){
+        return aShips.remove();
+    }
+
+    public BasicKnight giveBasicKnight(){
+        return aBasicKnights.remove();
+    }
+
+    public StrongKnight giveStrongKnight(){
+        return aStrongKnights.remove();
+    }
+
+    public MightyKnight giveMightyKnight(){
+        return aMightyKnights.remove();
+    }
+
 }

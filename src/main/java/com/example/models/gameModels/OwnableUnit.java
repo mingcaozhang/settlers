@@ -1,6 +1,6 @@
 package com.example.models.gameModels;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by G on 17/02/27.
@@ -19,5 +19,5 @@ public abstract class OwnableUnit {
         return aOwner;
     }
 
-    public abstract List getUnits();
+    public abstract Queue getUnits();
 }

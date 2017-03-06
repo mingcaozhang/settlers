@@ -5,23 +5,8 @@ package com.example.models.gameModels;
  */
 public class SeaHex extends Hex {
 
-    private boolean hasPirate;
-
     public SeaHex(int x, int y){
         super(x,y);
-        hasPirate = false;
-    }
-
-    public boolean getPirateFlag(){
-        return hasPirate;
-    }
-
-    public void updatePirateFlag()
-    {
-        if(hasPirate==true)
-            hasPirate = false;
-        else
-            hasPirate = true;
     }
 
     @Override
