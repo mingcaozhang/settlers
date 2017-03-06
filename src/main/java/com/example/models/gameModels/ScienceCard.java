@@ -7,5 +7,5 @@ public class ScienceCard extends ProgressCard {
     public enum ScienceType implements ProgresssType{
         Alchemist, Crane, Engineer, Inventor, Irrigation, Medecine, Mining, Printer, RoadBuilding, Smith
     }
-    ScienceCard(ScienceType pScienceType){super(pScienceType); }
+    ScienceCard(ScienceType pScienceType, String pDescription){super(pScienceType,pDescription); }
 }
