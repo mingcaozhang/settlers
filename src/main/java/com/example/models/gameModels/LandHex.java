@@ -6,20 +6,16 @@ package com.example.models.gameModels;
 public class LandHex extends Hex {
 
     private TerrainType aType;
-    private final int aProductionNumber;
+    private int aProductionNumber;
     private boolean hasMerchant;
     private boolean hasRobber;
 
-    public LandHex(int x, int y, int pProductionNumber, TerrainType pType){
+    public LandHex(int x, int y, int pProd, TerrainType pType){
         super(x,y);
         aType = pType;
-        aProductionNumber = pProductionNumber;
+        aProductionNumber = pProd;
         hasMerchant = false;
         hasRobber = false;
-    }
-
-    public int getProductionNumber(){
-        return aProductionNumber;
     }
 
     public boolean getRobberFlag(){
@@ -28,7 +24,7 @@ public class LandHex extends Hex {
 
     public void updateRobberFlag()
     {
-        if(hasRobber)
+        if(hasRobber==true)
             hasRobber = false;
         else
             hasRobber = true;
@@ -40,12 +36,11 @@ public class LandHex extends Hex {
 
     public void updateMerchantFlag()
     {
-        if(hasMerchant)
+        if(hasMerchant==true)
             hasMerchant = false;
         else
             hasMerchant = true;
     }
-
 
     @Override
     public TerrainType getTerrainType() {

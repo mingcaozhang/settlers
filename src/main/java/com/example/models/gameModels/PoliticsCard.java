@@ -7,6 +7,6 @@ public class PoliticsCard extends ProgressCard {
     public enum PoliticsType implements ProgresssType{
         Bishop,Constitution,Deserter, Diplomat, Entrigue, Saboteur, Spy, Warlord, Wedding
     }
-    public PoliticsCard(PoliticsType pPoliticsType){super(pPoliticsType);}
+    public PoliticsCard(PoliticsType pPoliticsType,String pDescription){super(pPoliticsType, pDescription);}
 
 }
