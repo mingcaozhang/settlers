@@ -17,6 +17,10 @@ public class UserRole {
     @Column(name="role")
     private String role;
 
+    public UserRole(){
+        
+    }
+
     public UserRole(User user, String role){
         this.userid = user.getUserid();
         this.role = role;
