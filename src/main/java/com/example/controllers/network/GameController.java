@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Map;
 
 @Controller
-public class LobbyController {
-    @RequestMapping(value="/lobby", method= RequestMethod.GET)
-    public String lobby(Map<String, Object> model) {
+public class GameController {
+    @RequestMapping(value="/game", method= RequestMethod.GET)
+    public String game(Map<String, Object> model) {
 
-        return "lobby";
+        return "game";
     }
 
 }
