@@ -1,41 +1,41 @@
 //<![CDATA[
 var stompClient = null;
+connect();
 
 function setConnected(connected) {
-    $("#ready").prop("disabled", connected);
+    //$("#connect").prop("disabled", connected);
 
 }
 
 function connect() {
-    showJoinedUser("I just connected!");
+    //showJoinedUser("I just connected!");
     var socket = new SockJS('/game-web-socket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/gameroom', function (str) {
-            showJoinedUser(JSON.parse(str.body).content);
+           // showJoinedUser(JSON.parse(str.body).content);
+            showJoinedUser(str.body);
         });
     });
 }
 
-function connectToTopic(){
-
-}
 
 function go(){
-    stompClient.send("/app/ready");
+    stompClient.send("/app/ready",{},{});
 }
 
 function showJoinedUser(user){
-    $("#connections").append("<tr><td>" + user + "</td></tr>");
+
+    $("#playerlist").append("<button type=\"button\" class=\"player-btn\">"+user+" has connected!</button>");
 
 }
 
 $(function () {
 
-    $("#ready").click(function() { connect();});
-    $("#go").click(function() { go();});
+   // $("#connect").click(function() { connect(); });
+    $("#joingame").click(function() { go(); $("#joingame").prop("disabled", true);});
 
 });
 

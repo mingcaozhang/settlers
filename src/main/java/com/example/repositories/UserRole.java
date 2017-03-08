@@ -18,7 +18,7 @@ public class UserRole {
     private String role;
 
     public UserRole(){
-        
+
     }
 
     public UserRole(User user, String role){
