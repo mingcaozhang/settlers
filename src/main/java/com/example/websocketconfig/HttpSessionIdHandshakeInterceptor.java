@@ -26,6 +26,7 @@ public class HttpSessionIdHandshakeInterceptor implements HandshakeInterceptor {
             if (session != null) {
                 System.out.println("Session has id "+session.getId());
                 attributes.put("HTTPSESSIONID", session.getId());
+
             }else{
                 System.out.println("session is NULL!");
             }

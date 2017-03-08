@@ -19,6 +19,10 @@ function connect() {
     });
 }
 
+function connectToTopic(){
+
+}
+
 function go(){
     stompClient.send("/app/ready");
 }
