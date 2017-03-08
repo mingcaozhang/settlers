@@ -1,12 +1,12 @@
 package com.example.models.gameModels;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 /**
  * Created by G on 17/02/28.
  */
 public class Settlement extends IntersectionUnit {
-    private static final List<Settlement> aSettlements = new ArrayList<Settlement>();
+    private static final Queue<Settlement> aSettlements = new LinkedList<Settlement>();
 
     static {
         int maxSettlements = 16;
@@ -18,9 +18,8 @@ public class Settlement extends IntersectionUnit {
     private Settlement() {
     }
 
-    @Override
-    public List<Settlement> getUnits() {
-        List<Settlement> aCopy = new ArrayList<Settlement>();
+    public static Queue<Settlement> getUnits() {
+        Queue<Settlement> aCopy = new LinkedList<Settlement>();
         aCopy = aSettlements;
         return aCopy;
     }

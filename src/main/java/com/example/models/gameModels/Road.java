@@ -1,12 +1,12 @@
 package com.example.models.gameModels;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 /**
  * Created by G on 17/02/27.
  */
 public final class Road extends EdgeUnit {
 
-    private static final List<Road> aRoads = new ArrayList<Road>();
+    private static final Queue<Road> aRoads = new LinkedList<Road>();
 
     static{
         int maxRoads = 60;
@@ -18,9 +18,8 @@ public final class Road extends EdgeUnit {
     private Road(){
     }
 
-    @Override
-    public List<Road> getUnits(){
-        List<Road> aCopy = new ArrayList<Road>();
+    public static Queue<Road> getUnits(){
+        Queue<Road> aCopy = new LinkedList<Road>();
         aCopy = aRoads;
         return aCopy;
     }
