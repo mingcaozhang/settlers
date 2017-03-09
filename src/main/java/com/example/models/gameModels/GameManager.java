@@ -171,8 +171,8 @@ public class GameManager {
         aGame.placeCity(pPlayer, pIntersection);
     }
 
-    public static void placeRoad(Player pPlayer, Intersection pIntersection){
+    public static void placeRoad(Player pPlayer, Edge pEdge){
         assert (aGame != null);
-        aGame.placeCity(pPlayer, pIntersection);
+        aGame.placeRoad(pPlayer, pEdge);
     }
 }

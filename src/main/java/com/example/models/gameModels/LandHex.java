@@ -5,15 +5,15 @@ package com.example.models.gameModels;
  */
 public class LandHex extends Hex {
 
-    private TerrainType aType;
+    private TerrainType aTerrainType;
     private int aProductionNumber;
     private boolean hasMerchant;
     private boolean hasRobber;
 
-    public LandHex(int x, int y, int pProd, TerrainType pType){
+    public LandHex(int x, int y, int pProductionNumber, TerrainType pTerrainType){
         super(x,y);
-        aType = pType;
-        aProductionNumber = pProd;
+        aTerrainType = pTerrainType;
+        aProductionNumber = pProductionNumber;
         hasMerchant = false;
         hasRobber = false;
     }
@@ -48,7 +48,7 @@ public class LandHex extends Hex {
 
     @Override
     public TerrainType getTerrainType() {
-        return aType;
+        return aTerrainType;
     }
 
 

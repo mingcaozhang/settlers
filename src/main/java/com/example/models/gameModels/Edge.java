@@ -20,6 +20,10 @@ public class Edge extends Geometry{
        return isOccupied;
     }
 
+    public EdgeUnit getOccupant(){
+        return aOccupant;
+    }
+
     public void setOccupant(EdgeUnit pOccupant)
     {
         aOccupant = pOccupant;
