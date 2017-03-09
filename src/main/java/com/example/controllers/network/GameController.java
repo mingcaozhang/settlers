@@ -16,13 +16,6 @@ import java.util.Map;
 public class GameController {
     @RequestMapping(value="/game", method= RequestMethod.GET)
     public String game(Map<String, Object> model) {
-        ArrayList<String> aList = new ArrayList<String>();
-        aList.add("test");
-        GameManager.createGame(10,aList);
-        Game currentGame = GameManager.getGame();
-        Map<String, Player> currentPlayers = GameManager.getPlayers();
-        Player p = currentPlayers.get("test");
-        GameManager.getGame().getCurrentPlayer();
         return "game";
     }
 
