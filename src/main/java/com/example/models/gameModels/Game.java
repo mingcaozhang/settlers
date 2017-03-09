@@ -25,6 +25,7 @@ public class Game {
     private EventType aEventDice;
     private Player currentPlayer;
     private Queue<Player> aPlayerQueue;
+    private int aTurnCounter;
 
     public Game(int pVPsToWin, Map<String, Player> pPlayers, int pID, Hex[][] pHexes, Edge[][] pEdges, Intersection[][] pIntersections, HashMap<Integer,ArrayList<LandHex>> pLandHexes ){
         aID = pID;
@@ -39,28 +40,54 @@ public class Game {
         aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
+        aTurnCounter = 1;
         aResourceCards = new HashMap<ResourceCard.ResourceType, Queue<ResourceCard>>();
         aCommodityCards = new HashMap<CommodityCard.CommodityType, Queue<CommodityCard>>();
         aResourceCards = ResourceCard.getResources();
         aCommodityCards = CommodityCard.getCommodities();
+        aPlayerQueue = new LinkedList<Player>();
         for (Player player : aPlayers.values()){
             aPlayerQueue.add(player);
         }
-        currentPlayer = aPlayerQueue.peek();
+        currentPlayer = aPlayerQueue.remove();
     }
 
     public void rollDice(){
-        DiceNumber pRedDice = DiceNumber.values()[(int)(Math.random() * DiceNumber.values().length)];
-        DiceNumber pYellowDice = DiceNumber.values()[(int)(Math.random() * DiceNumber.values().length)];
-        EventType pEventDice = EventType.values()[(int)(Math.random() * EventType.values().length)];
-        aRedDice = pRedDice;
-        aYellowDice = pYellowDice;
-        aEventDice = pEventDice;
-        checkBarbarian();
+        aPhase = GamePhase.TurnFirstPhase;
+        aRedDice = DiceNumber.values()[(int)(Math.random() * DiceNumber.values().length)];
+        aYellowDice = DiceNumber.values()[(int)(Math.random() * DiceNumber.values().length)];
+        int eventIndex = (int)(Math.random() * 6);
+        switch (eventIndex){
+            case 1:
+                aEventDice = EventType.values()[0];
+            case 2:
+                aEventDice = EventType.values()[0];
+            case 3:
+                aEventDice = EventType.values()[0];
+            case 4:
+                aEventDice = EventType.values()[1];
+            case 5:
+                aEventDice = EventType.values()[2];
+            case 6:
+                aEventDice = EventType.values()[3];
+        }
+
+        if (aTurnCounter > 2) {
+            checkBarbarian();
+        }
         checkDice();
+        aPhase = GamePhase.TurnDiceRolled;
+        nextPlayer();
+    }
+
+    private void nextPlayer(){
+        aPlayerQueue.add(currentPlayer);
+        currentPlayer = aPlayerQueue.remove();
+        aTurnCounter++;
     }
 
     private void checkBarbarian(){
+        assert (aTurnCounter > 2);
         if (aEventDice == EventType.Barbarian){
             advanceBarbPosition();
         }
@@ -74,7 +101,6 @@ public class Game {
             resetBarbPosition();
         }
     }
-
 
     private void barbarianAttack(){
         assert (aBarbarianPosition == 0);
@@ -124,7 +150,7 @@ public class Game {
             for (Intersection intersection : tempIntersections) {
                 if (intersection.getOccupancyFlag()) {
                     Player owner = getPayee(intersection);
-                    boolean isCity = checkCityFlag(intersection);
+                    boolean isCity = checkIsCity(intersection);
                     payout(owner, hex.getTerrainType(), isCity);
                 }
             }
@@ -135,7 +161,7 @@ public class Game {
         return pIntersection.getOccupant().getOwner();
     }
 
-    private boolean checkCityFlag(Intersection pIntersection){
+    private boolean checkIsCity(Intersection pIntersection){
         return (pIntersection.getOccupant().getClass() == City.class);
     }
 
@@ -182,12 +208,16 @@ public class Game {
         else {
             assert (!pIntersection.getOccupancyFlag());
             assert (pPlayer.canGetSettlement());
+            boolean eligible = checkIntersectionEligibility(pIntersection);
+            assert (eligible);
+
             Settlement settlement = pPlayer.giveSettlement();
             pIntersection.setOccupant(settlement);
-
-            Queue<Hex> neighbours = pIntersection.getHexNeighbours();
-            for (Hex hex : neighbours){
-                payout(pPlayer, hex.getTerrainType(), false);
+            if (aPhase == GamePhase.SetupRoundOne) {
+                Queue<Hex> neighbours = pIntersection.getHexNeighbours();
+                for (Hex hex : neighbours) {
+                    payout(pPlayer, hex.getTerrainType(), false);
+                }
             }
         }
     }
@@ -199,12 +229,16 @@ public class Game {
         else{
             assert(!pIntersection.getOccupancyFlag());
             assert(pPlayer.canGetCity());
+            boolean eligible = checkIntersectionEligibility(pIntersection);
+            assert (eligible);
+
             City city = pPlayer.giveCity();
             pIntersection.setOccupant(city);
-
-            Queue<Hex> neighbours = pIntersection.getHexNeighbours();
-            for (Hex hex : neighbours){
-                payout(pPlayer, hex.getTerrainType(), true);
+            if (aPhase == GamePhase.SetupRoundTwo) {
+                Queue<Hex> neighbours = pIntersection.getHexNeighbours();
+                for (Hex hex : neighbours) {
+                    payout(pPlayer, hex.getTerrainType(), true);
+                }
             }
         }
     }
@@ -216,9 +250,59 @@ public class Game {
         else{
             assert(!pEdge.getOccupancyFlag());
             assert(pPlayer.canGetRoad());
+            assert(checkEdgeEligibility(pEdge));
+
             Road road = pPlayer.giveRoad();
             pEdge.setOccupant(road);
         }
+    }
+
+    private boolean checkIntersectionEligibility(Intersection pIntersection){
+        boolean eligible = true;
+        Queue<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
+        for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied
+            if (intersection.getOccupancyFlag()){
+                eligible = false;
+                break;
+            }
+        }
+        if (aPhase != GamePhase.SetupRoundOne && aPhase != GamePhase.SetupRoundTwo){
+            eligible = checkNonSetupEligibility(pIntersection);
+        }
+        return eligible;
+    }
+
+    private boolean checkEdgeEligibility(Edge pEdge){
+        boolean eligible = false;
+        Queue<Intersection> neighbourIntersections = pEdge.getIntersectionNeighbours();
+        for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied by the current player
+            if (intersection.getOccupant().getOwner() != currentPlayer){
+                continue;
+            }
+            else{
+                eligible = true;
+                break;
+            }
+        }
+        if (aPhase != GamePhase.SetupRoundOne && aPhase != GamePhase.SetupRoundTwo){
+            eligible = checkNonSetupEligibility(pEdge);
+        }
+        return eligible;
+    }
+
+    private boolean checkNonSetupEligibility(Geometry pGeometry){
+        Queue<Edge> neighbourEdges = pGeometry.getEdgeNeighbours();
+        boolean eligible = false;
+        for (Edge edge : neighbourEdges){   //if any of the neighbouring edges have a road belonging to the player, it is eligible
+            if (edge.getOccupant().getOwner() != currentPlayer){
+                continue;
+            }
+            else{
+                eligible = true;
+                break;
+            }
+        }
+        return eligible;
     }
 
     public enum GamePhase{
