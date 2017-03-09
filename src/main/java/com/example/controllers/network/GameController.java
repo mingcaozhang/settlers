@@ -51,61 +51,18 @@ public class GameController {
         return "game";
     }
 
-    @MessageMapping("/start")
-    @SendTo("/topic/turn-phase")
-    public PlayerAndPhase getTurn(){
-        PlayerAndPhase pap = new PlayerAndPhase(currPlayerList.get(placeSettlementAndRoadCounter),"PlaceSettlement");
-        return pap;
-    }
 
-    @MessageMapping("/now-place-road")
-    @SendTo("/topic/turn-phase")
-    public PlayerAndPhase nowPlaceRoad(){
-        PlayerAndPhase pap = new PlayerAndPhase(currPlayerList.get(placeSettlementAndRoadCounter),"PlaceRoad");
-        return pap;
-    }
 
-    @MessageMapping("/next-turn-place-1")
-    @SendTo("/topic/turn-phase")
-    public PlayerAndPhase nextPersonPlaceSettlement(){
-        placeSettlementAndRoadCounter = (placeSettlementAndRoadCounter+1)%4;
-        PlayerAndPhase pap = new PlayerAndPhase(currPlayerList.get(placeSettlementAndRoadCounter),"PlaceSettlement");
-        return pap;
-    }
 
-    @MessageMapping("/placeSettlement")
-    @SendTo("/topic/settlement")
-    public ViewPeice placeSettlement(ViewPeice pNew){
+    @MessageMapping("/placepiece")
+    @SendTo("/topic/piece")
+    public ViewPeice placepiece(ViewPeice pNew){
         return pNew;
     }
 
-    @MessageMapping("/buySettlement")
-    @SendTo("/topic/settlement")
-    public ViewPeice buySettlement(ViewPeice pNew){
-        return pNew;
-    }
-
-    @MessageMapping("/placeRoad")
-    @SendTo("/topic/road")
-    public ViewPeice placeRoad(ViewPeice pNew){
-        return pNew;
-    }
-
-    @MessageMapping("/buyRoad")
-    @SendTo("/topic/road")
-    public ViewPeice buyRoad(ViewPeice pNew){
-        return pNew;
-    }
-
-    @MessageMapping("/placeCity")
+    @MessageMapping("/placecity")
     @SendTo("/topic/city")
-    public ViewPeice placeCity(ViewPeice pNew){
-        return pNew;
-    }
-
-    @MessageMapping("/buyCity")
-    @SendTo("/topic/city")
-    public ViewPeice buyCity(ViewPeice pNew){
+    public ViewPeice placecity(ViewPeice pNew){
         return pNew;
     }
 
