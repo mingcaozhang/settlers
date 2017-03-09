@@ -4,10 +4,12 @@ import com.example.models.gameModels.Game;
 import com.example.models.gameModels.GameManager;
 import com.example.models.gameModels.Player;
 import com.example.viewobjects.DiceRoll;
+import com.example.viewobjects.PlayerAndPhase;
 import com.example.viewobjects.ViewPeice;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -41,24 +43,34 @@ public class GameController {
 
 
     @RequestMapping(value="/game", method= RequestMethod.GET)
-    public String game(Map<String, Object> model) {
+    public String game(ModelMap model, Principal principal ) {
 
-       /*
-        Game.GamePhase phase = game.getPhase();
-//        GameManager.endTurn();
-//        GameManager.rollDice();
-        for (int i = 0; i < aPlayers.size(); i++) {
-            //GameManager.placeSettlement(currentPlayer, intersection);
-            //GameManager.placeRoad(currentPlayer, road);
-            //GameManager.nextPlayer();
-        }
+        String name = principal.getName(); //get logged in username
+        model.addAttribute("username", name);
 
-        for (int i = 0; i < aPlayers.size(); i++) {
-           // GameManager.placeCity(currentPlayer, intersection);
-            //GameManager.placeRoad(currentPlayer, road);
-            //GameManager.nextPlayer();
-        }*/
         return "game";
+    }
+
+    @MessageMapping("/start")
+    @SendTo("/topic/turn-phase")
+    public PlayerAndPhase getTurn(){
+        PlayerAndPhase pap = new PlayerAndPhase(currPlayerList.get(placeSettlementAndRoadCounter),"PlaceSettlement");
+        return pap;
+    }
+
+    @MessageMapping("/now-place-road")
+    @SendTo("/topic/turn-phase")
+    public PlayerAndPhase nowPlaceRoad(){
+        PlayerAndPhase pap = new PlayerAndPhase(currPlayerList.get(placeSettlementAndRoadCounter),"PlaceRoad");
+        return pap;
+    }
+
+    @MessageMapping("/next-turn-place-1")
+    @SendTo("/topic/turn-phase")
+    public PlayerAndPhase nextPersonPlaceSettlement(){
+        placeSettlementAndRoadCounter = (placeSettlementAndRoadCounter+1)%4;
+        PlayerAndPhase pap = new PlayerAndPhase(currPlayerList.get(placeSettlementAndRoadCounter),"PlaceSettlement");
+        return pap;
     }
 
     @MessageMapping("/placeSettlement")

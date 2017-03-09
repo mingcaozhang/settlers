@@ -321,7 +321,9 @@
 
     <!--PLAYER 1-->
     <div class="dropdown col-sm-6">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" onclick="setAttributes()" style="margin-left: 5px; width: 300px;">Player 1
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" onclick="setAttributes()" style="margin-left: 5px; width: 300px;">
+            <!--/*@thymesVar id="username" type=""*/-->
+            <span th:text="${username}"></span>
             <span class="caret"></span></button>
         <ul class="dropdown-menu" style="margin-left: 20px; width: 300px;">
             <!--Place road, settlement, city-->
@@ -357,6 +359,7 @@
     <div class="alert alert-warning" id="noResources" style="width: 300px; margin-left: 550px;">
         <strong>You do not have enough resources.</strong>
     </div>
+    <button id="startGame" onClick="startGame()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 585px; width: 250px; height: 30px;">Start Game</button>
 </div>
 
 <div class="container-fluid bg-5" style="height: 1000px;">

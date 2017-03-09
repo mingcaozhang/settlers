@@ -1,7 +1,7 @@
 /**
  * Created by tooji on 3/8/2017.
  */
-
+/*<![CDATA[*/
 
 var eventFace1 = new Image();
 eventFace1.src = "/images/barbarianShip.png";
@@ -105,8 +105,8 @@ var noResource;
 var stompClient = null;
 var color =
 connect();
-
-
+var user = [[${username}]];
+var initGame = false;
 
 
 
@@ -149,6 +149,15 @@ function connect() {
 
         });
 
+        stompClient.subscribe('/topic/turn-phase', function(turnObj){
+            $("#startGame").hide();
+
+
+
+        });
+
+        
+
         stompClient.subscribe('/topic/settlement', function(settlement){
             settlement = JSON.parse(settlement.body);
             $("#"+settlement.id).attr("fill", settlement.color);
@@ -179,6 +188,10 @@ function connect() {
     });
 }
 
+function startGame(){
+    stompClient.send('/app/start',{},{});
+
+}
 
 function showCorrectView(turnObject){
     //if(turnObject.username.matches())
@@ -382,3 +395,4 @@ function placeCity() {
 
 
 
+/*]]>*/
