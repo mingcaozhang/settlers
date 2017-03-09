@@ -32,5 +32,4 @@ public abstract class Knight extends IntersectionUnit {
         aStrength = pStrength;
         hasBeenPromoted = false;
     }
-    public abstract Queue getUnits();
 }
