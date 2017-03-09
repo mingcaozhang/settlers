@@ -97,6 +97,9 @@ var barbarian;
 //Knight state (active/inactive)
 var knight;
 
+//Turn Counter
+var counter = 1;
+
 //Roll Dice
 function rollDice() {
     var status = document.getElementById("status");
@@ -128,6 +131,13 @@ function rollDice() {
 //Used to enable rollDice button when end turn button is pressed
 function enableBtn() {
     document.getElementById('rolldice').disabled = false;
+
+    counter++;
+    if(counter == 5) {
+        counter = 1;
+    }
+    var player = document.getElementById("player");
+    player.innerHTML = "Player " + counter;
 }
 
 //Activated to show attributes when player button is clicked
