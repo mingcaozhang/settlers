@@ -55,6 +55,63 @@
     var die2Face6 = new Image();
     die2Face6.src = "/images/Rdot6.png";
 
+    //Attributes values
+    var nRoad = 0;
+    var nShip = 0;
+    var nKnight1 = 0;
+    var nKnight2 = 0;
+    var nKnight3 = 0;
+    var nTotalKnight = nKnight1 + nKnight2 + nKnight3;
+    var nCity = 0;
+    var nWall = 0;
+    var nSettlement = 0;
+    var nBrick = 0;
+    var nWood = 0;
+    var nOre = 0;
+    var nSheep = 0;
+    var nWheat = 0;
+    var nResourceCard = nBrick + nWood + nOre + nSheep + nWheat;
+    var nCoin = 0;
+    var nCloth = 0;
+    var nBook = 0;
+    var nCommodityCard = nCoin + nCloth + nBook;
+    var nVictoryPt = 0;
+    var nGold = 0;
+    var barbarianCount = 0;
+
+    //Place road, ship, settlement, city
+    var pRoad;
+    var pSettlement;
+    var pCity;
+
+    //Attributes for id
+    var road;
+    var ship;
+    var knight1;
+    var knight2;
+    var knight3;
+    var totalKnight;
+    var city;
+    var wall;
+    var settlement;
+    var brick;
+    var wood;
+    var ore;
+    var sheep;
+    var wheat;
+    var resourceCard;
+    var coin;
+    var cloth;
+    var book;
+    var commodityCard;
+    var victoryPt;
+    var gold;
+    var barbarian;
+
+    //Used to let the player know that they do not have enough resources
+    var noResource;
+
+    //Roll Dice
     function rollDice(){
         var status = document.getElementById("status");
         var d1 = Math.floor(Math.random() * 6) + 1;
@@ -65,11 +122,160 @@
         document.images["die2"].src = eval("die2Face" + d2 + ".src");
         document.images["eventDie"].src = eval("eventFace" + d3 + ".src");
 
+        //Increment barbarian count if event die is (1, 2, 3)
+        if(d3 == 1 || d3 == 2 || d3 == 3) {
+            barbarianCount += 1;
+        }
+
         var diceTotal = d1 + d2;
         status.innerHTML = "You rolled " + diceTotal + ".";
         if(diceTotal == 7){
             status.innerHTML += " Robber!";
         }
+    }
+
+    //Used to enable rollDice button when end turn button is pressed
+    function enableBtn() {
+        document.getElementById('rolldice').disabled = false;
+    }
+
+    //Activated to show attributes when player button is clicked
+    function setAttributes() {
+        //Place road, ship, settlement, city
+        pRoad = document.getElementById("pRoad");
+        pSettlement = document.getElementById("pSettlement");
+        pCity = document.getElementById("pCity");
+
+        //Attribute id getters
+        road = document.getElementById("road");
+        ship = document.getElementById("ship");
+        knight1 = document.getElementById("knight1");
+        knight2 = document.getElementById("knight2");
+        knight3 = document.getElementById("knight3");
+        totalKnight = document.getElementById("totalKnight");
+        city = document.getElementById("city");
+        wall = document.getElementById("wall");
+        settlement = document.getElementById("settlement");
+        brick = document.getElementById("brick");
+        wood = document.getElementById("wood");
+        ore = document.getElementById("ore");
+        sheep = document.getElementById("sheep");
+        wheat = document.getElementById("wheat");
+        resourceCard = document.getElementById("resourceCard");
+        coin = document.getElementById("coin");
+        cloth = document.getElementById("cloth");
+        book = document.getElementById("book");
+        commodityCard = document.getElementById("commodityCard");
+        victoryPt = document.getElementById("victoryPt");
+        gold = document.getElementById("gold");
+        barbarian = document.getElementById("barbarian");
+
+        //Place road, ship, settlement, city
+        pRoad.innerHTML = "Roads " + nRoad;
+        pSettlement.innerHTML = "Settlements " + nSettlement;
+        pCity.innerHTML = "Cities " + nCity;
+
+        //Set each attributes
+        road.innerHTML = "Roads " + nRoad;
+        ship.innerHTML = "Ships " + nShip;
+        knight1.innerHTML = nKnight1;
+        knight2.innerHTML = nKnight2;
+        knight3.innerHTML = nKnight3;
+        totalKnight.innerHTML = "Knights " + nTotalKnight;
+        city.innerHTML = "Cities " + nCity;
+        wall.innerHTML = "Walls " + nWall;
+        settlement.innerHTML = "Settlements " + nSettlement;
+        brick.innerHTML = nBrick;
+        wood.innerHTML = nWood;
+        ore.innerHTML = nOre;
+        sheep.innerHTML = nSheep;
+        wheat.innerHTML = nWheat;
+        resourceCard.innerHTML = "Resource Cards " + nResourceCard;
+        coin.innerHTML = nCoin;
+        cloth.innerHTML = nCloth;
+        book.innerHTML = nBook;
+        commodityCard.innerHTML = "Commodity Cards " + nCommodityCard;
+        victoryPt.innerHTML = "Victory Points " + nVictoryPt;
+        gold.innerHTML = "Golds " + nGold;
+    }
+
+    //Build road
+    function buildRoad() {
+        if (nBrick > 0) {
+            if (nWood > 0) {
+                nBrick--;
+                nWood--;
+                nRoad++;
+                road = document.getElementById("road");
+                road.innerHTML = "Roads " + nRoad;
+            } else {
+                //Set no resource message to true
+            }
+        } else {
+            //Set no resource message to true
+        }
+    }
+    //Place road
+    function placeRoad() {
+        nRoad++;
+        pRoad = document.getElementById("pRoad");
+        pRoad.innerHTML = "Roads " + nRoad;
+    }
+
+    //Build settlement
+    function buildSettlement() {
+        if (nWood > 0) {
+            if (nBrick > 0) {
+                if (nSheep > 0) {
+                    if (nWheat > 0) {
+                        nWood--;
+                        nBrick--;
+                        nSheep--;
+                        nWheat--;
+                        nSettlement++;
+                        settlement = document.getElementById("settlement");
+                        settlement.innerHTML = "Settlements " + nSettlement;
+                    } else {
+                        //Set no resource message to true
+                    }
+                } else {
+                    //Set no resource message to true
+                }
+            } else {
+                //Set no resource message to true
+            }
+        } else {
+            //Set no resource message to true
+        }
+    }
+    //Place settlement
+    function placeSettlement() {
+        nSettlement++;
+        pSettlement = document.getElementById("pSettlement");
+        pSettlement.innerHTML = "Settlements " + nSettlement;
+    }
+
+    //Build city
+    function buildCity() {
+        if (nOre > 2) {
+            if (nWheat > 1) {
+                nOre -= 3;
+                nWheat -= 2;
+                nCity++;
+                city = document.getElementById("city");
+                city.innerHTML = "Cities " + nCity;
+            } else {
+                //Set no resource message to true
+            }
+        } else {
+            //Set no resource message to true
+        }
+    }
+    //Place city
+    function placeCity() {
+        nCity++;
+        pCity = document.getElementById("pCity");
+        pCity.innerHTML = "Cities " + nCity;
     }
 </script>
 
@@ -87,9 +293,9 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
                 <!-- Trigger the quit game modal with a button -->
-                <li><a href="#" data-toggle="modal" data-target="#myModal1">Quit Game</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#myModal1" style="font-size: 25px;">Quit Game</a></li>
                 <!-- Trigger the save game modal with a button -->
-                <li><a href="#" data-toggle="modal" data-target="#myModal5">Save Game</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#myModal5" style="font-size: 25px;">Save Game</a></li>
             </ul>
         </div>
     </div>
@@ -115,18 +321,28 @@
 
     <!--PLAYER 1-->
     <div class="dropdown col-sm-6">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 5px; width: 300px;">Player 1
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" onclick="setAttributes()" style="margin-left: 5px; width: 300px;">Player 1
             <span class="caret"></span></button>
         <ul class="dropdown-menu" style="margin-left: 20px; width: 300px;">
+            <!--Place road, settlement, city-->
+            <button id="pRoad" onClick="placeRoad()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+            <button id="pSettlement" onClick="placeSettlement()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+            <button id="pCity" onClick="placeCity()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+
             <!-- Trigger the Resource Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal2">Resource Cards</button>
+            <button id="resourceCard" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal2"></button>
             <!-- Trigger the Commodity Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal3">Commodity Cards</button>
-            <!-- Trigger the Commodity Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal4">Knights</button>
-            <li><a href="#">Roads <span class="badge" id="roads1" style="margin-left:190px;">5</span></a></li>
-            <li><a href="#">Settlements <span class="badge" id="settlements1" style="margin-left:159px;">5</span></a></li>
-            <li><a href="#">Cities <span class="badge" id="cities1" style="margin-left:191px;">5</span></a></li>
+            <button id="commodityCard" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal3"></button>
+            <!-- Trigger the Knights modal with a button -->
+            <button id="totalKnight" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal4"></button>
+
+            <button id="road" onClick="buildRoad()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+            <button id="ship"  type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+            <button id="settlement" onClick="buildSettlement()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+            <button id="city" onClick="buildCity()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+            <button id="wall"  type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+            <button id="gold"  type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
+            <button id="victoryPt" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
         </ul>
     </div>
 
@@ -134,8 +350,13 @@
     <img src="/images/preRed.png" id="die1" class="die1" style="margin-left: 555px; display: inline" width="100" height="100"/>
     <img src="/images/preYellow.png" id="die2" class="die2" style=" display: inline" width="100" height="100"/>
     <img src="/images/preWhite.png" id="eventDie" class="eventDie" style="display: inline" width="100" height="100"/>
-    <button onclick="rollDice()" class="btn btn-default" style="margin-left: 675px;">Roll Dice</button>
-    <h2 id="status" style="margin-left: 610px;"></h2>
+    <button class="btn-3d red" onclick="rollDice(); this.disabled=true;" id="rolldice">Roll Dice</button>
+    <h2 id="status" style="margin-left: 640px;"></h2>
+
+    <!--No resources message-->
+    <div class="alert alert-warning" id="noResources" style="width: 300px; margin-left: 550px;">
+        <strong>You do not have enough resources.</strong>
+    </div>
 </div>
 
 <div class="container-fluid bg-5" style="height: 1000px;">
@@ -157,13 +378,13 @@
     </div>
 
     <!--End Turn Button-->
-    <div><button type="button" class="turn-btn col-sm-4" id="endTurn" style="bottom: 10px; margin-left: 560px; position: fixed;">End Turn</button></div>
+    <div><button type="button" onclick="enableBtn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
 
     <!--PLAYER 4-->
-    <div class="dropdown col-sm-4" style="left: 320px; bottom: 10px;">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 800px; width: 300px;">Player 4
+    <div class="dropdown col-sm-4" style="left: 320px; margin-left: 690px; bottom: 10px;">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 100px; width: 300px;">Player 4
          <span class="caret"></span></button>
-        <ul class="dropdown-menu" style="width: 300px; margin-left: 815px; top: auto; bottom: 38px;">
+        <ul class="dropdown-menu" style="width: 300px; margin-left: 115px; top: auto; bottom: 38px;">
             <!-- Trigger the Resource Cards modal with a button -->
             <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal2">Resource Cards</button>
             <!-- Trigger the Commodity Cards modal with a button -->
@@ -230,12 +451,12 @@
                 <h4 class="modal-title" style="color: black">Resource Cards</h4>
             </div>
             <div class="modal-body" style="color: black">
-                <img src="/images/ResourceCards.jpg" style="margin-left: 30px; display:inline" width="500" height="200"/>
+                <img src="/images/ResourceCards.jpg" style="margin-left: 30px; display:inline" width="500" height="145"/>
                 <p id="brick" style="margin-left: 75px;">1</p>
-                <p id="wood" style="margin-left: 175px; margin-top: -39px;">1</p>
-                <p id="ore" style="margin-left: 275px; margin-top: -39px;">1</p>
-                <p id="sheep" style="margin-left: 375px; margin-top: -39px;">1</p>
-                <p id="wheat" style="margin-left: 475px; margin-top: -39px;">1</p>
+                <p id="wood" style="margin-left: 175px; margin-top: -39px;"></p>
+                <p id="ore" style="margin-left: 275px; margin-top: -39px;"></p>
+                <p id="sheep" style="margin-left: 375px; margin-top: -39px;"></p>
+                <p id="wheat" style="margin-left: 475px; margin-top: -39px;"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -253,10 +474,10 @@
                 <h4 class="modal-title" style="color: black">Commodity Cards</h4>
             </div>
             <div class="modal-body" style="color: black">
-                <img src="/images/CommodityCards.jpg" style="margin-left: 30px; display:inline" width="500" height="200"/>
-                <p id="coin" style="margin-left: 110px;">1</p>
-                <p id="cloth" style="margin-left: 275px; margin-top: -39px;">1</p>
-                <p id="book" style="margin-left: 440px; margin-top: -39px;">1</p>
+                <img src="/images/CommodityCards.jpg" style="margin-left: 100px; display:inline" width="371" height="183"/>
+                <p id="coin" style="margin-left: 155px;"></p>
+                <p id="cloth" style="margin-left: 280px; margin-top: -39px;"></p>
+                <p id="book" style="margin-left: 405px; margin-top: -39px;"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -274,10 +495,10 @@
                 <h4 class="modal-title" style="color: black">Knights</h4>
             </div>
             <div class="modal-body" style="color: black">
-                <img src="/images/Knights.png" style="margin-left: 30px; display: inline" width="500" height="200"/>
-                <p id="knight1" style="margin-left: 100px;">1</p>
-                <p id="knight2" style="margin-left: 280px; margin-top: -39px;">1</p>
-                <p id="knight3" style="margin-left: 455px; margin-top: -39px;">1</p>
+                <img src="/images/Knights.png" style="margin-left: 30px; display: inline" width="499" height="151"/>
+                <p id="knight1" style="margin-left: 100px;"></p>
+                <p id="knight2" style="margin-left: 280px; margin-top: -39px;"></p>
+                <p id="knight3" style="margin-left: 455px; margin-top: -39px;"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -285,12 +506,6 @@
         </div>
     </div>
 </div>
-
-<!-- Footer -->
-<footer class="container-fluid bg-4 text-center">
-    <p>&copy; 2017 <a target="_blank" href="https://github.com/comp307/speakup">Lords of Catan</a> | All rights reserved
-    </p>
-</footer>
 
 </body>
 </html>
