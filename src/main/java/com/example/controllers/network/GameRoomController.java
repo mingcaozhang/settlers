@@ -15,6 +15,8 @@ import java.util.Map;
 @Controller
 public class GameRoomController {
 
+
+
     @RequestMapping(value="/gameroom", method= RequestMethod.GET)
     public String gameroom(Map<String, Object> model) {
 
@@ -32,6 +34,8 @@ public class GameRoomController {
         //return (playerList);
         return(principal.getName());
     }
+
+
 
 
 

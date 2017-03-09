@@ -14,7 +14,7 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/gameroom', function (str) {
+        stompClient.subscribe('/topic/gameinit', function (str) {
            // showJoinedUser(JSON.parse(str.body).content);
             showJoinedUser(str.body);
         });
