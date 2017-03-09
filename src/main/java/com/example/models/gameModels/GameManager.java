@@ -20,7 +20,7 @@ public class GameManager {
         return gameManager;
     }
 
-    public static void createGame(int pVPsToWin){
+    public static void createGame(int pVPsToWin, ArrayList<String> playerNames){
         Hex[][] pHexes = new Hex[20][20];
         Edge[][] pEdges = new Edge[20][20];
         Intersection[][] pIntersections = new Intersection[20][20];
@@ -37,29 +37,28 @@ public class GameManager {
                 }
             }
         }
-        String[] temparray = new String[4];
-        HashMap<String, Player> aListofPlayers = createPlayers(temparray);
+        HashMap<String, Player> aListofPlayers = createPlayers(playerNames);
         GameManager.setPlayerProperties(aListofPlayers);
         Game newGame = new Game(pVPsToWin, aListofPlayers, aCount++, pHexes, pEdges, pIntersections, pLandHexes);
         aGame = newGame;
     }
 
-    public static HashMap<String, Player> createPlayers(String[] pUsernames){
+    public static HashMap<String, Player> createPlayers(ArrayList<String> pUsernames){
         HashMap<String, Player> aPlayers = new HashMap<String,Player>();
-        if (pUsernames[0] != null) {
-            Player p1 = new Player(pUsernames[0], Player.Color.Blue);
+        if (pUsernames.get(0) != null) {
+            Player p1 = new Player(pUsernames.get(0), Player.Color.Blue);
             aPlayers.put(p1.getUsername(), p1);
         }
-        if (pUsernames[1] != null) {
-            Player p2 = new Player(pUsernames[1], Player.Color.Orange);
+        if (pUsernames.get(1) != null) {
+            Player p2 = new Player(pUsernames.get(1), Player.Color.Orange);
             aPlayers.put(p2.getUsername(), p2);
         }
-        if (pUsernames[2] != null) {
-            Player p3 = new Player(pUsernames[1], Player.Color.Red);
+        if (pUsernames.get(2) != null) {
+            Player p3 = new Player(pUsernames.get(2), Player.Color.Red);
             aPlayers.put(p3.getUsername(), p3);
         }
-        if (pUsernames[3] != null) {
-            Player p4 = new Player(pUsernames[1], Player.Color.White);
+        if (pUsernames.get(3) != null) {
+            Player p4 = new Player(pUsernames.get(3), Player.Color.White);
             aPlayers.put(p4.getUsername(), p4);
         }
         return aPlayers;
@@ -152,27 +151,272 @@ public class GameManager {
         pPlayer.setMightyKnights(playerMightyKnights);
     }
     
-    public static void getGame(int pCount){
+    public static Game getGame(){
+        return aGame;
         //sql query select game where acount = pcount
+    }
+
+    public static Map<String, Player> getPlayers(){
+        return aGame.getPlayers();
     }
 
     public static void rollDice(){
         assert (aGame != null);
-        aGame.rollDice();
+        aGame.setPhase(Game.GamePhase.TurnFirstPhase);
+        aGame.setRedDice(Game.DiceNumber.values()[(int)(Math.random() * Game.DiceNumber.values().length)]);
+        aGame.setYellowDice(Game.DiceNumber.values()[(int)(Math.random() * Game.DiceNumber.values().length)]);
+        int eventIndex = (int)(Math.random() * 6);
+        switch (eventIndex){
+            case 1:
+                aGame.setEventDice(Game.EventType.values()[0]);
+            case 2:
+                aGame.setEventDice(Game.EventType.values()[0]);;
+            case 3:
+                aGame.setEventDice(Game.EventType.values()[0]);
+            case 4:
+                aGame.setEventDice(Game.EventType.values()[1]);
+            case 5:
+                aGame.setEventDice(Game.EventType.values()[2]);
+            case 6:
+                aGame.setEventDice(Game.EventType.values()[3]);
+        }
+
+        if (aGame.getTurnCounter() > 2) {
+            checkBarbarian();
+        }
+        checkDice();
+        aGame.setPhase(Game.GamePhase.TurnDiceRolled);
+    }
+
+    private static void checkBarbarian(){
+        assert (aGame.getTurnCounter() > 2);
+        if (aGame.getEventDice() == Game.EventType.Barbarian){
+            advanceBarbPosition();
+        }
+    }
+
+    private static void advanceBarbPosition(){
+        assert aGame.getBarbarianPosition() > 0;
+        aGame.updateBarbarianPosition();
+        if (aGame.getBarbarianPosition()== 0){
+            barbarianAttack();
+            resetBarbPosition();
+        }
+    }
+
+    private static void barbarianAttack(){
+        assert (aGame.getBarbarianPosition() == 0);
+        calculateStrengths();
+        if (aGame.getBarbarianStrength() > aGame.getArmyStrength()){
+            defenseLoss();
+        }
+        defenseVictory();
+    }
+
+    private static void calculateStrengths(){
+        aGame.setBarbarianStrength(0);
+        aGame.setArmyStrength(0);
+        for (int i = 0; i < 20; i++){
+            for (int j = 0; j < 20; j++){
+                if (aGame.getIntersections()[i][j].getOccupancyFlag()) {
+                    if (aGame.getIntersections()[i][j].getOccupant().getClass() == City.class) {
+                        aGame.setBarbarianStrength(aGame.getBarbarianStrength() + 1);
+                    }
+                    else if (aGame.getIntersections()[i][j].getOccupant().getClass().getSuperclass() == Knight.class){
+                        if (((Knight)aGame.getIntersections()[i][j].getOccupant()).getState()){
+                            aGame.setArmyStrength(aGame.getArmyStrength() + ((Knight) aGame.getIntersections()[i][j].getOccupant()).getStrength());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void resetBarbPosition(){
+        aGame.resetBarbarianPosition();
+    }
+
+
+    private static void defenseVictory(){
+        //TODO
+    }
+
+    private static void defenseLoss(){
+        //TODO
+    }
+
+
+    private static void checkDice() {
+        int numberRolled = aGame.getRedDice().add(aGame.getYellowDice());
+        ArrayList<LandHex> tempLandHexes = aGame.getLandHexes().get(numberRolled);
+        for (LandHex hex : tempLandHexes) {
+            Queue<Intersection> tempIntersections = hex.getIntersectionNeighbours();
+            for (Intersection intersection : tempIntersections) {
+                if (intersection.getOccupancyFlag()) {
+                    Player owner = getPayee(intersection);
+                    boolean isCity = checkIsCity(intersection);
+                    payout(owner, hex.getTerrainType(), isCity);
+                }
+            }
+        }
+    }
+
+    private static Player getPayee(Intersection pIntersection){
+        return pIntersection.getOccupant().getOwner();
+    }
+
+    private static boolean checkIsCity(Intersection pIntersection){
+        return (pIntersection.getOccupant().getClass() == City.class);
+    }
+
+    private static void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
+        if (pTerrainType == TerrainType.GoldMine){
+            if (removeGold()) {
+                pOwner.addGold();
+            }
+        }
+        else {
+            assert(!aGame.getResourceCards().get(pTerrainType.giveResource()).isEmpty());
+            pOwner.addCard(aGame.getResourceCards().get(pTerrainType.giveResource()).remove());
+        }
+
+        if (isCity) {
+            if (pTerrainType == TerrainType.Hills || pTerrainType == TerrainType.Fields){
+                assert(!aGame.getResourceCards().get(pTerrainType.giveResource()).isEmpty());
+                pOwner.addCard(aGame.getResourceCards().get(pTerrainType.giveResource()).remove());
+            }
+            else if (pTerrainType == TerrainType.GoldMine){
+                if (removeGold()){
+                    pOwner.addGold();
+                }
+            }
+            else{
+                assert(!aGame.getCommodityCards().get(pTerrainType.giveCommodity()).isEmpty());
+                pOwner.addCard(aGame.getCommodityCards().get(pTerrainType.giveCommodity()).remove());
+            }
+        }
+    }
+
+    private static boolean removeGold(){
+        if (aGame.getGoldBank() >= 2) {
+            aGame.setGoldBank(aGame.getGoldBank() - 2);
+            return true;
+        }
+        return false;
     }
 
     public static void placeSettlement(Player pPlayer, Intersection pIntersection){
-        assert (aGame != null);
-        aGame.placeSettlement(pPlayer, pIntersection);
+        if (pPlayer != aGame.getCurrentPlayer()){
+            //do nothing
+        }
+        else {
+            assert (!pIntersection.getOccupancyFlag());
+            assert (pPlayer.canGetSettlement());
+            boolean eligible = checkIntersectionEligibility(pIntersection);
+            assert (eligible);
+
+            Settlement settlement = pPlayer.giveSettlement();
+            pIntersection.setOccupant(settlement);
+            if (aGame.getPhase() == Game.GamePhase.SetupRoundOne) {
+                Queue<Hex> neighbours = pIntersection.getHexNeighbours();
+                for (Hex hex : neighbours) {
+                    payout(pPlayer, hex.getTerrainType(), false);
+                }
+            }
+        }
     }
 
     public static void placeCity(Player pPlayer, Intersection pIntersection){
-        assert (aGame != null);
-        aGame.placeCity(pPlayer, pIntersection);
+        if (pPlayer != aGame.getCurrentPlayer()){
+            //do nothing
+        }
+        else{
+            assert(!pIntersection.getOccupancyFlag());
+            assert(pPlayer.canGetCity());
+            boolean eligible = checkIntersectionEligibility(pIntersection);
+            assert (eligible);
+
+            City city = pPlayer.giveCity();
+            pIntersection.setOccupant(city);
+            if (aGame.getPhase() == Game.GamePhase.SetupRoundTwo) {
+                Queue<Hex> neighbours = pIntersection.getHexNeighbours();
+                for (Hex hex : neighbours) {
+                    payout(pPlayer, hex.getTerrainType(), true);
+                }
+            }
+        }
     }
 
     public static void placeRoad(Player pPlayer, Edge pEdge){
-        assert (aGame != null);
-        aGame.placeRoad(pPlayer, pEdge);
+        if (pPlayer != aGame.getCurrentPlayer()){
+            //do nothing
+        }
+        else{
+            assert(!pEdge.getOccupancyFlag());
+            assert(pPlayer.canGetRoad());
+            assert(checkEdgeEligibility(pEdge));
+
+            Road road = pPlayer.giveRoad();
+            pEdge.setOccupant(road);
+        }
     }
+
+    private static boolean checkIntersectionEligibility(Intersection pIntersection){
+        boolean eligible = true;
+        Queue<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
+        for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied
+            if (intersection.getOccupancyFlag()){
+                eligible = false;
+                break;
+            }
+        }
+        if (aGame.getPhase() != Game.GamePhase.SetupRoundOne && aGame.getPhase()!= Game.GamePhase.SetupRoundTwo){
+            eligible = checkNonSetupEligibility(pIntersection);
+        }
+        return eligible;
+    }
+
+    private static boolean checkEdgeEligibility(Edge pEdge){
+        boolean eligible = false;
+        Queue<Intersection> neighbourIntersections = pEdge.getIntersectionNeighbours();
+        for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied by the current player
+            if (intersection.getOccupant().getOwner() != aGame.getCurrentPlayer()){
+                continue;
+            }
+            else{
+                eligible = true;
+                break;
+            }
+        }
+        if (aGame.getPhase()!= Game.GamePhase.SetupRoundOne && aGame.getPhase()!= Game.GamePhase.SetupRoundTwo){
+            eligible = checkNonSetupEligibility(pEdge);
+        }
+        return eligible;
+    }
+
+    private static boolean checkNonSetupEligibility(Geometry pGeometry){
+        Queue<Edge> neighbourEdges = pGeometry.getEdgeNeighbours();
+        boolean eligible = false;
+        for (Edge edge : neighbourEdges){   //if any of the neighbouring edges have a road belonging to the player, it is eligible
+            if (edge.getOccupant().getOwner() != aGame.getCurrentPlayer()){
+                continue;
+            }
+            else{
+                eligible = true;
+                break;
+            }
+        }
+        return eligible;
+    }
+
+    public static void endTurn(){
+        aGame.setPhase(Game.GamePhase.TurnSecondPhase);
+        nextPlayer();
+    }
+
+    private static void nextPlayer(){
+        aGame.updateQueue();
+        aGame.updateTurnCounter();
+    }
+
 }
