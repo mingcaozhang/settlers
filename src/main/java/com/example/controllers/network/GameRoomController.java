@@ -33,8 +33,10 @@ public class GameRoomController {
         return(principal.getName());
     }
 
+    @MessageMapping("/edge")
+    public void getEdge() throws Exception{
 
 
-
+    }
 
 }

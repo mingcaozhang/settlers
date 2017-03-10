@@ -25,6 +25,7 @@ public class Edge extends Geometry{
         aOccupant = pOccupant;
         isOccupied = true;
     }
+
     public EdgeUnit removeOccupant()
     {
         EdgeUnit tempUnit = aOccupant;
