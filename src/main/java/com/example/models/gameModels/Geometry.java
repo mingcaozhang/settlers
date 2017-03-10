@@ -10,7 +10,12 @@ import java.util.Queue;
 public abstract class Geometry {
     private int aX;
     private int aY;
-    public Geometry(int x,int y){aX = x; aY = y;}
+
+    protected Geometry(int x,int y){
+        aX = x;
+        aY = y;
+    }
+
     protected Queue<Hex> HexNeighbours = new LinkedList<Hex>();
     protected Queue<Intersection> IntersectionNeighbours = new LinkedList<Intersection>();
     protected Queue<Edge> EdgeNeighbours = new LinkedList<Edge>();
