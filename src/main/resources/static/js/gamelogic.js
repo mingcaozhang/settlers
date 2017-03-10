@@ -100,6 +100,13 @@ var knight;
 //Turn Counter
 var counter = 1;
 
+var color = 'black';
+
+if (counter == 1){ var color = 'blue';}
+if (counter == 2){ var color = 'yellow';}
+if (counter == 3){ var color = 'red';}
+if (counter == 4){ var color = 'orange';}
+
 //Roll Dice
 function rollDice() {
     var status = document.getElementById("status");
@@ -353,4 +360,10 @@ function activateKnight() {
     if (nWheat > 0) {
         knight = true;
     }
+}
+
+function roll(dice)
+{
+
+
 }
