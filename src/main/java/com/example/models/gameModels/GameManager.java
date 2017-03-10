@@ -407,6 +407,18 @@ public class GameManager {
             }
         }
         return eligible;
+
+    }
+
+    public static void endTurn(){
+        aGame.setPhase(Game.GamePhase.TurnSecondPhase);
+        nextPlayer();
+    }
+
+    private static void nextPlayer(){
+        aGame.updateQueue();
+        aGame.updateTurnCounter();
+
     }
 
     public static void endTurn(){
