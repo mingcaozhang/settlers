@@ -1,4 +1,6 @@
+//$("noResource").hide();
 //Event die faces
+var color = "yellow";
 var eventFace1 = new Image();
 eventFace1.src = "/images/barbarianShip.png";
 var eventFace2 = new Image();
@@ -100,6 +102,7 @@ var knight;
 //Turn Counter
 var counter = 1;
 
+
 var color = 'black';
 
 if (counter == 1){ var color = 'blue';}
@@ -139,10 +142,15 @@ function rollDice() {
 function enableBtn() {
     document.getElementById('rolldice').disabled = false;
 
+
+
     counter++;
     if(counter == 5) {
         counter = 1;
     }
+
+
+
     var player = document.getElementById("player");
     player.innerHTML = "Player " + counter;
 }
@@ -220,7 +228,7 @@ function buildRoad() {
     }
     else {
 
-        //Set no resource message to true
+      //  $("noResource").hide();
     }
 }
 //Place road
@@ -240,7 +248,7 @@ function buildShip() {
         ship.innerHTML = "Ship " + nShip;
     }
     else {
-        //Set no resource message to true
+        $("noResource").show();
     }
 }
 
@@ -263,7 +271,7 @@ function buildSettlement() {
         settlement.innerHTML = "Settlements " + nSettlement;
     }
     else {
-        //Set no resource message to true
+        $("noResource").show();
     }
 }
 
@@ -284,7 +292,7 @@ function buildCity() {
         city.innerHTML = "Cities " + nCity;
     }
     else {
-        //Set no resource message to true
+        $("noResource").show();
     }
 }
 
@@ -305,7 +313,7 @@ function buildWall() {
         wall.innerHTML = "Walls " + nWall;
     }
     else {
-        //Set no resource message to true
+        $("noResource").show();
     }
 }
 
@@ -320,7 +328,7 @@ function getKnight1() {
         knight1.innerHTML = "Rank 1: " + nKnight1;
     }
     else {
-        //Set no resource message to true
+        $("noResource").show();
     }
 }
 //get Knight2
@@ -336,7 +344,7 @@ function getKnight2() {
         knight2.innerHTML = "Rank 2: " + nKnight2;
     }
     else {
-        //Set no resource message to true
+        $("noResource").show();
     }
 }
 //get Knight3
@@ -352,15 +360,202 @@ function getKnight3() {
         knight3.innerHTML = "Rank 3: " + nKnight3;
     }
     else {
+        $("noResource").show();
+    }
+}
+
+var stompClient = null;
+
+
+var user = [[${username}]];
+var initGame = false;
+
+connect();
+
+function connect() {
+    //showJoinedUser("I just connected!");
+    var socket = new SockJS('/game-board-socket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        setConnected(true);
+        console.log('Connected: ' + frame);
+
+
+        /*
+        stompClient.subscribe('/topic/turn-phase', function (turnObject) {
+            // showJoinedUser(JSON.parse(str.body).content);
+            //showCorrectView(JSON.parse(turnObject.body).content);
+
+
+        });
+
+
+
+
+        });
+
+        stompClient.subscribe('/topic/turn-phase', function(turnObj){
+            //$("#startGame").hide();
+
+
+
+        });
+
+        */
+
+        stompClient.subscribe('/topic/dice', function(settlement){
+            settlement = JSON.parse(settlement.body);
+            $("#"+settlement.id).attr("fill", settlement.color);
+
+        });
+
+
+
+        stompClient.subscribe('/topic/piece', function(settlement){
+            settlement = JSON.parse(settlement.body);
+            $("#"+settlement.id).attr("fill", settlement.color);
+
+        });
+
+        stompClient.subscribe('/topic/city', function(city){
+            city = JSON.parse(city.body);
+            $("#"+city.id).attr("stroke", "black");
+
+        });
+
+
+
+        /*
+        stompClient.subscribe('/user/queue/hand', function(myResources){
+
+
+        });*/
+
+
+
+    });
+}
+
+function startGame(){
+    stompClient.send('/app/start',{},{});
+
+}
+
+
+function placePeice(id){
+    stompClient.send('/app/placepiece', {}, JSON.stringify({"id":id, "color":color}));
+}
+
+function placeCity(id){
+    stompClient.send('/app/placecity', {}, JSON.stringify({"id":id, "color":color}));
+}
+
+
+$(function () {
+
+    // $("#connect").click(function() { connect(); });
+    $("#joingame").click(function() { go(); $("#joingame").prop("disabled", true);});
+
+});
+
+
+
+
+
+//Roll Dice
+function rollDice(){
+
+    var status = document.getElementById("status");
+    var d1 = Math.floor(Math.random() * 6) + 1;
+    var d2 = Math.floor(Math.random() * 6) + 1;
+    var d3 = Math.floor(Math.random() * 6) + 1;
+
+    stompClient.send('/app/updateDice', {}, JSON.stringify({'red':d1, 'yellow':d2, 'event':d3}));
+
+
+}
+
+//Used to enable rollDice button when end turn button is pressed
+function enableBtn() {
+    document.getElementById('rolldice').disabled = false;
+}
+
+//Activated to show attributes when player button is clicked
+
+//Build road
+function buildRoad() {
+    if (nBrick > 0) {
+        if (nWood > 0) {
+            nBrick--;
+            nWood--;
+            nRoad++;
+            road = document.getElementById("road");
+            road.innerHTML = "Roads " + nRoad;
+        } else {
+            //Set no resource message to true
+            $("noResource").show()
+        }
+    } else {
         //Set no resource message to true
     }
 }
-//Activate Knight
-function activateKnight() {
-    if (nWheat > 0) {
-        knight = true;
+//Place road
+function placeRoad() {
+    nRoad++;
+    pRoad = document.getElementById("pRoad");
+    pRoad.innerHTML = "Roads " + nRoad;
+}
+
+//Build settlement
+function buildSettlement() {
+    if (nWood > 0) {
+        if (nBrick > 0) {
+            if (nSheep > 0) {
+                if (nWheat > 0) {
+                    nWood--;
+                    nBrick--;
+                    nSheep--;
+                    nWheat--;
+                    nSettlement++;
+                    settlement = document.getElementById("settlement");
+                    settlement.innerHTML = "Settlements " + nSettlement;
+                } else {
+                    //Set no resource message to true
+                }
+            } else {
+                //Set no resource message to true
+            }
+        } else {
+            //Set no resource message to true
+        }
+    } else {
+        //Set no resource message to true
     }
 }
+//Place settlement
+function placeSettlement() {
+    nSettlement++;
+    pSettlement = document.getElementById("pSettlement");
+    pSettlement.innerHTML = "Settlements " + nSettlement;
+}
+
+//Build city
+function buildCity() {
+    if (nOre > 2) {
+        if (nWheat > 1) {
+            nOre -= 3;
+            nWheat -= 2;
+            nCity++;
+            city = document.getElementById("city");
+            city.innerHTML = "Cities " + nCity;
+        } else {
+            //Set no resource message to true
+        }
+    } else {
+        //Set no resource message to true
+    }
+}
+
 
 function roll(dice)
 {
