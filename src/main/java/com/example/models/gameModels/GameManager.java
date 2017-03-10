@@ -418,5 +418,4 @@ public class GameManager {
         aGame.updateQueue();
         aGame.updateTurnCounter();
     }
-
 }
