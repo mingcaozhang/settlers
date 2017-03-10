@@ -12,13 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import javax.validation.Valid;
-
-
 
 /* Handles all user authentications */
 @Controller
@@ -63,12 +58,9 @@ public class AuthenticationController {
         return "home";
     }*/
 
-
-
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String regpage(Register register, Model model)
     {
-
         return "register";
     }
 
@@ -93,9 +85,6 @@ public class AuthenticationController {
         model.addAttribute("message", register.getUsername());
         return "redirect:/";
     }
-
-
-
 }
 
 
