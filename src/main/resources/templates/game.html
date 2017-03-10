@@ -70,20 +70,19 @@
     <button class="btn-3d red" onclick="rollDice(); this.disabled=true;" id="rolldice">Roll Dice</button>
     <h2 id="status" style="margin-left: 640px;"></h2>
 
+
     <!--No resources message-->
     <div class="alert alert-warning alert-dismissable" id="noResources" style="width: 330px; margin-left: 550px;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <strong>You do not have enough resources.</strong>
     </div>
-    <div>
-    <input name="searchTxt" type="text" maxlength="512" id="searchTxt" class="searchField"/>
+</div>
 
-    <svg id="svgcanvas" width="1200" height="700"></svg>
+<div class="container-fluid bg-5" style="height: 1000px;">
 
-    <div>
-        <button type="button" class="btn btn-primary" id="b" onclick="init()">Draw Hexagon</button>
-    </div>
-    </div>
+<!--End Turn Button-->
+    <div><button type="button" onclick="enableBtn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
+
 </div>
 
 <div class="container-fluid bg-5" style="height: 1000px;">
@@ -202,5 +201,6 @@
         </div>
     </div>
 </div>
+
 </body>
 </html>
