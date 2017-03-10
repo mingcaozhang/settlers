@@ -29,9 +29,10 @@ public class GameRoomController {
     @MessageMapping("/ready")
     @SendTo("/topic/gameroom")
     public GameRoomView greeting(Principal principal) throws Exception{
+
+
         //Thread.sleep(1000); //simulated delay
         playerList.add(principal.getName());
-
         if(playerList.size() == 4){
             GameController.setCurrPlayerList(playerList);
             GameController.createGame();

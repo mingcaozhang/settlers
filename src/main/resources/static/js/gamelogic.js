@@ -1,4 +1,4 @@
-$("noResource").hide();
+//$("noResource").hide();
 //Event die faces
 var color = "yellow";
 var eventFace1 = new Image();
@@ -193,7 +193,7 @@ function buildRoad() {
     }
     else {
 
-        $("noResource").hide();
+      //  $("noResource").hide();
     }
 }
 //Place road
@@ -331,11 +331,11 @@ function getKnight3() {
 
 var stompClient = null;
 
-connect();
+
 var user = [[${username}]];
 var initGame = false;
 
-
+connect();
 
 function connect() {
     //showJoinedUser("I just connected!");
@@ -346,7 +346,7 @@ function connect() {
         console.log('Connected: ' + frame);
 
 
-
+        /*
         stompClient.subscribe('/topic/turn-phase', function (turnObject) {
             // showJoinedUser(JSON.parse(str.body).content);
             //showCorrectView(JSON.parse(turnObject.body).content);
@@ -354,32 +354,23 @@ function connect() {
 
         });
 
-        stompClient.subscribe('/topic/dice', function (dice) {
-            // showJoinedUser(JSON.parse(str.body).content);
-            //showCorrectView(JSON.parse(turnObject.body).content);
-            dice = JSON.parse(dice.body);
-            document.images["die1"].src = eval("die1Face" + dice.red + ".src");
-            document.images["die2"].src = eval("die2Face" + dice.yellow + ".src");
-            document.images["eventDie"].src = eval("eventFace" + dice.event + ".src");
 
-            //Increment barbarian count if event die is (1, 2, 3)
-            if(d3 == 1 || d3 == 2 || d3 == 3) {
-                barbarianCount += 1;
-            }
-
-            var diceTotal = d1 + d2;
-            status.innerHTML = "You rolled " + diceTotal + ".";
-            if(diceTotal == 7){
-                status.innerHTML += " Robber!";
-            }
 
 
         });
 
         stompClient.subscribe('/topic/turn-phase', function(turnObj){
-            $("#startGame").hide();
+            //$("#startGame").hide();
 
 
+
+        });
+
+        */
+
+        stompClient.subscribe('/topic/dice', function(settlement){
+            settlement = JSON.parse(settlement.body);
+            $("#"+settlement.id).attr("fill", settlement.color);
 
         });
 
@@ -399,11 +390,11 @@ function connect() {
 
 
 
-
+        /*
         stompClient.subscribe('/user/queue/hand', function(myResources){
 
 
-        });
+        });*/
 
 
 
