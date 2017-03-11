@@ -44,7 +44,6 @@ public class GameController {
     }
 
 
-
     @RequestMapping(value="/game", method= RequestMethod.GET)
 
     public String game(ModelMap model, Principal principal ) {
@@ -54,8 +53,6 @@ public class GameController {
 
         return "game";
     }
-
-
 
 
     @MessageMapping("/placepiece")
@@ -77,6 +74,11 @@ public class GameController {
     }
 
 
+    @MessageMapping("/edge")
+    public void getEdge() throws Exception{
+
+
+    }
 
 
 }
