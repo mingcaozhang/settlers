@@ -1140,19 +1140,6 @@ function init()
             .attr("stroke","black")})
         .on("click", function (d) { d3.select(this).attr("fill", color)});
 
-    /*var testcircs = holder.selectAll("circle")
-     .data(circs)
-     .enter()
-     .append("circle");
-     console.log(testcircs);
-     var testcircleAttributes = testcircs
-     .attr("cx", function (d) { return d.x_axis; })
-     .attr("cy", function (d) { return d.y_axis; })
-     .attr("r", function (d) { return d.radius; })
-     .style("fill", function(d) { return d.color; });*/
-
-
-
 
     var polygonAttrs = polygons
         .attr("class", "hex " + "woood")
@@ -1204,26 +1191,7 @@ function init()
         ;
 
 
-    //------------------------------
 
-    //				.on("dblclick", function (d) {})
-    //				.on("click", function(d) {})
-
-
-//console.log(polyPoints);
-//console.log(JSON.stringify(jsonPolygons));
-    //	var holder = d3.select("svg");
-
-    //	holder.append("text")         // append text
-    //		 .style("fill", "black")   // fill the text with the colour black
-    //		 .attr("x", 200)           // set x position of left side of text
-    //		 .attr("y", 100)           // set y position of bottom of text
-    //		 .attr("text-anchor", "end")  // set anchor y justification
-    //		 .text(JSON.stringify(jsonPolygons.length));        // define the text to display
-
-
-    //	$('button').prop('disabled', true);
-    //		$("#i3_0_0").attr("style","fill:red;");
 }
 
 function roll(dice)
