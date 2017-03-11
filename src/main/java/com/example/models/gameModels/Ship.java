@@ -18,8 +18,7 @@ public class Ship extends EdgeUnit{
     private Ship(){
     }
 
-    @Override
-    public Queue<Ship> getUnits(){
+    public static Queue<Ship> getUnits(){
         Queue<Ship> aCopy = new LinkedList<Ship>();
         aCopy = aShips;
         return aCopy;

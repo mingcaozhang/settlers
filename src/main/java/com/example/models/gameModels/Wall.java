@@ -19,7 +19,7 @@ public class Wall extends OwnableUnit{
     private Wall(){
     }
 
-    public Queue<Wall> getUnits(){
+    public static Queue<Wall> getUnits(){
         Queue<Wall> aCopy = new LinkedList<Wall>();
         aCopy = aWalls;
         return aCopy;

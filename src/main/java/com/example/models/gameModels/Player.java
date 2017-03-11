@@ -98,6 +98,14 @@ public class Player {
         aBasicKnights = pBasicKnights;
     }
 
+    public void setStrongKnights(Queue<StrongKnight> pStrongKnights){
+        aStrongKnights = pStrongKnights;
+    }
+
+    public void setMightyKnights(Queue<MightyKnight> pMightyKnights){
+        aMightyKnights = pMightyKnights;
+    }
+
     public boolean hasMerchant(){return aMerchant;}
 
     public boolean hasLongestTradeRoute(){return aLongestTradeRoute;}

@@ -13,7 +13,7 @@ public abstract class Hex extends Geometry{
 
     public Hex(int x,int y) {
         super(x,y);
-        aVillain=false;
+        aVillain = false;
     }
 
     public boolean hasVillain(){

@@ -18,8 +18,7 @@ public class Settlement extends IntersectionUnit {
     private Settlement() {
     }
 
-    @Override
-    public Queue<Settlement> getUnits() {
+    public static Queue<Settlement> getUnits() {
         Queue<Settlement> aCopy = new LinkedList<Settlement>();
         aCopy = aSettlements;
         return aCopy;
