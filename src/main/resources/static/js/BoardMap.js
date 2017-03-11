@@ -615,7 +615,3 @@ function init()
 
 }
 
-function roll(dice)
-{
-
-}
