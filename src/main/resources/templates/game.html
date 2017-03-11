@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css" />
     <link href="https://fonts.googleapis.com/css?family=Berkshire+Swash|IM+Fell+Double+Pica|IM+Fell+English+SC|Quintessential" rel="stylesheet"/>
 </head>
@@ -18,11 +19,6 @@
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
             <a class="navbar-brand" href="#">Lords of Catan</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
@@ -38,22 +34,6 @@
 
 <div class="container-fluid bg-5" style="padding-top: 100px; padding-bottom: 0px;">
 
-    <!--PLAYER 2-->
-    <div class="dropdown col-sm-6">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 1100px; width: 300px;">Player 2
-            <span class="caret"></span></button>
-    <ul class="dropdown-menu" style="top: 40px; margin-left: 1115px; width: 300px;">
-            <!-- Trigger the Resource Cards modal with a button -->
-        <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal2">Resource Cards</button>
-        <!-- Trigger the Commodity Cards modal with a button -->
-        <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal3">Commodity Cards</button>
-        <!-- Trigger the Commodity Cards modal with a button -->
-        <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal4">Knights</button>
-        <li><a href="#">Roads <span class="badge" id="roads2" style="margin-left: 190px;">5</span></a></li>
-        <li><a href="#">Settlements <span class="badge" id="settlements2" style="margin-left: 159px;">5</span></a></li>
-        <li><a href="#">Cities <span class="badge" id="cities2" style="margin-left: 191px;">5</span></a></li>
-    </ul>
-    </div>
 
 <!--PLAYER 1-->
     <div class="dropdown col-sm-6">
@@ -95,45 +75,23 @@
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <strong>You do not have enough resources.</strong>
     </div>
+    <div>
+    <input name="searchTxt" type="text" maxlength="512" id="searchTxt" class="searchField"/>
+
+    <svg id="svgcanvas" width="1200" height="700"></svg>
+
+    <div>
+        <button type="button" class="btn btn-primary" id="b" onclick="init()">Draw Hexagon</button>
+    </div>
+    </div>
 </div>
 
 <div class="container-fluid bg-5" style="height: 1000px;">
-    <!--PLAYER 3-->
-    <div class="dropdown col-sm-4" style="bottom: 10px;">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left:5px; width: 300px;">Player 3
-            <span class="caret"></span></button>
-        <ul class="dropdown-menu" style="margin-left:20px; margin-top:-220px; width: 300px;">
-            <!-- Trigger the Resource Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal2">Resource Cards</button>
-            <!-- Trigger the Commodity Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal3">Commodity Cards</button>
-            <!-- Trigger the Commodity Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal4">Knights</button>
-            <li><a href="#">Roads <span class="badge" id="roads3" style="margin-left:190px;">5</span></a></li>
-            <li><a href="#">Settlements <span class="badge" id="settlements3" style="margin-left:159px;">5</span></a></li>
-            <li><a href="#">Cities <span class="badge" id="cities3" style="margin-left:191px;">5</span></a></li>
-        </ul>
-    </div>
 
-    <!--End Turn Button-->
+<!--End Turn Button-->
     <div><button type="button" onclick="enableBtn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
 
-    <!--PLAYER 4-->
-    <div class="dropdown col-sm-4" style="left: 320px; margin-left: 690px; bottom: 10px;">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 100px; width: 300px;">Player 4
-         <span class="caret"></span></button>
-        <ul class="dropdown-menu" style="width: 300px; margin-left: 115px; top: auto; bottom: 38px;">
-            <!-- Trigger the Resource Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal2">Resource Cards</button>
-            <!-- Trigger the Commodity Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal3">Commodity Cards</button>
-            <!-- Trigger the Commodity Cards modal with a button -->
-            <button type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal4">Knights</button>
-            <li><a href="#">Roads <span class="badge" id="roads4" style="margin-left:190px;">5</span></a></li>
-            <li><a href="#">Settlements <span class="badge" id="settlements4" style="margin-left:159px;">5</span></a></li>
-            <li><a href="#">Cities <span class="badge" id="cities4" style="margin-left:191px;">5</span></a></li>
-        </ul>
-    </div>
+
 </div>
 
 <!-- MODALS -->
@@ -244,6 +202,5 @@
         </div>
     </div>
 </div>
-
 </body>
 </html>
