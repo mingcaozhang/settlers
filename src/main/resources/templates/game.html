@@ -8,6 +8,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css" />
     <link href="https://fonts.googleapis.com/css?family=Berkshire+Swash|IM+Fell+Double+Pica|IM+Fell+English+SC|Quintessential" rel="stylesheet"/>
@@ -80,6 +81,7 @@
     <button class="btn-3d red" onclick="rollDice()" id="rolldice">Roll Dice</button>
     <h2 id="status" style="margin-left: 640px;"></h2>
 
+
     <!--No resources message-->
     <div class="alert alert-warning alert-dismissable" id="noResources" style="width: 330px; margin-left: 550px;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
@@ -100,6 +102,13 @@
 
     <!--End Turn Button-->
     <div><button type="button" onclick="endTurn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
+
+</div>
+
+<div class="container-fluid bg-5" style="height: 1000px;">
+
+<!--End Turn Button-->
+    <div><button type="button" onclick="enableBtn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
 
 
 </div>
