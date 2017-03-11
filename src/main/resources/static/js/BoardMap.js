@@ -1,3 +1,4 @@
+
 $('button').prop('disabled', false);
 
 function HexBlueprint(axial_x, axial_y, axial_z, size, resource)

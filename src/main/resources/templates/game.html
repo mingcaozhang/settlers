@@ -6,14 +6,24 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css" />
     <link href="https://fonts.googleapis.com/css?family=Berkshire+Swash|IM+Fell+Double+Pica|IM+Fell+English+SC|Quintessential" rel="stylesheet"/>
 </head>
 
 <body data-spy="scroll" data-target=".navbar" data-offset="50">
+<script th:inline="javascript">
 
-<script src="js/gamelogic.js"></script>
+    /*<![CDATA[*/
+
+    var myUsername = /*[[${username}]]*/ 'User Name';
+    var startingPlayer = /*[[${startingPlayer}]]*/ 'Starting Player';
+
+    /*]]>*/
+</script>
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -35,9 +45,10 @@
 <div class="container-fluid bg-5" style="padding-top: 100px; padding-bottom: 0px;">
 
 
-<!--PLAYER 1-->
+    <!--PLAYER 1-->
     <div class="dropdown col-sm-6">
-        <button id="player" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" onclick="setAttributes()" style="margin-left: 5px; width: 300px;">Player 1
+        <button id="player" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" onclick="setAttributes()" style="margin-left: 5px; width: 300px;"><!--/*@thymesVar id="username" type=""*/-->
+        <span th:text="${username}"></span>
             <span class="caret"></span></button>
         <ul class="dropdown-menu" style="margin-left: 20px; width: 300px;">
             <!--Place road, settlement, city-->
@@ -67,7 +78,7 @@
     <img src="/images/preRed.png" id="die1" class="die1" style="margin-left: 555px; display: inline" width="100" height="100"/>
     <img src="/images/preYellow.png" id="die2" class="die2" style=" display: inline" width="100" height="100"/>
     <img src="/images/preWhite.png" id="eventDie" class="eventDie" style="display: inline" width="100" height="100"/>
-    <button class="btn-3d red" onclick="rollDice(); this.disabled=true;" id="rolldice">Roll Dice</button>
+    <button class="btn-3d red" onclick="rollDice()" id="rolldice">Roll Dice</button>
     <h2 id="status" style="margin-left: 640px;"></h2>
 
 
@@ -76,12 +87,21 @@
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <strong>You do not have enough resources.</strong>
     </div>
+    <div>
+        <input name="searchTxt" type="text" maxlength="512" id="searchTxt" class="searchField"/>
+
+        <svg id="svgcanvas" width="1200" height="700"></svg>
+
+        <div>
+            <button type="button" class="btn btn-primary" id="b" onclick="init()">Draw Hexagon</button>
+        </div>
+    </div>
 </div>
 
 <div class="container-fluid bg-5" style="height: 1000px;">
 
-<!--End Turn Button-->
-    <div><button type="button" onclick="enableBtn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
+    <!--End Turn Button-->
+    <div><button type="button" onclick="endTurn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
 
 </div>
 
@@ -201,6 +221,10 @@
         </div>
     </div>
 </div>
+
+
+<script th:src="@{/js/gamelogic.js}"></script>
+
 
 </body>
 </html>
