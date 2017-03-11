@@ -612,26 +612,7 @@ function init()
         ;
 
 
-    //------------------------------
 
-    //				.on("dblclick", function (d) {})
-    //				.on("click", function(d) {})
-
-
-//console.log(polyPoints);
-//console.log(JSON.stringify(jsonPolygons));	
-    //	var holder = d3.select("svg");
-
-    //	holder.append("text")         // append text
-    //		 .style("fill", "black")   // fill the text with the colour black
-    //		 .attr("x", 200)           // set x position of left side of text
-    //		 .attr("y", 100)           // set y position of bottom of text
-    //		 .attr("text-anchor", "end")  // set anchor y justification
-    //		 .text(JSON.stringify(jsonPolygons.length));        // define the text to display
-
-
-    //	$('button').prop('disabled', true);
-    //		$("#i3_0_0").attr("style","fill:red;");
 }
 
 function roll(dice)
