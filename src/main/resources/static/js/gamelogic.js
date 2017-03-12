@@ -142,8 +142,8 @@ function connect() {
         stompClient.subscribe('/topic/turninfo', function (user) {
             currUser = user.body;
 
-            console.log(currUser);
-            console.log(user.body);
+            //console.log(currUser);
+           // console.log(user.body);
 
             if(currUser.match(myUsername)){
                 //disable all turn buttons
@@ -162,8 +162,8 @@ function connect() {
             if(counter == 5) {
                 counter = 1;
             }
-            var player = document.getElementById("player");
-            player.innerHTML = currUser+"'s turn";
+           // var player = document.getElementById("player");
+            //player.innerHTML = currUser+"'s turn";
 
         });
 
