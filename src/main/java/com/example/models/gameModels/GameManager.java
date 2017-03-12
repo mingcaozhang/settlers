@@ -1,29 +1,30 @@
 package com.example.models.gameModels;
 
 import com.sun.org.apache.bcel.internal.generic.LAND;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
 import java.util.*;
 
 /**
  * Created by G on 17/03/03.
  */
+
 public class GameManager {
-    private static GameManager gameManager = new GameManager();
-    private static Game aGame;
-    private static int aCount;
+  //  private GameManager gameManager = new GameManager();
+
+    // MINGS GRAVEYARD
+
+    /*
+    private Game aGame;
+    int aCount;
 
     private GameManager(){
         aCount = 0;
     }
 
-    public GameManager getGameManager(){
-        return gameManager;
-    }
 
-    public static void createGame(int pVPsToWin, ArrayList<String> playerNames){
-        Hex[][] pHexes = new Hex[20][20];
-        Edge[][] pEdges = new Edge[20][20];
-        Intersection[][] pIntersections = new Intersection[20][20];
+    public void createGame(int pVPsToWin, ArrayList<String> playerNames){
+/*
         HashMap<Integer, ArrayList<LandHex>> pLandHexes = new HashMap<Integer, ArrayList<LandHex>>();
 
         for (int k = 2; k < 13; k++){
@@ -36,10 +37,11 @@ public class GameManager {
                      pLandHexes.get(((LandHex)pHexes[i][j]).getProductionNumber()).add((LandHex)pHexes[i][j]);
                 }
             }
-        }
+        } */
+/*
         HashMap<String, Player> aListofPlayers = createPlayers(playerNames);
         GameManager.setPlayerProperties(aListofPlayers);
-        Game newGame = new Game(pVPsToWin, aListofPlayers, aCount++, pHexes, pEdges, pIntersections, pLandHexes);
+        Game newGame = new Game(pVPsToWin, aListofPlayers, aCount++);
         aGame = newGame;
     }
 
@@ -216,7 +218,7 @@ public class GameManager {
     private static void calculateStrengths(){
         aGame.setBarbarianStrength(0);
         aGame.setArmyStrength(0);
-        for (int i = 0; i < 20; i++){
+      /*  for (int i = 0; i < 20; i++){
             for (int j = 0; j < 20; j++){
                 if (aGame.getIntersections()[i][j].getOccupancyFlag()) {
                     if (aGame.getIntersections()[i][j].getOccupant().getClass() == City.class) {
@@ -229,7 +231,8 @@ public class GameManager {
                     }
                 }
             }
-        }
+        }*/
+/*
     }
 
     private static void resetBarbPosition(){
@@ -420,15 +423,6 @@ public class GameManager {
         aGame.updateTurnCounter();
 
     }
-
-    public static void endTurn(){
-        aGame.setPhase(Game.GamePhase.TurnSecondPhase);
-        nextPlayer();
-    }
-
-    public static void nextPlayer(){
-        aGame.updateQueue();
-        aGame.updateTurnCounter();
-    }
-
+*/
 }
+
