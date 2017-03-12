@@ -13,6 +13,14 @@
 
 <body data-spy="scroll" data-target=".navbar" data-offset="50">
 
+<!-- Creates a popup that asks user if he wishes to leave page.-->
+<script language="JavaScript" type="text/javascript">
+    //<![CDATA[
+    window.onbeforeunload = function(){
+        return 'Are you sure you want to leave?';
+    };
+    //]]>
+</script>
 
 
 <!-- NAVBAR -->

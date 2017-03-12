@@ -873,7 +873,7 @@ var intersectionAttrs = boardIntersections
     .attr("r", function (d) { return d.radius; })
     .attr("id",function (d) { return d.id; })
     .attr("fill","black")
-    .attr("stroke","white")
+    .attr("stroke","black")
     .on("click", function (d) { d3.select(this).attr("fill", color)
         .attr("stroke","black");});
 
@@ -883,7 +883,7 @@ var edges = holder.selectAll("edges")
     .enter()
     .append("polygon");
 
-var edgeAttrs = edges.attr("class", "hex " + "woood")
+var edgeAttrs = edges
     .attr("points", function (d) { return d.points; })
     .attr("stroke", function (d) { return d.stroke; })
     .attr("id", function(d) { return d.id; })
@@ -919,3 +919,5 @@ var textLabels = text
     .attr("font-size", "16px")
     .attr("fill", "black")
     .attr("text-anchor", "middle");
+
+d3.selectById

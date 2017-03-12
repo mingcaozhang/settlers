@@ -82,7 +82,6 @@ public class AuthenticationController {
         UserRole newRole = new UserRole(newUser, "ROLE_USER");
         userRolesRepository.save(newRole);
 
-        model.addAttribute("message", register.getUsername());
         return "redirect:/";
     }
 
