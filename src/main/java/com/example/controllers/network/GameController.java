@@ -19,9 +19,9 @@ import java.util.Map;
 @Controller
 public class GameController {
 
-    private static ArrayList<String> currPlayerList = new ArrayList<String>();
+    private static List<String> currPlayerList = new ArrayList<String>(); // Get a list of players too?
     private static Game aGame;
-    private static Map<String, Player> aPlayers ;
+    private static Map<String, Player> aPlayers ; // here
 
     private static int placeSettlementAndRoadCounter = 0;
     private static int placeCityAndRoadCounter = 0;
@@ -39,14 +39,11 @@ public class GameController {
     }
 
     public static void createGame(){
-        GameManager.createGame(10, currPlayerList);
-        aGame = GameManager.getGame();
-        aPlayers = GameManager.getPlayers();
+        aGame = new Game(10,currPlayerList,3 );
     }
 
 
     @RequestMapping(value="/game", method= RequestMethod.GET)
-
     public String game(ModelMap model, Principal principal ) {
 
         String name = principal.getName(); //get logged in username
@@ -77,7 +74,7 @@ public class GameController {
     public DiceRoll showDice(DiceRoll pDice){
 
 
-        //backend code goes here
+        //backend code goes here Payout
 
         return pDice;
     }

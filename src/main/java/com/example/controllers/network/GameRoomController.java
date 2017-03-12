@@ -17,7 +17,6 @@ import java.util.Map;
 public class GameRoomController {
 
 
-
     @RequestMapping(value="/gameroom", method= RequestMethod.GET)
     public String gameroom(Map<String, Object> model) {
 
@@ -33,7 +32,7 @@ public class GameRoomController {
 
         //Thread.sleep(1000); //simulated delay
         playerList.add(principal.getName());
-        if(playerList.size() == 4){
+        if(playerList.size() ==2){
             GameController.setCurrPlayerList(playerList);
             GameController.createGame();
         }
