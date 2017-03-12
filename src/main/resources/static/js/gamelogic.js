@@ -60,7 +60,7 @@ var nCoin = 0;
 var nCloth = 0;
 var nBook = 0;
 var nCommodityCard = nCoin + nCloth + nBook;
-var nVictoryPt = 0;
+var nVictoryPt = nSettlement + nCity*2;
 var nGold = 0;
 var barbarianCount = 0;
 
@@ -874,37 +874,13 @@ function init()
                     jsonIntersections.push(circleValues);
                     IntersectionNeighbours.push(circleValues);
                 }
-
-
             }
         }
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
      var circs = [];
      var halfwidth = Math.sqrt(3)/2*hxradius;
      var ybaby = (Math.tan(Math.PI*3/18))*halfwidth;
-
 
      /*
 
@@ -1151,8 +1127,14 @@ function init()
      .attr("r", function (d) { return d.radius; })
      .style("fill", function(d) { return d.color; });*/
 
+    function show_image(src, width, height) {
 
-
+    var img = document.createElement("img");
+    img.src = src;
+    img.width = width;
+    img.height = height;
+        d3.select("svg").append("/images/eventGreen.png")
+    }
 
     var polygonAttrs = polygons
         .attr("class", "hex " + "woood")
@@ -1161,8 +1143,13 @@ function init()
         .attr("id", function(d) { return d.id; }) // NEW
         .attr("number", function(d) { return d.number; }) // NEW
         .attr("stroke-width", function (d) { return d.stroke_width; })
-        .style("fill", function (d) {if (d.terrain_type === "sea"){ return "#336699";}
-        else if(d.terrain_type === "wheat") { return "#ffff66"}
+        .style("xlink:href", function (d) {if (d.terrain_type === "sea"){ return "10px";}
+        else if(d.terrain_type === "wheat") {
+            var imgs = d3.selectAll("/images/eventGreen.png").data([0]);
+            imgs.enter()
+                .append("svg:image")
+
+        }
         else if(d.terrain_type === "sheep"){ return "#99ff66"}
         else if(d.terrain_type === "wood"){return "#008060"}
         else if(d.terrain_type === "ore"){return "#999999"}
@@ -1170,7 +1157,7 @@ function init()
         else if(d.terrain_type === "desert"){return "#ffffb3"}
         else if(d.terrain_type === "gold"){return "#e6b800"}
         else {return "white";}})
-        .on("dblclick", function (d) {d3.select("svg")
+        .on("click", function (d) {d3.select("svg")
             .append("polygon")
             .attr("cx", d.x)
             .attr("cy", d.y)

@@ -817,16 +817,19 @@ function init()
 
 
 
+    var die1Face1 = new Image();
+    die1Face1.src = "/images/Ydot1.png";
 
     var polygonAttrs = polygons
-        .attr("class", "hex " + "woood")
+        .attr("class", "hex " + "wood")
         .attr("points", function (d) { return d.points; })
         .attr("stroke", function (d) { return d.stroke; })
         .attr("id", function(d) { return d.id; }) // NEW
         .attr("number", function(d) { return d.number; }) // NEW
         .attr("stroke-width", function (d) { return d.stroke_width; })
-        .style("fill", function (d) {if (d.terrain_type === "sea"){ return "#336699";}
-        else if(d.terrain_type === "wheat") { return "#ffff66"}
+        .style("fill", function (d) {
+            if (d.terrain_type === "sea"){ return "#336699";}
+        else if(d.terrain_type === "wheat") { return "die1Face1.src"}
         else if(d.terrain_type === "sheep"){ return "#99ff66"}
         else if(d.terrain_type === "wood"){return "#008060"}
         else if(d.terrain_type === "ore"){return "#999999"}
