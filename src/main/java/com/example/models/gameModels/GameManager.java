@@ -407,6 +407,7 @@ public class GameManager {
             }
         }
         return eligible;
+
     }
 
     public static void endTurn(){
@@ -417,5 +418,17 @@ public class GameManager {
     private static void nextPlayer(){
         aGame.updateQueue();
         aGame.updateTurnCounter();
+
     }
+
+    public static void endTurn(){
+        aGame.setPhase(Game.GamePhase.TurnSecondPhase);
+        nextPlayer();
+    }
+
+    public static void nextPlayer(){
+        aGame.updateQueue();
+        aGame.updateTurnCounter();
+    }
+
 }
