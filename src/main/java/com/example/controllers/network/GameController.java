@@ -30,6 +30,11 @@ public class GameController {
     private static int currPlayerTurn = 0;
     private static int currNumPlayers;
 
+    private static final String player1color = "red";
+    private static final String player2color = "yellow";
+    private static final String player3color = "green";
+    private static final String player4color = "blue";
+
 
     public static void setCurrPlayerList(ArrayList<String> pList){
         for (String s : pList){
@@ -53,6 +58,36 @@ public class GameController {
         String name = principal.getName(); //get logged in username
         model.addAttribute("username", name);
         model.addAttribute("startingPlayer",currPlayerList.get(0));
+
+        for(int i = 0 ; i < currPlayerList.size(); i++){
+
+            if (currPlayerList.get(i).matches(name)){
+                String color = "";
+
+                if (i == 0){
+                    color = player1color;
+                }else if(i == 2){
+                    color = player2color;
+                }else if(i == 3){
+                    color = player3color;
+                }else if( i== 4){
+                    color = player4color;
+                }
+                model.addAttribute("myColor", color);
+            }
+
+        }
+
+        model.addAttribute("player1",currPlayerList.get(0));
+        model.addAttribute("player2",currPlayerList.get(1));
+        //model.addAttribute("player3",currPlayerList.get(2));
+        //model.addAttribute("player4",currPlayerList.get(3));
+
+        model.addAttribute("player1_c", player1color);
+        model.addAttribute("player2_c", player2color);
+       // model.addAttribute("player3_c", player3color);
+       // model.addAttribute("player4_c", player4color);
+
 
 
         return "game";

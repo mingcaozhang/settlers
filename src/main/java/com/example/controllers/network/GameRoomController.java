@@ -33,7 +33,10 @@ public class GameRoomController {
 
         //Thread.sleep(1000); //simulated delay
         playerList.add(principal.getName());
+        System.out.println("adding to list"+principal.getName());
+
         if(playerList.size() == 2){
+            System.out.println("creating list!");
             GameController.setCurrPlayerList(playerList);
             //GameController.createGame();
         }
