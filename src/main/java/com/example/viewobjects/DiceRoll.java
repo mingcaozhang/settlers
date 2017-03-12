@@ -9,10 +9,14 @@ public class DiceRoll {
     private int event;
 
     public DiceRoll(int pRed, int pYellow, int pEvent){
+
         red = pRed;
         yellow = pYellow;
         event = pEvent;
+
     }
+
+    public DiceRoll(){}
 
     public int getRed() {
         return red;

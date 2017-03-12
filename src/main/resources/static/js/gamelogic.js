@@ -1,6 +1,5 @@
-//$("noResource").hide();
+/*<![CDATA[*/
 //Event die faces
-var color = "yellow";
 var eventFace1 = new Image();
 eventFace1.src = "/images/barbarianShip.png";
 var eventFace2 = new Image();
@@ -101,7 +100,18 @@ var knight;
 
 //Turn Counter
 var counter = 1;
+var color = 'black';
+//var myUsername = [[${username}]];
+var stompClient = null;
 
+connect();
+intitializeTurn();
+console.log("my username is: "+myUsername);
+
+if (counter == 1){ var color = 'blue';}
+if (counter == 2){ var color = 'yellow';}
+if (counter == 3){ var color = 'red';}
+if (counter == 4){ var color = 'orange';}
 
 var color = 'black';
 
@@ -143,17 +153,120 @@ function enableBtn() {
     document.getElementById('rolldice').disabled = false;
 
 
+    if(startingPlayer.match(myUsername)){
+        //disable all turn buttons
+        document.getElementById('rolldice').disabled = true;
+        document.getElementById('endTurn').disabled = true;
 
-    counter++;
-    if(counter == 5) {
-        counter = 1;
+
+    }else{
+        //enable all turn buttons
+        document.getElementById('rolldice').disabled = false;
+        document.getElementById('endTurn').disabled = false;
     }
 
 
-
-    var player = document.getElementById("player");
-    player.innerHTML = "Player " + counter;
 }
+
+function connect() {
+    //showJoinedUser("I just connected!");
+    var socket = new SockJS('/game-web-socket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+       // setConnected(true);
+        console.log('Connected: ' + frame);
+
+
+        stompClient.subscribe('/topic/turninfo', function (user) {
+            currUser = user.body;
+
+            console.log(currUser);
+            console.log(user.body);
+
+            if(currUser.match(myUsername)){
+                //disable all turn buttons
+                document.getElementById('rolldice').disabled = true;
+                document.getElementById('endTurn').disabled = true;
+
+
+            }else{
+                //enable all turn buttons
+                document.getElementById('rolldice').disabled = false;
+                document.getElementById('endTurn').disabled = false;
+            }
+
+
+            counter++;
+            if(counter == 5) {
+                counter = 1;
+            }
+            var player = document.getElementById("player");
+            player.innerHTML = currUser+"'s turn";
+
+        });
+
+
+
+        stompClient.subscribe('/topic/dice', function (dice) {
+            dice = JSON.parse((dice.body));
+
+            console.log(dice.red);
+            console.log(dice.yellow);
+            console.log(dice.event);
+
+            document.images["die1"].src = eval("die1Face" + dice.red + ".src");
+            document.images["die2"].src = eval("die2Face" + dice.yellow + ".src");
+            document.images["eventDie"].src = eval("eventFace" + dice.event + ".src");
+
+            //Increment barbarian count if event die is (1, 2, 3)
+            if(dice.event == 1 || dice.event == 2 || dice.event == 3) {
+                barbarianCount += 1;
+
+                //Barbarian attack
+                if(barbarianCount == 6) {
+                    barbarian = 0;
+                }
+            }
+
+            var diceTotal = dice.red + dice.yellow;
+            status.innerHTML = "You rolled " + diceTotal + ".";
+            console.log("You rolled " + diceTotal + ".");
+            if(diceTotal == 7){
+                status.innerHTML += " Robber!";
+            }
+        });
+
+
+
+
+    });
+}
+
+
+
+//Roll Dice
+function rollDice() {
+    var status = document.getElementById("status");
+    var d1 = Math.floor(Math.random() * 6) + 1;
+    var d2 = Math.floor(Math.random() * 6) + 1;
+    var d3 = Math.floor(Math.random() * 6) + 1;
+
+    stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
+
+    document.getElementById('rolldice').disabled = true;
+
+}
+//Used to enable rollDice button when end turn button is pressed
+function endTurn() {
+
+    stompClient.send("/app/endturn",{}, {});
+
+
+}
+
+
+
+
 
 //Activated to show attributes when player button is clicked
 function setAttributes() {
@@ -228,7 +341,7 @@ function buildRoad() {
     }
     else {
 
-      //  $("noResource").hide();
+        //Set no resource message to true
     }
 }
 //Place road
@@ -248,7 +361,7 @@ function buildShip() {
         ship.innerHTML = "Ship " + nShip;
     }
     else {
-        $("noResource").show();
+        //Set no resource message to true
     }
 }
 
@@ -271,7 +384,7 @@ function buildSettlement() {
         settlement.innerHTML = "Settlements " + nSettlement;
     }
     else {
-        $("noResource").show();
+        //Set no resource message to true
     }
 }
 
@@ -292,7 +405,7 @@ function buildCity() {
         city.innerHTML = "Cities " + nCity;
     }
     else {
-        $("noResource").show();
+        //Set no resource message to true
     }
 }
 
@@ -313,7 +426,7 @@ function buildWall() {
         wall.innerHTML = "Walls " + nWall;
     }
     else {
-        $("noResource").show();
+        //Set no resource message to true
     }
 }
 
@@ -328,7 +441,7 @@ function getKnight1() {
         knight1.innerHTML = "Rank 1: " + nKnight1;
     }
     else {
-        $("noResource").show();
+        //Set no resource message to true
     }
 }
 //get Knight2
@@ -344,7 +457,7 @@ function getKnight2() {
         knight2.innerHTML = "Rank 2: " + nKnight2;
     }
     else {
-        $("noResource").show();
+        //Set no resource message to true
     }
 }
 //get Knight3
@@ -360,210 +473,20 @@ function getKnight3() {
         knight3.innerHTML = "Rank 3: " + nKnight3;
     }
     else {
-        $("noResource").show();
-    }
-}
-
-var stompClient = null;
-
-
-var user = [[${username}]];
-var initGame = false;
-
-connect();
-
-function connect() {
-    //showJoinedUser("I just connected!");
-    var socket = new SockJS('/game-board-socket');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        setConnected(true);
-        console.log('Connected: ' + frame);
-
-
-        /*
-        stompClient.subscribe('/topic/turn-phase', function (turnObject) {
-            // showJoinedUser(JSON.parse(str.body).content);
-            //showCorrectView(JSON.parse(turnObject.body).content);
-
-
-        });
-
-
-
-
-        });
-
-        stompClient.subscribe('/topic/turn-phase', function(turnObj){
-            //$("#startGame").hide();
-
-
-
-        });
-
-        */
-
-        stompClient.subscribe('/topic/dice', function(settlement){
-            settlement = JSON.parse(settlement.body);
-            $("#"+settlement.id).attr("fill", settlement.color);
-
-        });
-
-
-
-        stompClient.subscribe('/topic/piece', function(settlement){
-            settlement = JSON.parse(settlement.body);
-            $("#"+settlement.id).attr("fill", settlement.color);
-
-        });
-
-        stompClient.subscribe('/topic/city', function(city){
-            city = JSON.parse(city.body);
-            $("#"+city.id).attr("stroke", "black");
-
-        });
-
-
-
-        /*
-        stompClient.subscribe('/user/queue/hand', function(myResources){
-
-
-        });*/
-
-
-
-    });
-}
-
-function startGame(){
-    stompClient.send('/app/start',{},{});
-
-}
-
-
-function placePeice(id){
-    stompClient.send('/app/placepiece', {}, JSON.stringify({"id":id, "color":color}));
-}
-
-function placeCity(id){
-    stompClient.send('/app/placecity', {}, JSON.stringify({"id":id, "color":color}));
-}
-
-
-//$(function () {
-
-    // $("#connect").click(function() { connect(); });
- //   $("#joingame").click(function() { go(); $("#joingame").prop("disabled", true);});
-
-//});
-
-
-
-
-
-//Roll Dice
-function rollDice(){
-
-    var status = document.getElementById("status");
-    var d1 = Math.floor(Math.random() * 6) + 1;
-    var d2 = Math.floor(Math.random() * 6) + 1;
-    var d3 = Math.floor(Math.random() * 6) + 1;
-
-    stompClient.send('/app/updateDice', {}, JSON.stringify({'red':d1, 'yellow':d2, 'event':d3}));
-
-
-}
-
-//Used to enable rollDice button when end turn button is pressed
-function enableBtn() {
-    document.getElementById('rolldice').disabled = false;
-}
-
-//Activated to show attributes when player button is clicked
-
-//Build road
-function buildRoad() {
-    if (nBrick > 0) {
-        if (nWood > 0) {
-            nBrick--;
-            nWood--;
-            nRoad++;
-            road = document.getElementById("road");
-            road.innerHTML = "Roads " + nRoad;
-        } else {
-            //Set no resource message to true
-            $("noResource").show()
-        }
-    } else {
         //Set no resource message to true
     }
 }
-//Place road
-function placeRoad() {
-    nRoad++;
-    pRoad = document.getElementById("pRoad");
-    pRoad.innerHTML = "Roads " + nRoad;
-}
-
-//Build settlement
-function buildSettlement() {
-    if (nWood > 0) {
-        if (nBrick > 0) {
-            if (nSheep > 0) {
-                if (nWheat > 0) {
-                    nWood--;
-                    nBrick--;
-                    nSheep--;
-                    nWheat--;
-                    nSettlement++;
-                    settlement = document.getElementById("settlement");
-                    settlement.innerHTML = "Settlements " + nSettlement;
-                } else {
-                    //Set no resource message to true
-                }
-            } else {
-                //Set no resource message to true
-            }
-        } else {
-            //Set no resource message to true
-        }
-    } else {
-        //Set no resource message to true
-    }
-}
-//Place settlement
-function placeSettlement() {
-    nSettlement++;
-    pSettlement = document.getElementById("pSettlement");
-    pSettlement.innerHTML = "Settlements " + nSettlement;
-}
-
-//Build city
-function buildCity() {
-    if (nOre > 2) {
-        if (nWheat > 1) {
-            nOre -= 3;
-            nWheat -= 2;
-            nCity++;
-            city = document.getElementById("city");
-            city.innerHTML = "Cities " + nCity;
-        } else {
-            //Set no resource message to true
-        }
-    } else {
-        //Set no resource message to true
+//Activate Knight
+function activateKnight() {
+    if (nWheat > 0) {
+        knight = true;
     }
 }
 
 
-//function roll(dice)
-//{
+/////////////////////////// COPY PASTED BOARDMAP BELOW //////////////////////////////////
 
-
-//}
-
-
+$('button').prop('disabled', false);
 
 function HexBlueprint(axial_x, axial_y, axial_z, size, resource)
 {
@@ -581,11 +504,11 @@ function HexBlueprint(axial_x, axial_y, axial_z, size, resource)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h};
+    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
 
     this.points = "";
 
-    for(var i = 0; i<=5; i++)
+    for(var i = 0; i<=5; i++) // HOLY SHIT
     {
         this.points += this.get_Hex_corner(i).i + "," + this.get_Hex_corner(i).l + " ";
     }
@@ -594,7 +517,7 @@ function HexBlueprint(axial_x, axial_y, axial_z, size, resource)
 }
 
 HexBlueprint.prototype.get_Hex_corner = function(vertex)
-{
+{ // OH. MY. LIFE.
     var angle_deg = 60 * vertex + 30;
     var angle_rad = Math.PI / 180 * angle_deg;
     var a = this.centre.x + (this.size - 16) * Math.cos(angle_rad);
@@ -612,6 +535,7 @@ function EdgeBlueprint(axial_x, axial_y, axial_z, size)
     this.axial_z = axial_z;
     this.height = size;
     this.width = 2*size/3;
+    //this.resource = resource;
 
     var heightoffset =3;
     var widthoffset = 3.9;
@@ -622,11 +546,11 @@ function EdgeBlueprint(axial_x, axial_y, axial_z, size)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h};
+    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
 
     this.points = "";
 
-    for(var i = 0; i<=3; i++)
+    for(var i = 0; i<=3; i++) // HOLY SHIT
     {
         this.points += this.get_Edge_corner(i).i + "," + this.get_Edge_corner(i).l + " ";
     }
@@ -635,7 +559,7 @@ function EdgeBlueprint(axial_x, axial_y, axial_z, size)
 }
 
 EdgeBlueprint.prototype.get_Edge_corner = function(vertex)
-{
+{ // OH. MY. LIFE.
     var angle_deg = 90 * (vertex+1) +45;
     var horizontaloffset = 52;
 
@@ -649,11 +573,13 @@ EdgeBlueprint.prototype.get_Edge_corner = function(vertex)
 
 function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
 {
+    //SIDE IS ALWAYS LEFT!! VAR SIDE STORES UP OR DOWN
     this.axial_x = axial_x;
     this.axial_y = axial_y;
     this.axial_z = axial_z;
     this.height = size*1.4;
     this.width = 3*size/4;
+    //	this.resource = resource;
 
     var heightoffset =2.15;
     var widthoffset = 3.45;
@@ -664,10 +590,10 @@ function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h};
+    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
 
     this.points = "";
-    for(var i = 0; i<=3; i++)
+    for(var i = 0; i<=3; i++) // HOLY SHIT
     {
         this.points += this.get_SideEdge_corner(i,side).i + "," + this.get_SideEdge_corner(i,side).l + " ";
     }
@@ -676,7 +602,7 @@ function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
 }
 
 SideEdgeBlueprint.prototype.get_SideEdge_corner = function(vertex,side)
-{
+{ // OH. MY. LIFE.
     if(vertex%2==0 && side=='top')
         var angle_deg = 90 * (vertex+1)+70;
     else if(vertex%2==0 && side=='bottom')
@@ -718,7 +644,7 @@ function IntersectionBlueprint(axial_x, axial_y, axial_z,count)
     else
         hoffset=57;
 
-    this.centre = {x:  t, y:  h};
+    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
     angle = this.get_Intersection_corner(count);
     t +=60* Math.cos(angle);
     h +=hoffset* Math.sin(angle);
@@ -727,11 +653,14 @@ function IntersectionBlueprint(axial_x, axial_y, axial_z,count)
 }
 
 IntersectionBlueprint.prototype.get_Intersection_corner = function(vertex)
-{
+{ // OH. MY. LIFE.
     var angle_deg = 60 * vertex + 30;
     var angle_rad = Math.PI / 180 * angle_deg;
+    //var a = this.centre.x + (this.size - 16) * Math.cos(angle_rad);
+    //var b = this.centre.y + (this.size - 16) * Math.sin(angle_rad);
 
     return angle_rad;
+
 }
 
 
@@ -803,13 +732,6 @@ function init()
 
 
 
-
-
-
-
-
-
-
     var jsonEdges = [];
     var jsonIntersections = [];
     var board_radius = 4;
@@ -839,18 +761,18 @@ function init()
                 var EdgeWidth = hxradius;
 
                 // MAKE HEX
-                /*
-                 var hex = new HexBlueprint(x, y, x+y, hxradius, '#00b377');
-                 var Random = Math.floor(Math.random() * 12) +1;
-                 var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
-                 "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": Random };
-                 jsonPolygons.push(polyValues);
-                 */
+
+                //	var hex = new HexBlueprint(x, y, x+y, hxradius, '#00b377');
+                //	var Random = Math.floor(Math.random() * 12) +1;
+                //	var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
+                //	 "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": Random };
+                //	jsonPolygons.push(polyValues);
+
                 // MAKE EDGES
 
                 var edge = new SideEdgeBlueprint(x, y, x+y, EdgeHeight,'top');
                 var edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                    "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e1_"+x+"_"+y};
+                    "stroke":"black", "stroke_width": "3", "fill" : "white", "points": edge.points, "id": "e1_"+x+"_"+y};
 
                 var tempEdge;
                 var search = true;
@@ -869,7 +791,7 @@ function init()
 
                 edge = new EdgeBlueprint(x, y, x+y, EdgeHeight);
                 edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                    "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e2_"+x+"_"+y};
+                    "stroke":"black", "stroke_width": "3", "fill" : "white", "points": edge.points, "id": "e2_"+x+"_"+y};
 
                 var tempEdge;
                 var search = true;
@@ -888,7 +810,7 @@ function init()
 
                 edge = new SideEdgeBlueprint(x, y, x+y, EdgeHeight,'bottom');
                 edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                    "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points,"id": "e3_"+x+"_"+y};
+                    "stroke":"black", "stroke_width": "3", "fill" : "white", "points": edge.points,"id": "e3_"+x+"_"+y};
                 var tempEdge;
                 var search = true;
                 for(var i=0;i<jsonEdges.length;i++){
@@ -907,7 +829,7 @@ function init()
 
                 edge = new SideEdgeBlueprint(x, ny, x+ny, EdgeHeight,'bottom');
                 edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                    "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points,"id": "e3_"+x+"_"+ny};
+                    "stroke":"black", "stroke_width": "3", "fill" : "white", "points": edge.points,"id": "e3_"+x+"_"+ny};
                 var tempEdge;
                 var search = true;
                 for(var i=0;i<jsonEdges.length;i++){
@@ -926,7 +848,7 @@ function init()
                 nx = x+1;
                 edge = new EdgeBlueprint(mx, ny, mx+ny, EdgeHeight);
                 edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                    "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e2_"+nx+"_"+ny};
+                    "stroke":"black", "stroke_width": "3", "fill" : "white", "points": edge.points, "id": "e2_"+nx+"_"+ny};
                 var tempEdge;
                 var search = true;
                 for(var i=0;i<jsonEdges.length;i++){
@@ -944,7 +866,7 @@ function init()
 
                 edge = new SideEdgeBlueprint(mx, y, mx+y, EdgeHeight,'top');
                 edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                    "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e1_"+nx+"_"+y};
+                    "stroke":"black", "stroke_width": "3", "fill" : "white", "points": edge.points, "id": "e1_"+nx+"_"+y};
                 var tempEdge;
                 var search = true;
                 for(var i=0;i<jsonEdges.length;i++){
@@ -1076,15 +998,6 @@ function init()
                     IntersectionNeighbours.push(circleValues);
                 }
 
-                //	for( var a = 0; a < jsonPolygons.length; a++)
-                //	{
-                //	var temp = parsePID(jsonPolygons[a].id);
-                //var tempx = temp.i;
-                //var tempy = temp.j;
-                //window.alert(tempx);
-                //window.alert(x);
-                //	}
-
 
             }
         }
@@ -1096,22 +1009,195 @@ function init()
     }
 
 
-    //parsePID('h_3_2');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var circs = [];
+    var halfwidth = Math.sqrt(3)/2*hxradius;
+    var ybaby = (Math.tan(Math.PI*3/18))*halfwidth;
+
+
     /*
-     function parsePID(pid){
-     var nbarray = pid.match(/_\d/g);
-     var nb = /\d/;
-     var aa = nbarray[0];
-     var bb = nbarray[1];
-     aa = nb.exec(aa);
-     bb = nb.exec(bb);
-     var obj = {i:aa, j:bb};
-     window.alert(obj.i);
-     window.alert(obj.j);
-     return obj;
+     var i,j;
+     for( i = -3; i <= 3; i++)
+     {
+     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 + hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 + 2*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 + 4*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 + 5*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 - hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 - 2*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 - 4*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 - 5*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 + ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 + 5*ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 + 7*ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 + 11*ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 - ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 - 5*ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 - 7*ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 - 11*ybaby, "radius": 4, "color" : "yellow" });
+     //d3.select("svg").append("circle").attr("cx", 600 + 2*i*halfwidth).attr("cy", 500).attr("r", 4).attr("fill", "yellow");
      }
+     circs.push({ "x_axis": 600 + 8*halfwidth, "y_axis": 350 - hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 8*halfwidth, "y_axis": 350 - 2*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 8*halfwidth, "y_axis": 350 + hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 8*halfwidth, "y_axis": 350 + 2*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 - 8*halfwidth, "y_axis": 350 - hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 - 8*halfwidth, "y_axis": 350 - 2*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 - 8*halfwidth, "y_axis": 350 + hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 - 8*halfwidth, "y_axis": 350 + 2*hxradius, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 - 9*halfwidth, "y_axis": 350 + ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 - 9*halfwidth, "y_axis": 350 - ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 9*halfwidth, "y_axis": 350 + ybaby, "radius": 4, "color" : "yellow" });
+     circs.push({ "x_axis": 600 + 9*halfwidth, "y_axis": 350 - ybaby, "radius": 4, "color" : "yellow" });
      */
-    var color ='blue';
+    /*
+     var xcoord = 600;
+     var ycoord = 350;
+     var jsonIntersections = [
+     { "x_axis": xcoord, "y_axis": ycoord + hxradius, "radius": 8, "color" : "red", "id" : "a00 10 01"},
+     { "x_axis": xcoord, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "green" },
+     { "x_axis": xcoord, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord, "y_axis": ycoord - hxradius, "radius": 8, "color" : "blue" },
+     { "x_axis": xcoord, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "yellow" },
+     { "x_axis": xcoord, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "gray" },
+     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 8*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 8*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 8*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 8*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 8*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 8*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 8*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 8*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 9*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord - 9*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 9*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
+     { "x_axis": xcoord + 9*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" }
+     ];
+     */
 
     var holder = d3.select("svg"); // --------------------
 
@@ -1132,8 +1218,22 @@ function init()
         .attr("id",function (d) { return d.id; })
         .attr("fill","black")
         .attr("stroke","white")
-        .on("click", function (d) { d3.select(this).attr("fill", color)
-            .attr("stroke","black");});
+        .on("dblclick", function (d) { d3.select(this).attr("fill", color)
+            .attr("stroke","black")})
+        .on("click", function (d) { d3.select(this).attr("fill", color)});
+
+    /*var testcircs = holder.selectAll("circle")
+     .data(circs)
+     .enter()
+     .append("circle");
+     console.log(testcircs);
+     var testcircleAttributes = testcircs
+     .attr("cx", function (d) { return d.x_axis; })
+     .attr("cy", function (d) { return d.y_axis; })
+     .attr("r", function (d) { return d.radius; })
+     .style("fill", function(d) { return d.color; });*/
+
+
 
 
     var polygonAttrs = polygons
@@ -1152,7 +1252,7 @@ function init()
         else if(d.terrain_type === "desert"){return "#ffffb3"}
         else if(d.terrain_type === "gold"){return "#e6b800"}
         else {return "white";}})
-        .on("click", function (d) {d3.select("svg")
+        .on("dblclick", function (d) {d3.select("svg")
             .append("polygon")
             .attr("cx", d.x)
             .attr("cy", d.y)
@@ -1168,6 +1268,8 @@ function init()
             d3.select(this).attr("fill", c);
             d.fill=c; console.log(JSON.stringify(d));});
 
+
+    // NEED
     var edges = holder.selectAll("edges")
         .data(jsonEdges)
         .enter()
@@ -1179,16 +1281,38 @@ function init()
             .attr("stroke", function (d) { return d.stroke; })
             .attr("id", function(d) { return d.id; })
             .attr("stroke-width", function (d) { return d.stroke_width; })
-            .attr("fill", "black")
-            .on("click", function (d) { d3.select(this).attr("fill", color);})
+            .attr("fill", "white")
+            .on("dblclick", function (d) { d3.select(this).attr("fill", color);})
         ;
+
+
+    //------------------------------
+
+    //				.on("dblclick", function (d) {})
+    //				.on("click", function(d) {})
+
+
+//console.log(polyPoints);
+//console.log(JSON.stringify(jsonPolygons));
+    //	var holder = d3.select("svg");
+
+    //	holder.append("text")         // append text
+    //		 .style("fill", "black")   // fill the text with the colour black
+    //		 .attr("x", 200)           // set x position of left side of text
+    //		 .attr("y", 100)           // set y position of bottom of text
+    //		 .attr("text-anchor", "end")  // set anchor y justification
+    //		 .text(JSON.stringify(jsonPolygons.length));        // define the text to display
+
+
+    //	$('button').prop('disabled', true);
+    //		$("#i3_0_0").attr("style","fill:red;");
 }
+
+
 
 function roll(dice)
 {
 
 }
 
-function sendEdge(Edge){
-    stompClient.send("/edge",{},Edge);
-}
+/*]]>*/

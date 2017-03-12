@@ -23,18 +23,23 @@ import java.util.Map;
 @Controller
 public class GameController {
 
-    private static ArrayList<String> currPlayerList;
+    private static ArrayList<String> currPlayerList = new ArrayList<String>();
     private static Game aGame;
-    private static Map<String, Player> aPlayers;
+    private static Map<String, Player> aPlayers ;
 
     private static int placeSettlementAndRoadCounter = 0;
     private static int placeCityAndRoadCounter = 0;
+
+    private static int currPlayerTurn = 0;
+    private static int currNumPlayers;
 
 
     public static void setCurrPlayerList(ArrayList<String> pList){
         for (String s : pList){
             currPlayerList.add(s);
         }
+
+        currNumPlayers = currPlayerList.size();
     }
 
     public static void createGame(){
@@ -50,6 +55,8 @@ public class GameController {
 
         String name = principal.getName(); //get logged in username
         model.addAttribute("username", name);
+        model.addAttribute("startingPlayer",currPlayerList.get(0));
+
 
         return "game";
     }
@@ -64,13 +71,32 @@ public class GameController {
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
     public ViewPeice placecity(ViewPeice pNew){
+
         return pNew;
+
     }
 
-    @MessageMapping("/updateDice")
+    @MessageMapping("/rolldice")
     @SendTo("/topic/dice")
     public DiceRoll showDice(DiceRoll pDice){
+
+
+        //backend code goes here
+
         return pDice;
+    }
+
+    @MessageMapping("/endturn")
+    @SendTo("/topic/turninfo")
+    public String endTurn(Principal user){
+
+        System.out.println("I am here!!!!!!!!!!!!!");
+        currPlayerTurn = (currPlayerTurn + 1)%currNumPlayers;
+        //backend code goes here
+
+
+        System.out.println("Returning!!!!!!!!");
+        return currPlayerList.get(currPlayerTurn);
     }
 
 
