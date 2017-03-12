@@ -17,7 +17,6 @@ import java.util.Map;
 public class GameRoomController {
 
 
-
     @RequestMapping(value="/gameroom", method= RequestMethod.GET)
     public String gameroom(Map<String, Object> model) {
 
@@ -33,9 +32,9 @@ public class GameRoomController {
 
         //Thread.sleep(1000); //simulated delay
         playerList.add(principal.getName());
-        if(playerList.size() == 2){
+        if(playerList.size() ==2){
             GameController.setCurrPlayerList(playerList);
-            //GameController.createGame();
+            GameController.createGame();
         }
 
         GameRoomView grv = new GameRoomView(principal.getName(),playerList.size());
@@ -46,10 +45,18 @@ public class GameRoomController {
         return(grv);
     }
 
+    /*@MessageMapping("/ready")
+    @SendTo("/topic/gameroom")
+    public String greeting(Principal principal) throws Exception{
+        //Thread.sleep(1000); //simulated delay
+        playerList.add(principal.getName());
 
+        GameRoomView grv = new GameRoomView(principal.getName(),playerList.size());
 
+        System.out.print(principal.getName());
+        //return (playerList);
 
-
-
+        return(principal.getName());
+    }*/
 
 }

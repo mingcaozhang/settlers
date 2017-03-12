@@ -113,45 +113,7 @@ if (counter == 2){ var color = 'yellow';}
 if (counter == 3){ var color = 'red';}
 if (counter == 4){ var color = 'orange';}
 
-var color = 'black';
-
-if (counter == 1){ var color = 'blue';}
-if (counter == 2){ var color = 'yellow';}
-if (counter == 3){ var color = 'red';}
-if (counter == 4){ var color = 'orange';}
-
-//Roll Dice
-function rollDice() {
-    var status = document.getElementById("status");
-    var d1 = Math.floor(Math.random() * 6) + 1;
-    var d2 = Math.floor(Math.random() * 6) + 1;
-    var d3 = Math.floor(Math.random() * 6) + 1;
-
-    document.images["die1"].src = eval("die1Face" + d1 + ".src");
-    document.images["die2"].src = eval("die2Face" + d2 + ".src");
-    document.images["eventDie"].src = eval("eventFace" + d3 + ".src");
-
-    //Increment barbarian count if event die is (1, 2, 3)
-    if(d3 == 1 || d3 == 2 || d3 == 3) {
-        barbarianCount += 1;
-
-        //Barbarian attack
-        if(barbarianCount == 6) {
-            barbarian = 0;
-        }
-    }
-
-    var diceTotal = d1 + d2;
-    status.innerHTML = "You rolled " + diceTotal + ".";
-    if(diceTotal == 7){
-        status.innerHTML += " Robber!";
-    }
-}
-
-//Used to enable rollDice button when end turn button is pressed
-function enableBtn() {
-    document.getElementById('rolldice').disabled = false;
-
+function intitializeTurn(){
 
     if(startingPlayer.match(myUsername)){
         //disable all turn buttons
@@ -180,8 +142,8 @@ function connect() {
         stompClient.subscribe('/topic/turninfo', function (user) {
             currUser = user.body;
 
-            console.log(currUser);
-            console.log(user.body);
+            //console.log(currUser);
+           // console.log(user.body);
 
             if(currUser.match(myUsername)){
                 //disable all turn buttons
@@ -200,8 +162,8 @@ function connect() {
             if(counter == 5) {
                 counter = 1;
             }
-            var player = document.getElementById("player");
-            player.innerHTML = currUser+"'s turn";
+           // var player = document.getElementById("player");
+            //player.innerHTML = currUser+"'s turn";
 
         });
 
@@ -242,6 +204,22 @@ function connect() {
     });
 }
 
+
+function sendEdge(Edge){
+    stompClient.send("/edge",{},Edge);
+}
+
+function sendHex(Hex){
+    stompClient.send("/hex",{},Hex);
+}
+
+function sendIntersection(Intersection){
+    stompClient.send("/intersection",{},Intersection);
+}
+
+function readySetNeighbours(){
+    stompClient.send("/setNeighbours",{},{});
+}
 
 
 //Roll Dice
@@ -1042,3 +1020,4 @@ var textLabels = text
     .attr("font-size", "16px")
     .attr("fill", "black")
     .attr("text-anchor", "middle");
+
