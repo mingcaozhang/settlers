@@ -3,14 +3,12 @@ package com.example.controllers.network;
 import com.example.viewobjects.GameRoomView;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -35,7 +33,7 @@ public class GameRoomController {
         playerList.add(principal.getName());
         System.out.println("adding to list"+principal.getName());
 
-        if(playerList.size() == 2){
+        if(playerList.size() == 3){
             System.out.println("creating list!");
             GameController.setCurrPlayerList(playerList);
             GameController.createGame();

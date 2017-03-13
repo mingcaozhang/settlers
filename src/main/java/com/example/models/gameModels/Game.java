@@ -1,20 +1,23 @@
 package com.example.models.gameModels;
+import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
+
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
  * Created by G on 17/03/03.
  */
 public class Game {
-    private final List<Player> aPlayers = new ArrayList<Player>(); // TODO
+    private ArrayList<Player> aPlayers = new ArrayList<Player>();
     private final int aVPsToWin;
 
     private Map<String,Hex> aHexes = new HashMap<String,Hex>();
     private Map<String,Edge> aEdges = new HashMap<String,Edge>();
     private Map<String,Intersection> aIntersections = new HashMap<String,Intersection>();
 
-    public Queue<Hex> lHexes = new LinkedList<Hex>();
-    public Queue<Edge> lEdges = new LinkedList<Edge>();
-    public Queue<Intersection> lIntersections = new LinkedList<Intersection>();
+    public List<Hex> lHexes = new ArrayList<Hex>();
+    public List<Edge> lEdges = new ArrayList<Edge>();
+    public List<Intersection> lIntersections = new ArrayList<Intersection>();
 
     private static HashMap<Integer, ArrayList<LandHex>> aLandHexes; //TODO maybe
     private HashMap<ResourceCard.ResourceType, Queue<ResourceCard>> aResourceCards;
@@ -27,19 +30,20 @@ public class Game {
     private DiceNumber aRedDice;
     private DiceNumber aYellowDice;
     private EventType aEventDice;
-    private Queue<Player> aPlayerQueue;
+    //private Queue<Player> aPlayerQueue;
     private int aTurnCounter;
 
-    public Game(int pVPsToWin, List<String> pPlayers,List<String> pColors){
+    public Game(int pVPsToWin, ArrayList<Player> pPlayers,List<String> pColors){
         aVPsToWin = pVPsToWin;
         aBarbarianPosition = 6;
         aGoldBank = 50;
-        for(int i=0;i<pPlayers.size();i++)
-        {
-            Player aPlayer = new Player(pPlayers.get(i),pColors.get(i),i);
-            aPlayers.add(i,aPlayer);
-        }
-        aPhase = GamePhase.SetupRoundOne;
+        aPlayers = pPlayers;
+//        for(int i=0;i<pPlayers.size();i++)
+//        {
+//            Player aPlayer = new Player(pPlayers.get(i),pColors.get(i));
+//            aPlayers.add(i,aPlayer);
+//        }
+//        aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
         aTurnCounter = 1;
@@ -50,6 +54,7 @@ public class Game {
 //      aPlayerQueue = new LinkedList<Player>();
         System.out.println("BILLY BOBBY");
     }
+
 
     public void setPhase(GamePhase pPhase){
         aPhase = pPhase;
@@ -91,7 +96,7 @@ public class Game {
         aTurnCounter++;
     }
 
-    public List<Player> getPlayers(){
+    public ArrayList<Player> getPlayers(){
         return aPlayers;
     }
 
@@ -155,23 +160,51 @@ public class Game {
         return aPhase;
     }
 
+    private void waitToSet(){
+        try {
+            Thread.sleep(10000);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+
     public void setAllNeighbours(){
-        for(Hex h: lHexes)
+       // System.out.println("hello YOUTUBE COMMUNITY");
+        for(int i=0;i< lHexes.size();i++)
         {
-            h.setEdgeNeighbours(aEdges);
-            h.setHexNeighbours(aHexes);
-            h.setIntersectionNeighbours(aIntersections);
+            lHexes.get(i).setEdgeNeighbours(aEdges);
+          //  waitToSet();
+            lHexes.get(i).setHexNeighbours(aHexes);
+           // waitToSet();
+            lHexes.get(i).setIntersectionNeighbours(aIntersections);
+           // waitToSet();
+          //  System.out.println(lHexes.get(i).getIntersectionNeighbours().peek().getId());
+          //  System.out.println(lHexes.get(i).getId());
+
+            //   System.out.println("hello YOUTUBE COMMUNITY");
         }
-        for(Edge e: lEdges)
+        for(int i=0;i< lEdges.size();i++)
         {
-            e.setEdgeNeighbours(aEdges);
-            e.setHexNeighbours(aHexes);
-            e.setIntersectionNeighbours(aIntersections);
+            /*
+           // waitToSet();
+            lEdges.get(i).setEdgeNeighbours(aEdges);
+           // waitToSet();
+            lEdges.get(i).setHexNeighbours(aHexes);
+           // waitToSet();
+            lEdges.get(i).setIntersectionNeighbours(aIntersections);
+           // waitToSet();
+         //   System.out.println("its my birthday today");
+            */
         }
-        for(Intersection i: lIntersections) {
-            i.setEdgeNeighbours(aEdges);
-            i.setHexNeighbours(aHexes);
-            i.setIntersectionNeighbours(aIntersections);
+        for(int i=0;i< lIntersections.size();i++) {
+            lIntersections.get(i).setEdgeNeighbours(aEdges);
+           // waitToSet();
+            lIntersections.get(i).setHexNeighbours(aHexes);
+           // waitToSet();
+            lIntersections.get(i).setIntersectionNeighbours(aIntersections);
+          //  System.out.println("And i am just so happy");
+
         }
     }
 
@@ -195,11 +228,11 @@ public class Game {
                 setEventDice(EventType.values()[3]);
         }
 
-        if (getTurnCounter() > 2) {
-            checkBarbarian();
-        }
+//        if (getTurnCounter() > 2) {
+//            checkBarbarian();
+//        }
         checkDice();
-        setPhase(GamePhase.TurnDiceRolled);
+//        setPhase(GamePhase.TurnDiceRolled);
     }
 
     private void checkBarbarian(){
@@ -281,7 +314,7 @@ public class Game {
         return (pIntersection.getOccupant().getClass() == City.class);
     }
 
-    public void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
+    private void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
         if (pTerrainType == TerrainType.GoldMine){
             if (removeGold()) {
                 pOwner.addGold();
@@ -305,6 +338,19 @@ public class Game {
             else{
                 assert(!getCommodityCards().get(pTerrainType.giveCommodity()).isEmpty());
                 pOwner.addCard(getCommodityCards().get(pTerrainType.giveCommodity()).remove());
+            }
+        }
+    }
+
+    public void setupPayout(){
+        for (Map.Entry<String,Intersection> intersection : aIntersections.entrySet()){
+            if (intersection.getValue().getOccupant().getClass() == City.class){
+                Player owner = intersection.getValue().getOccupant().getOwner();
+                Intersection cityLocation = intersection.getValue();
+                for(Hex hex : cityLocation.getHexNeighbours()){
+                    TerrainType pTerrainType = hex.getTerrainType();
+                    owner.addCard(getResourceCards().get(pTerrainType.giveResource()).remove());
+                }
             }
         }
     }
@@ -513,6 +559,107 @@ public class Game {
     private void nextPlayer(){
         updateTurnCounter();
     }
+
+    public void setPlayers(ArrayList<Player> pPlayers){
+        aPlayers = pPlayers;
+    }
+
+    public void setPlayerProperties(ArrayList<Player> pListofPlayers){
+        Queue<City> allCities = new LinkedList<City>();
+        allCities = City.getUnits();
+        Queue<Settlement> allSettlements = new LinkedList<Settlement>();
+        allSettlements = Settlement.getUnits();
+        Queue<Road> allRoads = new LinkedList<Road>();
+        allRoads = Road.getUnits();
+        Queue<Ship> allShips = new LinkedList<Ship>();
+        allShips = Ship.getUnits();
+        Queue<Wall> allWalls = new LinkedList<Wall>();
+        allWalls = Wall.getUnits();
+        Queue<BasicKnight> allBasicKnights = new LinkedList<BasicKnight>();
+        allBasicKnights = BasicKnight.getUnits();
+        Queue<StrongKnight> allStrongKnights = new LinkedList<StrongKnight>();
+        allStrongKnights = StrongKnight.getUnits();
+        Queue<MightyKnight> allMightyKnights = new LinkedList<MightyKnight>();
+        allMightyKnights = MightyKnight.getUnits();
+
+        for (Player player : pListofPlayers){
+            Queue<City> aCities = new LinkedList<City>();
+            Queue<Settlement> aSettlements = new LinkedList<Settlement>();
+            Queue<Road> aRoads = new LinkedList<Road>();
+            Queue<Ship> aShips = new LinkedList<Ship>();
+            Queue<Wall> aWalls = new LinkedList<Wall>();
+            Queue<BasicKnight> aBasicKnights = new LinkedList<BasicKnight>();
+            Queue<StrongKnight> aStrongKnights = new LinkedList<StrongKnight>();
+            Queue<MightyKnight> aMightyKnights = new LinkedList<MightyKnight>();
+
+            addCitiesToPlayer(allCities, aCities, player);
+            addSettlementsToPlayer(allSettlements, aSettlements, player);
+            addRoadsToPlayer(allRoads, aRoads, player);
+            addShipsToPlayer(allShips, aShips, player);
+            addWallsToPlayer(allWalls, aWalls, player);
+            addBasicKnightsToPlayer(allBasicKnights, aBasicKnights, player);
+            addStrongKnightsToPlayer(allStrongKnights, aStrongKnights, player);
+            addMightyKnightsToPlayer(allMightyKnights, aMightyKnights, player);
+        }
+    }
+
+    private static void addCitiesToPlayer(Queue<City> allCities, Queue<City> playerCities, Player pPlayer){
+        for (int i = 0; i < 4; i++){
+            //System.out.println(allCities.isEmpty());
+            playerCities.add(allCities.remove());
+        }
+        pPlayer.setCities(playerCities);
+    }
+
+    private static void addSettlementsToPlayer(Queue<Settlement> allSettlements, Queue<Settlement> playerSettlements, Player pPlayer){
+        for (int i = 0; i < 4; i++){
+            playerSettlements.add(allSettlements.remove());
+        }
+        pPlayer.setSettlements(playerSettlements);
+    }
+
+    private static void addRoadsToPlayer(Queue<Road> allRoads, Queue<Road> playerRoads, Player pPlayer){
+        for (int i = 0; i < 15; i++){
+            playerRoads.add(allRoads.remove());
+        }
+        pPlayer.setRoads(playerRoads);
+    }
+
+    private static void addShipsToPlayer(Queue<Ship> allShips, Queue<Ship> playerShips, Player pPlayer){
+        for (int i = 0; i < 15; i++){
+            playerShips.add(allShips.remove());
+        }
+        pPlayer.setShips(playerShips);
+    }
+
+    private static void addWallsToPlayer(Queue<Wall> allWalls, Queue<Wall> playerWalls, Player pPlayer){
+        for (int i = 0; i < 3; i++){
+            playerWalls.add(allWalls.remove());
+        }
+        pPlayer.setWalls(playerWalls);
+    }
+
+    private static void addBasicKnightsToPlayer(Queue<BasicKnight> allBasicKnights, Queue<BasicKnight> playerBasicKnights, Player pPlayer){
+        for (int i = 0; i < 2; i++){
+            playerBasicKnights.add(allBasicKnights.remove());
+        }
+        pPlayer.setBasicKnights(playerBasicKnights);
+    }
+
+    private static void addStrongKnightsToPlayer(Queue<StrongKnight> allStrongKnights, Queue<StrongKnight> playerStrongKnights, Player pPlayer){
+        for (int i = 0; i < 2; i++){
+            playerStrongKnights.add(allStrongKnights.remove());
+        }
+        pPlayer.setStrongKnights(playerStrongKnights);
+    }
+
+    private static void addMightyKnightsToPlayer(Queue<MightyKnight> allMightyKnights, Queue<MightyKnight> playerMightyKnights, Player pPlayer){
+        for (int i = 0; i < 2; i++){
+            playerMightyKnights.add(allMightyKnights.remove());
+        }
+        pPlayer.setMightyKnights(playerMightyKnights);
+    }
+
 
     public enum GamePhase{
         SetupRoundOne,SetupRoundTwo, TurnFirstPhase, TurnDiceRolled, TurnSecondPhase, Completed

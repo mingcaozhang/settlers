@@ -80,7 +80,7 @@ public class Edge extends Geometry{
                 id4 = "blah";
                 //will return null
         }
-            System.out.println("THIS: "+getId());
+          //  System.out.println("THIS: "+getId());
 
         if(pEdges.get(id1)!=null) {
        //     System.out.println(id1);

@@ -10,7 +10,7 @@ public class PlayerIncrement {
     private int p1Brick;
     private int p1Gold;
     private int p1Sheep;
-    private int p1Book;
+    private int p1Paper;
     private int p1Cloth;
     private int p1Coin;
 
@@ -20,7 +20,7 @@ public class PlayerIncrement {
     private int p2Brick;
     private int p2Gold;
     private int p2Sheep;
-    private int p2Book;
+    private int p2Paper;
     private int p2Cloth;
     private int p2Coin;
 
@@ -29,7 +29,7 @@ public class PlayerIncrement {
     private int p3Brick;
     private int p3Gold;
     private int p3Sheep;
-    private int p3Book;
+    private int p3Paper;
     private int p3Cloth;
     private int p3Coin;
 
@@ -38,14 +38,14 @@ public class PlayerIncrement {
     private int p4Brick;
     private int p4Gold;
     private int p4Sheep;
-    private int p4Book;
+    private int p4Paper;
     private int p4Cloth;
     private int p4Coin;
 
     public PlayerIncrement(){
     }
 
-    public void setp1(int gold, int ore, int brick, int wood, int sheep, int coin, int cloth, int book){
+    public void setp1(int gold, int ore, int brick, int wood, int sheep, int coin, int cloth, int paper){
         p1Gold = gold;
         p1Ore = ore;
         p1Brick = brick;
@@ -53,10 +53,10 @@ public class PlayerIncrement {
         p1Sheep = sheep;
         p1Coin = coin;
         p1Cloth = cloth;
-        p1Book = book;
+        p1Paper = paper;
     }
 
-    public void setp2(int gold, int ore, int brick, int wood, int sheep, int coin, int cloth, int book){
+    public void setp2(int gold, int ore, int brick, int wood, int sheep, int coin, int cloth, int paper){
         p2Gold = gold;
         p2Ore = ore;
         p2Brick = brick;
@@ -64,10 +64,10 @@ public class PlayerIncrement {
         p2Sheep = sheep;
         p2Coin = coin;
         p2Cloth = cloth;
-        p2Book = book;
+        p2Paper = paper;
     }
 
-    public void setp3(int gold, int ore, int brick, int wood, int sheep, int coin, int cloth, int book){
+    public void setp3(int gold, int ore, int brick, int wood, int sheep, int coin, int cloth, int paper){
         p3Gold = gold;
         p3Ore = ore;
         p3Brick = brick;
@@ -75,10 +75,10 @@ public class PlayerIncrement {
         p3Sheep = sheep;
         p3Coin = coin;
         p3Cloth = cloth;
-        p3Book = book;
+        p3Paper = paper;
     }
 
-    public void setp4(int gold, int ore, int brick, int wood, int sheep, int coin, int cloth, int book){
+    public void setp4(int gold, int ore, int brick, int wood, int sheep, int coin, int cloth, int paper){
         p4Gold = gold;
         p4Ore = ore;
         p4Brick = brick;
@@ -86,6 +86,6 @@ public class PlayerIncrement {
         p4Sheep = sheep;
         p4Coin = coin;
         p4Cloth = cloth;
-        p4Book = book;
+        p4Paper = paper;
     }
 }

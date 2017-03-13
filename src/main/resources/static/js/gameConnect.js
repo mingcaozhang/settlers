@@ -34,7 +34,7 @@ function showJoinedUser(grv){
     //$("#playerlist").append("<button type=\"button\" class=\"player-btn\">"+you+" has connected!</button>");
     $("#playerlist").append("<button type=\"button\" class=\"player-btn\">"+grv.name+" has connected!</button>");
 
-    if(grv.numJoined == 2){
+    if(grv.numJoined == 3){
         $("#gameroom").show();
     }
 
