@@ -1,3 +1,4 @@
+/*<![CDATA[*/
 //Event die faces
 var eventFace1 = new Image();
 eventFace1.src = "/images/barbarianShip.png";
@@ -98,13 +99,123 @@ var barbarian;
 var knight;
 
 //Turn Counter
-var counter = 1;
-var color = 'black';
+//var counter = 1;
+//var color = 'black';
+//var myUsername = [[${username}]];
+var stompClient = null;
 
-if (counter == 1){ var color = 'blue';}
-if (counter == 2){ var color = 'yellow';}
-if (counter == 3){ var color = 'red';}
-if (counter == 4){ var color = 'orange';}
+connect();
+intitializeTurn();
+console.log("my username is: "+myUsername);
+console.log("my color is: "+myColor);
+
+
+
+function intitializeTurn(){
+
+    if(startingPlayer.match(myUsername)){
+        //disable all turn buttons
+        document.getElementById('rolldice').disabled = false;
+        document.getElementById('endTurn').disabled = false;
+
+
+    }else{
+        //enable all turn buttons
+        document.getElementById('rolldice').disabled = true;
+        document.getElementById('endTurn').disabled = true;
+    }
+
+
+}
+
+function connect() {
+    //showJoinedUser("I just connected!");
+    var socket = new SockJS('/game-board-socket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+       // setConnected(true);
+        console.log('Connected: ' + frame);
+
+
+        stompClient.subscribe('/topic/turninfo', function (user) {
+            currUser = user.body;
+
+            //console.log(currUser);
+           // console.log(user.body);
+
+            if(currUser.match(myUsername)){
+                //disable all turn buttons
+                document.getElementById('rolldice').disabled = true;
+                document.getElementById('endTurn').disabled = true;
+
+
+            }else{
+                //enable all turn buttons
+                document.getElementById('rolldice').disabled = false;
+                document.getElementById('endTurn').disabled = false;
+            }
+
+
+
+            //currUser
+
+        });
+
+
+
+        stompClient.subscribe('/topic/dice', function (dice) {
+            dice = JSON.parse((dice.body));
+
+            console.log(dice.red);
+            console.log(dice.yellow);
+            console.log(dice.event);
+
+            document.images["die1"].src = eval("die1Face" + dice.red + ".src");
+            document.images["die2"].src = eval("die2Face" + dice.yellow + ".src");
+            document.images["eventDie"].src = eval("eventFace" + dice.event + ".src");
+
+            //Increment barbarian count if event die is (1, 2, 3)
+            if(dice.event == 1 || dice.event == 2 || dice.event == 3) {
+                barbarianCount += 1;
+
+                //Barbarian attack
+                if(barbarianCount == 6) {
+                    barbarian = 0;
+                }
+            }
+
+            var diceTotal = dice.red + dice.yellow;
+            status.innerHTML = "You rolled " + diceTotal + ".";
+            console.log("You rolled " + diceTotal + ".");
+            if(diceTotal == 7){
+                status.innerHTML += " Robber!";
+            }
+        });
+
+
+
+
+    });
+}
+
+/*Button clicks sent to backend!*/
+
+function sendEdge(Edge){
+    stompClient.send("/edge",{},Edge);
+}
+
+function sendHex(Hex){
+    stompClient.send("/hex",{},Hex);
+}
+
+function sendIntersection(Intersection){
+    stompClient.send("/intersection",{},Intersection);
+}
+
+function readySetNeighbours(){
+    stompClient.send("/setNeighbours",{},{});
+}
+
 
 //Roll Dice
 function rollDice() {
@@ -113,37 +224,24 @@ function rollDice() {
     var d2 = Math.floor(Math.random() * 6) + 1;
     var d3 = Math.floor(Math.random() * 6) + 1;
 
-    document.images["die1"].src = eval("die1Face" + d1 + ".src");
-    document.images["die2"].src = eval("die2Face" + d2 + ".src");
-    document.images["eventDie"].src = eval("eventFace" + d3 + ".src");
+    stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
-    //Increment barbarian count if event die is (1, 2, 3)
-    if(d3 == 1 || d3 == 2 || d3 == 3) {
-        barbarianCount += 1;
+    document.getElementById('rolldice').disabled = true;
 
-        //Barbarian attack
-        if(barbarianCount == 6) {
-            barbarian = 0;
-        }
-    }
-
-    var diceTotal = d1 + d2;
-    status.innerHTML = "You rolled " + diceTotal + ".";
-    if(diceTotal == 7){
-        status.innerHTML += " Robber!";
-    }
 }
 //Used to enable rollDice button when end turn button is pressed
-function enableBtn() {
-    document.getElementById('rolldice').disabled = false;
+function endTurn() {
 
-    counter++;
-    if(counter == 5) {
-        counter = 1;
-    }
-    var player = document.getElementById("player");
-    player.innerHTML = "Player " + counter;
+    stompClient.send("/app/endturn",{}, {});
+
 }
+
+
+
+
+
+
+
 
 //Activated to show attributes when player button is clicked
 function setAttributes() {
@@ -380,16 +478,14 @@ function HexBlueprint(axial_x, axial_y, axial_z, size, resource)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
 
-    for(var i = 0; i<=5; i++) // HOLY SHIT
+    for(var i = 0; i<=5; i++)
     {
         this.points += this.get_Hex_corner(i).i + "," + this.get_Hex_corner(i).l + " ";
     }
-
-
 }
 
 HexBlueprint.prototype.get_Hex_corner = function(vertex)
@@ -400,6 +496,7 @@ HexBlueprint.prototype.get_Hex_corner = function(vertex)
     var b = this.centre.y + (this.size - 16) * Math.sin(angle_rad);
 
     return {i: a, l: b};
+
 }
 
 function EdgeBlueprint(axial_x, axial_y, axial_z, size)
@@ -420,11 +517,11 @@ function EdgeBlueprint(axial_x, axial_y, axial_z, size)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
 
-    for(var i = 0; i<=3; i++) // HOLY SHIT
+    for(var i = 0; i<=3; i++)
     {
         this.points += this.get_Edge_corner(i).i + "," + this.get_Edge_corner(i).l + " ";
     }
@@ -447,7 +544,6 @@ EdgeBlueprint.prototype.get_Edge_corner = function(vertex)
 
 function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
 {
-    //SIDE IS ALWAYS LEFT!! VAR SIDE STORES UP OR DOWN
     this.axial_x = axial_x;
     this.axial_y = axial_y;
     this.axial_z = axial_z;
@@ -463,10 +559,10 @@ function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
-    for(var i = 0; i<=3; i++) // HOLY SHIT
+    for(var i = 0; i<=3; i++)
     {
         this.points += this.get_SideEdge_corner(i,side).i + "," + this.get_SideEdge_corner(i,side).l + " ";
     }
@@ -504,6 +600,8 @@ function IntersectionBlueprint(axial_x, axial_y, axial_z,count)
     this.axial_z = axial_z;
     this.radius = 8;
 
+
+
     var height = 120;
     var width = Math.sqrt(3)/2*height;
 
@@ -515,7 +613,7 @@ function IntersectionBlueprint(axial_x, axial_y, axial_z,count)
     else
         hoffset=57;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
     angle = this.get_Intersection_corner(count);
     t +=60* Math.cos(angle);
     h +=hoffset* Math.sin(angle);
@@ -532,6 +630,10 @@ IntersectionBlueprint.prototype.get_Intersection_corner = function(vertex)
 }
 
 
+var canvas = document.getElementById("svgcanvas");
+var q, r1, r2, r, b;
+var count = 0;
+var jsonPolygons = [];
 
 
 // a js object that describes the hexagons that make up the board.
@@ -559,13 +661,10 @@ var jsonNumCircles =
 
 var jsonEdges = [];
 var jsonIntersections = [];
-
-var numCircleRadius = 14;
 var board_radius = 4;
 var hxradius = 60;
-var polyPoints = [];
 
-// generate the edge and intersection js objects
+var polyPoints = [];
 for(q = -board_radius; q<= board_radius; q++)
 {
     r1 = Math.max(-board_radius, -q - board_radius);
@@ -578,13 +677,6 @@ for(q = -board_radius; q<= board_radius; q++)
         //draw empty hexes save the top most and bottom most rows
         if (b != board_radius && b != -board_radius)
         {
-            // generate hex production numbers
-            //var getNumCircleCoords = new HexBlueprint(q,r,b,hxradius,"");
-            //jsonNumCircles.push({x_coord: getNumCircleCoords.centre.x, y_coord: getNumCircleCoords.centre.y, x_axial: q, y_axial: r,
-            //radius: numCircleRadius, diceNum: 11});
-
-
-
             x=q;
             y=r;
             ny = y-1;
@@ -595,10 +687,27 @@ for(q = -board_radius; q<= board_radius; q++)
             var EdgeHeight = 2*hxradius/3;
             var EdgeWidth = hxradius;
 
-            // MAKE HEX
+            // generate hex production numbers
+            //var getNumCircleCoords = new HexBlueprint(q,r,b,hxradius,"");
+            //jsonNumCircles.push({x_coord: getNumCircleCoords.centre.x, y_coord: getNumCircleCoords.centre.y, x_axial: q, y_axial: r,
+            //radius: numCircleRadius, diceNum: 11});
 
+
+
+
+
+
+            // MAKE HEX
+            /*
+             var hex = new HexBlueprint(x, y, x+y, hxradius, '#00b377');
+             var Random = Math.floor(Math.random() * 12) +1;
+             var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
+             "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": Random };
+             jsonPolygons.push(polyValues);
+             */
             // MAKE EDGES
 
+            // top left
             var edge = new SideEdgeBlueprint(x, y, x+y, EdgeHeight,'top');
             var edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
                 "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e1_"+x+"_"+y};
@@ -618,6 +727,7 @@ for(q = -board_radius; q<= board_radius; q++)
                 jsonEdges.push(edgeValues);
             }
 
+            //left side
             edge = new EdgeBlueprint(x, y, x+y, EdgeHeight);
             edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
                 "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e2_"+x+"_"+y};
@@ -637,12 +747,12 @@ for(q = -board_radius; q<= board_radius; q++)
                 jsonEdges.push(edgeValues);
             }
 
+            //bottom left
             edge = new SideEdgeBlueprint(x, y, x+y, EdgeHeight,'bottom');
             edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points,"id": "e3_"+ x +"_"+ y };
+                "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points,"id": "e3_"+x+"_"+y};
             var tempEdge;
             var search = true;
-
             for(var i=0;i<jsonEdges.length;i++){
                 tempEdge = jsonEdges[i];
                 if(tempEdge.id == edgeValues.id)
@@ -651,13 +761,12 @@ for(q = -board_radius; q<= board_radius; q++)
 
                 }
             }
-
             if(search==true)
             {
                 jsonEdges.push(edgeValues);
             }
 
-
+            //top right
             edge = new SideEdgeBlueprint(x, ny, x+ny, EdgeHeight,'bottom');
             edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
                 "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points,"id": "e3_"+x+"_"+ny};
@@ -676,10 +785,10 @@ for(q = -board_radius; q<= board_radius; q++)
                 jsonEdges.push(edgeValues);
             }
 
-            nx = x+1;
+            //right side
             edge = new EdgeBlueprint(mx, ny, mx+ny, EdgeHeight);
             edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e2_"+nx+"_"+ny};
+                "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e2_"+mx+"_"+ny};
             var tempEdge;
             var search = true;
             for(var i=0;i<jsonEdges.length;i++){
@@ -695,9 +804,10 @@ for(q = -board_radius; q<= board_radius; q++)
                 jsonEdges.push(edgeValues);
             }
 
+            //bottom right
             edge = new SideEdgeBlueprint(mx, y, mx+y, EdgeHeight,'top');
             edgeValues = {"x": edge.centre.x, "y": edge.centre.y,
-                "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e1_"+nx+"_"+y};
+                "stroke":"black", "stroke_width": "3", "fill" : "black", "points": edge.points, "id": "e1_"+mx+"_"+y};
             var tempEdge;
             var search = true;
             for(var i=0;i<jsonEdges.length;i++){
@@ -719,7 +829,7 @@ for(q = -board_radius; q<= board_radius; q++)
             var IntersectionNeighbours = [];
 
             var Intersection = new IntersectionBlueprint(x, y, x+y, 3);
-            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "color": "black", "id": "i3_"+ +"_"+y};
+            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "id": "i3_"+x+"_"+y};
             var tempIntersection;
             var search = true;
             for(var i=0;i<jsonIntersections.length;i++){
@@ -727,17 +837,15 @@ for(q = -board_radius; q<= board_radius; q++)
                 if(tempIntersection.id == circleValues.id)
                 {
                     search = false;
-                    IntersectionNeighbours.push(tempEdge);
                 }
             }
             if(search==true)
             {
-                IntersectionNeighbours.push(circleValues);
                 jsonIntersections.push(circleValues);
             }
 
             var Intersection = new IntersectionBlueprint(x, y, x+y, 4);
-            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "color": "black", "id": "i4_"+ x+"_"+y};
+            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "id": "i4_"+x+"_"+y};
             var tempIntersection;
             var search = true;
             for(var i=0;i<jsonIntersections.length;i++){
@@ -745,17 +853,15 @@ for(q = -board_radius; q<= board_radius; q++)
                 if(tempIntersection.id == circleValues.id)
                 {
                     search = false;
-                    IntersectionNeighbours.push(tempIntersection);
                 }
             }
             if(search==true)
             {
                 jsonIntersections.push(circleValues);
-                IntersectionNeighbours.push(circleValues);
             }
 
             var Intersection = new IntersectionBlueprint(x, my, x+my, 4);
-            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "color": "black", "id": "i4_"+x+"_"+my};
+            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "id": "i4_"+x+"_"+my};
             var tempIntersection;
             var search = true;
             for(var i=0;i<jsonIntersections.length;i++){
@@ -763,18 +869,16 @@ for(q = -board_radius; q<= board_radius; q++)
                 if(tempIntersection.id == circleValues.id)
                 {
                     search = false;
-                    IntersectionNeighbours.push(tempIntersection);
                 }
             }
-            if(search == true)
+            if(search==true)
             {
                 jsonIntersections.push(circleValues);
-                IntersectionNeighbours.push(circleValues);
             }
 
 
             var Intersection = new IntersectionBlueprint(mx, ny, mx+ny, 3);
-            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "color": "black", "id": "i3_"+mx+"_"+ny};
+            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "id": "i3_"+mx+"_"+ny};
             var tempIntersection;
             var search = true;
             for(var i=0;i<jsonIntersections.length;i++){
@@ -782,18 +886,16 @@ for(q = -board_radius; q<= board_radius; q++)
                 if(tempIntersection.id == circleValues.id)
                 {
                     search = false;
-                    IntersectionNeighbours.push(tempIntersection);
                 }
             }
             if(search==true)
             {
                 jsonIntersections.push(circleValues);
-                IntersectionNeighbours.push(circleValues);
             }
 
 
             var Intersection = new IntersectionBlueprint(mx, y, mx+y, 3);
-            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "color": "black", "id": "i3_"+mx+"_"+y};
+            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "id": "i3_"+mx+"_"+y};
             var tempIntersection;
             var search = true;
             for(var i=0;i<jsonIntersections.length;i++){
@@ -801,18 +903,16 @@ for(q = -board_radius; q<= board_radius; q++)
                 if(tempIntersection.id == circleValues.id)
                 {
                     search = false;
-                    IntersectionNeighbours.push(tempIntersection);
                 }
             }
             if(search==true)
             {
                 jsonIntersections.push(circleValues);
-                IntersectionNeighbours.push(circleValues);
             }
 
 
             var Intersection = new IntersectionBlueprint(mx, y, mx+y, 4);
-            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "color": "black", "id": "i4_"+mx+"_"+y};
+            circleValues = {"x_axis": Intersection.centre.x, "y_axis": Intersection.centre.y,"radius" : 8, "id": "i4_"+mx+"_"+y};
             var tempIntersection;
             var search = true;
             for(var i=0;i<jsonIntersections.length;i++){
@@ -820,22 +920,21 @@ for(q = -board_radius; q<= board_radius; q++)
                 if(tempIntersection.id == circleValues.id)
                 {
                     search = false;
-                    IntersectionNeighbours.push(tempIntersection);
                 }
             }
             if(search==true)
             {
                 jsonIntersections.push(circleValues);
-                IntersectionNeighbours.push(circleValues);
             }
-
         }
+
     }
+
 
 }
 
 
-var color ='blue';
+//var color ='blue'; //OH MY LORD
 
 var holder = d3.select("svg");
 
@@ -919,3 +1018,4 @@ var textLabels = text
     .attr("font-size", "16px")
     .attr("fill", "black")
     .attr("text-anchor", "middle");
+
