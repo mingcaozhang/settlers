@@ -5,16 +5,16 @@ import java.util.*;
  * Created by G on 17/03/03.
  */
 public class Game {
-    private final List<Player> aPlayers = new ArrayList<Player>(); // TODO
+    private final List<Player> aPlayers = new ArrayList<Player>();
     private final int aVPsToWin;
 
     private Map<String,Hex> aHexes = new HashMap<String,Hex>();
     private Map<String,Edge> aEdges = new HashMap<String,Edge>();
     private Map<String,Intersection> aIntersections = new HashMap<String,Intersection>();
 
-    public Queue<Hex> lHexes = new LinkedList<Hex>();
-    public Queue<Edge> lEdges = new LinkedList<Edge>();
-    public Queue<Intersection> lIntersections = new LinkedList<Intersection>();
+    public List<Hex> lHexes = new ArrayList<Hex>();
+    public List<Edge> lEdges = new ArrayList<Edge>();
+    public List<Intersection> lIntersections = new ArrayList<Intersection>();
 
     private static HashMap<Integer, ArrayList<LandHex>> aLandHexes; //TODO maybe
     private HashMap<ResourceCard.ResourceType, Queue<ResourceCard>> aResourceCards;
@@ -52,6 +52,7 @@ public class Game {
         System.out.println("BILLY BOBBY");
 
     }
+
 
     public void setPhase(GamePhase pPhase){
         aPhase = pPhase;
@@ -166,29 +167,52 @@ public class Game {
         return aCurrentPlayer;
     }
 
-    public void setAllNeighbours(){
-        for(Hex h: lHexes)
-        {
-            h.setEdgeNeighbours(aEdges);
-            h.setHexNeighbours(aHexes);
-            h.setIntersectionNeighbours(aIntersections);
-        }
-        for(Edge e: lEdges)
-        {
-            e.setEdgeNeighbours(aEdges);
-            e.setHexNeighbours(aHexes);
-            e.setIntersectionNeighbours(aIntersections);
-        }
-        for(Intersection i: lIntersections) {
-            i.setEdgeNeighbours(aEdges);
-            i.setHexNeighbours(aHexes);
-            i.setIntersectionNeighbours(aIntersections);
+    private void waitToSet(){
+        try {
+            Thread.sleep(10000);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
 
-    public Map<String, Player> getPlayers(){
-        return getPlayers();
+    public void setAllNeighbours(){
+       // System.out.println("hello YOUTUBE COMMUNITY");
+        for(int i=0;i< lHexes.size();i++)
+        {
+            lHexes.get(i).setEdgeNeighbours(aEdges);
+          //  waitToSet();
+            lHexes.get(i).setHexNeighbours(aHexes);
+           // waitToSet();
+            lHexes.get(i).setIntersectionNeighbours(aIntersections);
+           // waitToSet();
+          //  System.out.println(lHexes.get(i).getIntersectionNeighbours().peek().getId());
+          //  System.out.println(lHexes.get(i).getId());
+
+            //   System.out.println("hello YOUTUBE COMMUNITY");
+        }
+        for(int i=0;i< lEdges.size();i++)
+        {
+           // waitToSet();
+            lEdges.get(i).setEdgeNeighbours(aEdges);
+           // waitToSet();
+            lEdges.get(i).setHexNeighbours(aHexes);
+           // waitToSet();
+            lEdges.get(i).setIntersectionNeighbours(aIntersections);
+           // waitToSet();
+         //   System.out.println("its my birthday today");
+
+        }
+        for(int i=0;i< lIntersections.size();i++) {
+            lIntersections.get(i).setEdgeNeighbours(aEdges);
+           // waitToSet();
+            lIntersections.get(i).setHexNeighbours(aHexes);
+           // waitToSet();
+            lIntersections.get(i).setIntersectionNeighbours(aIntersections);
+          //  System.out.println("And i am just so happy");
+
+        }
     }
+
 
     public void rollDice(int pYellow, int pRed, int pEvent){
         setPhase(GamePhase.TurnFirstPhase);
