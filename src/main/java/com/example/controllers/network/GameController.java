@@ -96,7 +96,7 @@ public class GameController {
 
 
     @MessageMapping("/placesettlement")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/settlement")
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
@@ -110,7 +110,7 @@ public class GameController {
     }
 
     @MessageMapping("/placecity")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
@@ -166,7 +166,7 @@ public class GameController {
     }
 
     @MessageMapping("/setuproad")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
