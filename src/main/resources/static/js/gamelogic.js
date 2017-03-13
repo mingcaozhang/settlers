@@ -1,3 +1,4 @@
+/*<![CDATA[*/
 //Event die faces
 var eventFace1 = new Image();
 eventFace1.src = "/images/barbarianShip.png";
@@ -98,13 +99,123 @@ var barbarian;
 var knight;
 
 //Turn Counter
-var counter = 1;
-var color = 'black';
+//var counter = 1;
+//var color = 'black';
+//var myUsername = [[${username}]];
+var stompClient = null;
 
-if (counter == 1){ var color = 'blue';}
-if (counter == 2){ var color = 'yellow';}
-if (counter == 3){ var color = 'red';}
-if (counter == 4){ var color = 'orange';}
+connect();
+intitializeTurn();
+console.log("my username is: "+myUsername);
+console.log("my color is: "+myColor);
+
+
+
+function intitializeTurn(){
+
+    if(startingPlayer.match(myUsername)){
+        //disable all turn buttons
+        document.getElementById('rolldice').disabled = false;
+        document.getElementById('endTurn').disabled = false;
+
+
+    }else{
+        //enable all turn buttons
+        document.getElementById('rolldice').disabled = true;
+        document.getElementById('endTurn').disabled = true;
+    }
+
+
+}
+
+function connect() {
+    //showJoinedUser("I just connected!");
+    var socket = new SockJS('/game-web-socket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+       // setConnected(true);
+        console.log('Connected: ' + frame);
+
+
+        stompClient.subscribe('/topic/turninfo', function (user) {
+            currUser = user.body;
+
+            //console.log(currUser);
+           // console.log(user.body);
+
+            if(currUser.match(myUsername)){
+                //disable all turn buttons
+                document.getElementById('rolldice').disabled = true;
+                document.getElementById('endTurn').disabled = true;
+
+
+            }else{
+                //enable all turn buttons
+                document.getElementById('rolldice').disabled = false;
+                document.getElementById('endTurn').disabled = false;
+            }
+
+
+
+            //currUser
+
+        });
+
+
+
+        stompClient.subscribe('/topic/dice', function (dice) {
+            dice = JSON.parse((dice.body));
+
+            console.log(dice.red);
+            console.log(dice.yellow);
+            console.log(dice.event);
+
+            document.images["die1"].src = eval("die1Face" + dice.red + ".src");
+            document.images["die2"].src = eval("die2Face" + dice.yellow + ".src");
+            document.images["eventDie"].src = eval("eventFace" + dice.event + ".src");
+
+            //Increment barbarian count if event die is (1, 2, 3)
+            if(dice.event == 1 || dice.event == 2 || dice.event == 3) {
+                barbarianCount += 1;
+
+                //Barbarian attack
+                if(barbarianCount == 6) {
+                    barbarian = 0;
+                }
+            }
+
+            var diceTotal = dice.red + dice.yellow;
+            status.innerHTML = "You rolled " + diceTotal + ".";
+            console.log("You rolled " + diceTotal + ".");
+            if(diceTotal == 7){
+                status.innerHTML += " Robber!";
+            }
+        });
+
+
+
+
+    });
+}
+
+/*Button clicks sent to backend!*/
+
+function sendEdge(Edge){
+    stompClient.send("/edge",{},Edge);
+}
+
+function sendHex(Hex){
+    stompClient.send("/hex",{},Hex);
+}
+
+function sendIntersection(Intersection){
+    stompClient.send("/intersection",{},Intersection);
+}
+
+function readySetNeighbours(){
+    stompClient.send("/setNeighbours",{},{});
+}
+
 
 //Roll Dice
 function rollDice() {
@@ -113,37 +224,24 @@ function rollDice() {
     var d2 = Math.floor(Math.random() * 6) + 1;
     var d3 = Math.floor(Math.random() * 6) + 1;
 
-    document.images["die1"].src = eval("die1Face" + d1 + ".src");
-    document.images["die2"].src = eval("die2Face" + d2 + ".src");
-    document.images["eventDie"].src = eval("eventFace" + d3 + ".src");
+    stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
-    //Increment barbarian count if event die is (1, 2, 3)
-    if(d3 == 1 || d3 == 2 || d3 == 3) {
-        barbarianCount += 1;
+    document.getElementById('rolldice').disabled = true;
 
-        //Barbarian attack
-        if(barbarianCount == 6) {
-            barbarian = 0;
-        }
-    }
-
-    var diceTotal = d1 + d2;
-    status.innerHTML = "You rolled " + diceTotal + ".";
-    if(diceTotal == 7){
-        status.innerHTML += " Robber!";
-    }
 }
 //Used to enable rollDice button when end turn button is pressed
-function enableBtn() {
-    document.getElementById('rolldice').disabled = false;
+function endTurn() {
 
-    counter++;
-    if(counter == 5) {
-        counter = 1;
-    }
-    var player = document.getElementById("player");
-    player.innerHTML = "Player " + counter;
+    stompClient.send("/app/endturn",{}, {});
+
 }
+
+
+
+
+
+
+
 
 //Activated to show attributes when player button is clicked
 function setAttributes() {
@@ -835,7 +933,7 @@ for(q = -board_radius; q<= board_radius; q++)
 }
 
 
-var color ='blue';
+var color ='blue'; //OH MY LORD
 
 var holder = d3.select("svg");
 
@@ -920,4 +1018,3 @@ var textLabels = text
     .attr("fill", "black")
     .attr("text-anchor", "middle");
 
-d3.selectById
