@@ -195,11 +195,11 @@ public class Game {
                 setEventDice(EventType.values()[3]);
         }
 
-        if (getTurnCounter() > 2) {
-            checkBarbarian();
-        }
+//        if (getTurnCounter() > 2) {
+//            checkBarbarian();
+//        }
         checkDice();
-        setPhase(GamePhase.TurnDiceRolled);
+//        setPhase(GamePhase.TurnDiceRolled);
     }
 
     private void checkBarbarian(){
@@ -281,7 +281,7 @@ public class Game {
         return (pIntersection.getOccupant().getClass() == City.class);
     }
 
-    public void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
+    private void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
         if (pTerrainType == TerrainType.GoldMine){
             if (removeGold()) {
                 pOwner.addGold();
@@ -305,6 +305,19 @@ public class Game {
             else{
                 assert(!getCommodityCards().get(pTerrainType.giveCommodity()).isEmpty());
                 pOwner.addCard(getCommodityCards().get(pTerrainType.giveCommodity()).remove());
+            }
+        }
+    }
+
+    public void setupPayout(){
+        for (Map.Entry<String,Intersection> intersection : aIntersections.entrySet()){
+            if (intersection.getValue().getOccupant().getClass() == City.class){
+                Player owner = intersection.getValue().getOccupant().getOwner();
+                Intersection cityLocation = intersection.getValue();
+                for(Hex hex : cityLocation.getHexNeighbours()){
+                    TerrainType pTerrainType = hex.getTerrainType();
+                    owner.addCard(getResourceCards().get(pTerrainType.giveResource()).remove());
+                }
             }
         }
     }
