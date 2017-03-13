@@ -246,19 +246,19 @@ function connect() {
 /*Button clicks sent to backend!*/
 
 function sendEdge(Edge){
-    stompClient.send("/edge",{},Edge);
+    stompClient.send("/app/edge",{},JSON.stringify(Edge));
 }
 
 function sendHex(Hex){
-    stompClient.send("/hex",{},Hex);
+    stompClient.send("/app/hex",{},JSON.stringify(Hex));
 }
 
 function sendIntersection(Intersection){
-    stompClient.send("/intersection",{},Intersection);
+    stompClient.send("/app/intersection",{},JSON.stringify(Intersection));
 }
 
 function readySetNeighbours(){
-    stompClient.send("/setNeighbours",{},{});
+    stompClient.send("/app/setNeighbours",{},{});
 }
 
 
@@ -536,16 +536,14 @@ function HexBlueprint(axial_x, axial_y, axial_z, size, resource)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
 
-    for(var i = 0; i<=5; i++) // HOLY SHIT
+    for(var i = 0; i<=5; i++)
     {
         this.points += this.get_Hex_corner(i).i + "," + this.get_Hex_corner(i).l + " ";
     }
-
-
 }
 
 HexBlueprint.prototype.get_Hex_corner = function(vertex)
@@ -556,6 +554,7 @@ HexBlueprint.prototype.get_Hex_corner = function(vertex)
     var b = this.centre.y + (this.size - 16) * Math.sin(angle_rad);
 
     return {i: a, l: b};
+
 }
 
 function EdgeBlueprint(axial_x, axial_y, axial_z, size)
@@ -576,11 +575,11 @@ function EdgeBlueprint(axial_x, axial_y, axial_z, size)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
 
-    for(var i = 0; i<=3; i++) // HOLY SHIT
+    for(var i = 0; i<=3; i++)
     {
         this.points += this.get_Edge_corner(i).i + "," + this.get_Edge_corner(i).l + " ";
     }
@@ -603,7 +602,6 @@ EdgeBlueprint.prototype.get_Edge_corner = function(vertex)
 
 function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
 {
-    //SIDE IS ALWAYS LEFT!! VAR SIDE STORES UP OR DOWN
     this.axial_x = axial_x;
     this.axial_y = axial_y;
     this.axial_z = axial_z;
@@ -619,10 +617,10 @@ function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
-    for(var i = 0; i<=3; i++) // HOLY SHIT
+    for(var i = 0; i<=3; i++)
     {
         this.points += this.get_SideEdge_corner(i,side).i + "," + this.get_SideEdge_corner(i,side).l + " ";
     }
@@ -660,6 +658,8 @@ function IntersectionBlueprint(axial_x, axial_y, axial_z,count)
     this.axial_z = axial_z;
     this.radius = 8;
 
+
+
     var height = 120;
     var width = Math.sqrt(3)/2*height;
 
@@ -671,7 +671,7 @@ function IntersectionBlueprint(axial_x, axial_y, axial_z,count)
     else
         hoffset=57;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
     angle = this.get_Intersection_corner(count);
     t +=60* Math.cos(angle);
     h +=hoffset* Math.sin(angle);
