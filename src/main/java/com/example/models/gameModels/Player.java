@@ -9,7 +9,7 @@ import java.util.LinkedList;
  * Created by G on 17/02/28.
  */
 public class Player {
-    private final Color aColor;
+    private final String aColor;
     private final String aUsername;
     private final int aIndex;
     private int aVPs;
@@ -31,10 +31,10 @@ public class Player {
     private Queue<MightyKnight> aMightyKnights;
     private Queue<Wall> aWalls;
 
-    public Player(String pUsername, Color pColor){
+    public Player(String pUsername, String pColor, int pIndex){
         aUsername = pUsername;
         aColor = pColor;
-        aIndex = aColor.ordinal();
+        aIndex = pIndex;
         aVPs = 0;
         aGold = 0;
         aRouteLength = 0;
@@ -52,7 +52,7 @@ public class Player {
         Blue, Orange, Red, White
     }
 
-    public Color getColor(){
+    public String getColor(){
         return aColor;
     }
 
