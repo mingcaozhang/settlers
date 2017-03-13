@@ -65,11 +65,11 @@ var nVictoryPt = 0;
 var nGold = 0;
 var barbarianCount = 0;
 
-//Place road, ship, settlement, city
-var pRoad;
-var pShip;
-var pSettlement;
-var pCity;
+/*Place road, ship, settlement, city
+ var pRoad;
+ var pShip;
+ var pSettlement;
+ var pCity;*/
 
 //Attributes for id
 var road;
@@ -95,127 +95,27 @@ var victoryPt;
 var gold;
 var barbarian;
 
+//Maritime Trade
+var gBrick;
+var gWood;
+var gOre;
+var gSheep;
+var gWheat;
+var maritimeTrade;
+var tBrick;
+var tWood;
+var tOre;
+var tSheep;
+var tWheat;
+
+//Count number of clicks
+var brickClick = 0;
+var woodClick = 0;
+var oreClick = 0;
+var sheepClick = 0;
+var wheatClick = 0;
 //Knight state (active/inactive)
 var knight;
-
-//Turn Counter
-//var counter = 1;
-//var color = 'black';
-//var myUsername = [[${username}]];
-var stompClient = null;
-
-connect();
-intitializeTurn();
-console.log("my username is: "+myUsername);
-console.log("my color is: "+myColor);
-
-
-
-function intitializeTurn(){
-
-    if(startingPlayer.match(myUsername)){
-        //disable all turn buttons
-        document.getElementById('rolldice').disabled = false;
-        document.getElementById('endTurn').disabled = false;
-
-
-    }else{
-        //enable all turn buttons
-        document.getElementById('rolldice').disabled = true;
-        document.getElementById('endTurn').disabled = true;
-    }
-
-
-}
-
-function connect() {
-    //showJoinedUser("I just connected!");
-    var socket = new SockJS('/game-board-socket');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-       // setConnected(true);
-        console.log('Connected: ' + frame);
-
-
-        stompClient.subscribe('/topic/turninfo', function (user) {
-            currUser = user.body;
-
-            //console.log(currUser);
-           // console.log(user.body);
-
-            if(currUser.match(myUsername)){
-                //disable all turn buttons
-                document.getElementById('rolldice').disabled = true;
-                document.getElementById('endTurn').disabled = true;
-
-
-            }else{
-                //enable all turn buttons
-                document.getElementById('rolldice').disabled = false;
-                document.getElementById('endTurn').disabled = false;
-            }
-
-
-
-            //currUser
-
-        });
-
-
-
-        stompClient.subscribe('/topic/dice', function (dice) {
-            dice = JSON.parse((dice.body));
-
-            console.log(dice.red);
-            console.log(dice.yellow);
-            console.log(dice.event);
-
-            document.images["die1"].src = eval("die1Face" + dice.red + ".src");
-            document.images["die2"].src = eval("die2Face" + dice.yellow + ".src");
-            document.images["eventDie"].src = eval("eventFace" + dice.event + ".src");
-
-            //Increment barbarian count if event die is (1, 2, 3)
-            if(dice.event == 1 || dice.event == 2 || dice.event == 3) {
-                barbarianCount += 1;
-
-                //Barbarian attack
-                if(barbarianCount == 6) {
-                    barbarian = 0;
-                }
-            }
-
-            var diceTotal = dice.red + dice.yellow;
-            status.innerHTML = "You rolled " + diceTotal + ".";
-            console.log("You rolled " + diceTotal + ".");
-            if(diceTotal == 7){
-                status.innerHTML += " Robber!";
-            }
-        });
-
-
-
-
-    });
-}
-
-/*Button clicks sent to backend!*/
-
-function sendEdge(Edge){
-    stompClient.send("/edge",{},Edge);
-}
-
-function sendHex(Hex){
-    stompClient.send("/hex",{},Hex);
-}
-
-function sendIntersection(Intersection){
-    stompClient.send("/intersection",{},Intersection);
-}
-
-function readySetNeighbours(){
-    stompClient.send("/setNeighbours",{},{});
-}
-
 
 //Roll Dice
 function rollDice() {
@@ -224,85 +124,109 @@ function rollDice() {
     var d2 = Math.floor(Math.random() * 6) + 1;
     var d3 = Math.floor(Math.random() * 6) + 1;
 
-    stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
+    document.images["die1"].src = eval("die1Face" + d1 + ".src");
+    document.images["die2"].src = eval("die2Face" + d2 + ".src");
+    document.images["eventDie"].src = eval("eventFace" + d3 + ".src");
 
-    document.getElementById('rolldice').disabled = true;
+    //Increment barbarian count if event die is (1, 2, 3)
+    if(d3 == 1 || d3 == 2 || d3 == 3) {
+        barbarianCount += 1;
 
+        //Barbarian attack
+        if(barbarianCount == 6) {
+            barbarian = 0;
+        }
+    }
+
+    var diceTotal = d1 + d2;
+    status.innerHTML = "You rolled " + diceTotal + ".";
+    if(diceTotal == 7){
+        status.innerHTML += " Robber!";
+    }
 }
 //Used to enable rollDice button when end turn button is pressed
-function endTurn() {
-
-    stompClient.send("/app/endturn",{}, {});
-
+function enableBtn() {
+    document.getElementById('rolldice').disabled = false;
 }
-
-
-
-
-
-
-
 
 //Activated to show attributes when player button is clicked
 function setAttributes() {
-    //Place road, ship, settlement, city
-    pRoad = document.getElementById("pRoad");
-    pShip = document.getElementById("pShip");
-    pSettlement = document.getElementById("pSettlement");
-    pCity = document.getElementById("pCity");
+    /*Place road, ship, settlement, city
+     pRoad = document.getElementById("pRoad");
+     pShip = document.getElementById("pShip");
+     pSettlement = document.getElementById("pSettlement");
+     pCity = document.getElementById("pCity");*/
 
     //Attribute id getters
     road = document.getElementById("road");
     ship = document.getElementById("ship");
+    city = document.getElementById("city");
+    wall = document.getElementById("wall");
+    settlement = document.getElementById("settlement");
+    victoryPt = document.getElementById("victoryPt");
+    gold = document.getElementById("gold");
+    barbarian = document.getElementById("barbarian");
+    road.innerHTML = "Roads " + nRoad;
+    ship.innerHTML = "Ships " + nShip;
+    city.innerHTML = "Cities " + nCity;
+    wall.innerHTML = "Walls " + nWall;
+    settlement.innerHTML = "Settlements " + nSettlement;
+    victoryPt.innerHTML = "Victory Points " + nVictoryPt;
+    gold.innerHTML = "Golds " + nGold;
+
+    //Knights
     knight1 = document.getElementById("knight1");
     knight2 = document.getElementById("knight2");
     knight3 = document.getElementById("knight3");
     totalKnight = document.getElementById("totalKnight");
-    city = document.getElementById("city");
-    wall = document.getElementById("wall");
-    settlement = document.getElementById("settlement");
+    knight1.innerHTML = "Rank 1: " + nKnight1;
+    knight2.innerHTML = "Rank 2: " + nKnight2;
+    knight3.innerHTML = "Rank 3: " + nKnight3;
+    totalKnight.innerHTML = "Knights " + nTotalKnight;
+
+    //Resource Cards
     brick = document.getElementById("brick");
     wood = document.getElementById("wood");
     ore = document.getElementById("ore");
     sheep = document.getElementById("sheep");
     wheat = document.getElementById("wheat");
     resourceCard = document.getElementById("resourceCard");
-    coin = document.getElementById("coin");
-    cloth = document.getElementById("cloth");
-    book = document.getElementById("book");
-    commodityCard = document.getElementById("commodityCard");
-    victoryPt = document.getElementById("victoryPt");
-    gold = document.getElementById("gold");
-    barbarian = document.getElementById("barbarian");
-
-    //Place road, ship, settlement, city
-    pRoad.innerHTML = "Roads " + nRoad;
-    pShip.innerHTML = "Ship " + nShip;
-    pSettlement.innerHTML = "Settlements " + nSettlement;
-    pCity.innerHTML = "Cities " + nCity;
-
-    //Set each attributes
-    road.innerHTML = "Roads " + nRoad;
-    ship.innerHTML = "Ships " + nShip;
-    knight1.innerHTML = "Rank 1: " + nKnight1;
-    knight2.innerHTML = "Rank 2: " + nKnight2;
-    knight3.innerHTML = "Rank 3: " + nKnight3;
-    totalKnight.innerHTML = "Knights " + nTotalKnight;
-    city.innerHTML = "Cities " + nCity;
-    wall.innerHTML = "Walls " + nWall;
-    settlement.innerHTML = "Settlements " + nSettlement;
     brick.innerHTML = nBrick;
     wood.innerHTML = nWood;
     ore.innerHTML = nOre;
     sheep.innerHTML = nSheep;
     wheat.innerHTML = nWheat;
     resourceCard.innerHTML = "Resource Cards " + nResourceCard;
+
+    //Commodity Cards
+    coin = document.getElementById("coin");
+    cloth = document.getElementById("cloth");
+    book = document.getElementById("book");
+    commodityCard = document.getElementById("commodityCard");
     coin.innerHTML = nCoin;
     cloth.innerHTML = nCloth;
     book.innerHTML = nBook;
     commodityCard.innerHTML = "Commodity Cards " + nCommodityCard;
-    victoryPt.innerHTML = "Victory Points " + nVictoryPt;
-    gold.innerHTML = "Golds " + nGold;
+
+    //Maritime Trade
+    gBrick = document.getElementById("tradeBrick");
+    gWood = document.getElementById("tradeWood");
+    gOre = document.getElementById("tradeOre");
+    gSheep = document.getElementById("tradeSheep");
+    gWheat = document.getElementById("tradeWheat");
+    maritimeTrade = document.getElementById("maritimeTrade");
+    gBrick.innerHTML = "Give/Get";
+    gWood.innerHTML = "Give/Get";
+    gOre.innerHTML = "Give/Get";
+    gSheep.innerHTML = "Give/Get";
+    gWheat.innerHTML = "Give/Get";
+    maritimeTrade.innerHTML = "Maritime Trade";
+
+    /*Place road, ship, settlement, city
+     pRoad.innerHTML = "Place Roads " + nRoad;
+     pShip.innerHTML = "Place Ship " + nShip;
+     pSettlement.innerHTML = "Place Settlements " + nSettlement;
+     pCity.innerHTML = "Place Cities " + nCity;*/
 }
 
 //Build road
@@ -319,12 +243,12 @@ function buildRoad() {
         //Set no resource message to true
     }
 }
-//Place road
-function placeRoad() {
-    nRoad++;
-    pRoad = document.getElementById("pRoad");
-    pRoad.innerHTML = "Roads " + nRoad;
-}
+/*Place road
+ function placeRoad() {
+ nRoad++;
+ pRoad = document.getElementById("pRoad");
+ pRoad.innerHTML = "Roads " + nRoad;
+ }*/
 
 //Build ship
 function buildShip() {
@@ -340,12 +264,12 @@ function buildShip() {
     }
 }
 
-//Place ship
-function placeShip() {
-    nShip++;
-    pShip = document.getElementById("pShip");
-    pShip.innerHTML = "Ship" + nShip;
-}
+/*Place ship
+ function placeShip() {
+ nShip++;
+ pShip = document.getElementById("pShip");
+ pShip.innerHTML = "Ship" + nShip;
+ }*/
 
 //Build settlement
 function buildSettlement() {
@@ -363,13 +287,12 @@ function buildSettlement() {
     }
 }
 
-//Place settlement
-function placeSettlement() {
-    nSettlement++;
-    pSettlement = document.getElementById("pSettlement");
-    pSettlement.innerHTML = "Settlements " + nSettlement;
-    console.log("get ready to place that road");
-}
+/*Place settlement
+ function placeSettlement() {
+ nSettlement++;
+ pSettlement = document.getElementById("pSettlement");
+ pSettlement.innerHTML = "Settlements " + nSettlement;
+ }*/
 
 //Build city
 function buildCity() {
@@ -385,12 +308,12 @@ function buildCity() {
     }
 }
 
-//Place city
-function placeCity() {
-    nCity++;
-    pCity = document.getElementById("pCity");
-    pCity.innerHTML = "Cities " + nCity;
-}
+/*Place city
+ function placeCity() {
+ nCity++;
+ pCity = document.getElementById("pCity");
+ pCity.innerHTML = "Cities " + nCity;
+ }*/
 
 
 //Build wall
@@ -406,6 +329,7 @@ function buildWall() {
     }
 }
 
+//--------------------------Knight----------------------------
 //get Knight1
 function getKnight1() {
     if (nKnight1 < 2 && nOre > 0 && nSheep > 0) {
@@ -457,6 +381,103 @@ function activateKnight() {
     if (nWheat > 0) {
         knight = true;
     }
+}
+//--------------------------Knight----------------------------
+
+//----------------------Maritime Trade------------------------
+//Give resource
+function giveBrick() {
+    gBrick = document.getElementById("tradeBrick");
+    gBrick.innerHTML = "Give 4";
+    brickClick++;
+
+    if(gBrick.onclick && brickClick == 2) {
+        getBrick();
+    }
+    else if (gBrick.onclick && brickClick > 2){
+        gBrick.innerHTML = "Give/Get";
+        brickClick = 0;
+    }
+}
+function giveWood() {
+    gWood = document.getElementById("tradeWood");
+    gWood.innerHTML = "Give 4";
+    woodClick++;
+
+    if(gWood.onclick && woodClick == 2) {
+        getWood();
+    }
+    else if (gWood.onclick && woodClick > 2){
+        gWood.innerHTML = "Give/Get";
+        woodClick = 0;
+    }
+}
+function giveOre() {
+    gOre = document.getElementById("tradeOre");
+    gOre.innerHTML = "Give 4";
+    oreClick++;
+
+    if(gOre.onclick && oreClick == 2) {
+        getOre();
+    }
+    else if (gOre.onclick && oreClick > 2){
+        gOre.innerHTML = "Give/Get";
+        oreClick = 0;
+    }
+}
+function giveSheep() {
+    gSheep = document.getElementById("tradeSheep");
+    gSheep.innerHTML = "Give 4";
+    sheepClick++;
+
+    if(gSheep.onclick && sheepClick == 2) {
+        getSheep();
+    }
+    else if (gSheep.onclick && sheepClick > 2){
+        gSheep.innerHTML = "Give/Get";
+        sheepClick = 0;
+    }
+}
+function giveWheat() {
+    gWheat = document.getElementById("tradeWheat");
+    gWheat.innerHTML = "Give 4";
+    wheatClick++;
+
+    if(gWheat.onclick && wheatClick == 2) {
+        getWheat();
+    }
+    else if (gWheat.onclick && wheatClick > 2){
+        gWheat.innerHTML = "Give/Get";
+        wheatClick = 0;
+    }
+}
+
+//Get resource
+function getBrick() {
+    gBrick = document.getElementById("tradeBrick");
+    gBrick.innerHTML = "Get 1";
+}
+function getWood() {
+    gWood = document.getElementById("tradeWood");
+    gWood.innerHTML = "Get 1";
+}
+function getOre() {
+    gOre = document.getElementById("tradeOre");
+    gOre.innerHTML = "Get 1";
+}
+function getSheep() {
+    gSheep = document.getElementById("tradeSheep");
+    gSheep.innerHTML = "Get 1";
+}
+function getWheat() {
+    gWheat = document.getElementById("tradeWheat");
+    gWheat.innerHTML = "Get 1";
+}
+
+function turn() {
+    var turn = document.getElementById("player2");
+    turn.disabled = true;
+    turn.style.background = "red";
 }
 
 
