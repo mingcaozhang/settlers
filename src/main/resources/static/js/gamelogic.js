@@ -1138,10 +1138,6 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
         }
 
 
-
-        d3.select(this).attr("fill", myColor);
-
-
     });
 
 // append the board production numbers
