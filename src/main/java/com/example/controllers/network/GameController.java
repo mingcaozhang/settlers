@@ -152,7 +152,7 @@ public class GameController {
     }
 
     @MessageMapping("/setupcity")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/city")
     public ViewPiece setupCity(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
