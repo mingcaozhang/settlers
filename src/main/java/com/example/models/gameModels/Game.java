@@ -156,12 +156,6 @@ public class Game {
         return aPhase;
     }
 
-
-    public Player 
-      (){
-        return aCurrentPlayer;
-    }
-
     private void waitToSet(){
         try {
             Thread.sleep(10000);
