@@ -104,6 +104,15 @@ var knight;
 //var myUsername = [[${username}]];
 var stompClient = null;
 
+
+var settlementPlaced = false;
+var road1Placed = false;
+var cityPlaced = false;
+var road2Placed = false;
+
+var enableBuyAndUpgrade = false;
+var boardEnabled = false;
+
 connect();
 intitializeTurn();
 console.log("my username is: "+myUsername);
@@ -113,14 +122,20 @@ console.log("my color is: "+myColor);
 
 function intitializeTurn(){
 
+
+
     if(startingPlayer.match(myUsername)){
-        //disable all turn buttons
-        document.getElementById('rolldice').disabled = false;
-        document.getElementById('endTurn').disabled = false;
+        //enable all turn buttons
+        boardEnabled = true;
+        enableBuyAndUpgrade = false;
+        document.getElementById('rolldice').disabled = true;
+        document.getElementById('endTurn').disabled = true;
 
 
     }else{
-        //enable all turn buttons
+        //disable all turn buttons
+        boardEnabled = false;
+        enableBuyAndUpgrade = false;
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
     }
@@ -137,22 +152,32 @@ function connect() {
         console.log('Connected: ' + frame);
 
 
-        stompClient.subscribe('/topic/turninfo', function (user) {
-            currUser = user.body;
+        stompClient.subscribe('/topic/turninfo', function (pap) {
+            pap = JSON.parse((pap.body));
+            currUser = pap.username;
 
             //console.log(currUser);
            // console.log(user.body);
 
             if(currUser.match(myUsername)){
                 //disable all turn buttons
-                document.getElementById('rolldice').disabled = true;
-                document.getElementById('endTurn').disabled = true;
+                if(pap.setup1){
+
+                }else if(pap.setup2){
+
+                    document.getElementById('endTurn').disabled = true;
+                }else{
+                    document.getElementById('rolldice').disabled = false;
+                    document.getElementById('endTurn').disabled = true;
+                }
+
+
 
 
             }else{
-                //enable all turn buttons
-                document.getElementById('rolldice').disabled = false;
-                document.getElementById('endTurn').disabled = false;
+                //disable all turn buttons
+                document.getElementById('rolldice').disabled = true;
+                document.getElementById('endTurn').disabled = true;
             }
 
 
@@ -192,6 +217,26 @@ function connect() {
             }
         });
 
+        stompClient.subscribe('/topic/piece', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("fill", toColor);
+
+        });
+
+        stompClient.subscribe('/topic/city', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("stroke", "black").attr("stroke-width",5);
+
+        });
+
 
 
 
@@ -226,13 +271,19 @@ function rollDice() {
 
     stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
+    boardEnabled = true;
+    enableBuyAndUpgrade = true;
     document.getElementById('rolldice').disabled = true;
+    document.getElementById('endTurn').disabled = false;
+
 
 }
 //Used to enable rollDice button when end turn button is pressed
 function endTurn() {
 
     stompClient.send("/app/endturn",{}, {});
+    boardEnabled = false;
+    enableBuyAndUpgrade = false;
 
 }
 
@@ -306,7 +357,7 @@ function setAttributes() {
 }
 
 //Build road
-function buildRoad() {
+function buildRoad(id) {
     if (nRoad < 15 && nBrick > 0 && nWood > 0 ) {
         nBrick--;
         nWood--;
@@ -320,14 +371,14 @@ function buildRoad() {
     }
 }
 //Place road
-function placeRoad() {
+function placeRoad(id) {
     nRoad++;
     pRoad = document.getElementById("pRoad");
     pRoad.innerHTML = "Roads " + nRoad;
 }
 
 //Build ship
-function buildShip() {
+function buildShip(id) {
     if (nShip < 15 && nSheep > 0 && nWood > 0) {
         nSheep--;
         nWood--;
@@ -341,14 +392,14 @@ function buildShip() {
 }
 
 //Place ship
-function placeShip() {
+function placeShip(id) {
     nShip++;
     pShip = document.getElementById("pShip");
     pShip.innerHTML = "Ship" + nShip;
 }
 
 //Build settlement
-function buildSettlement() {
+function buildSettlement(id) {
     if (nSettlement < 5 && nWood > 0 && nBrick > 0 && nSheep > 0 && nWheat > 0) {
         nWood--;
         nBrick--;
@@ -364,14 +415,17 @@ function buildSettlement() {
 }
 
 //Place settlement
-function placeSettlement() {
+function placeSettlement(id) {
+
+    stompClient.send("/setupsettlement",{}, JSON.stringify({"id":id, "event":myColor}));
+    settlementPlaced = true;
     nSettlement++;
     pSettlement = document.getElementById("pSettlement");
     pSettlement.innerHTML = "Settlements " + nSettlement;
 }
 
 //Build city
-function buildCity() {
+function buildCity(id) {
     if (nCity < 4 && nOre > 2 && nWheat > 1) {
         nOre -= 3;
         nWheat -= 2;
@@ -386,9 +440,13 @@ function buildCity() {
 
 //Place city
 function placeCity() {
+    stompClient.send("/setupcity",{}, JSON.stringify({"id":d.id, "event":myColor}));
+    cityPlaced = true;
     nCity++;
     pCity = document.getElementById("pCity");
     pCity.innerHTML = "Cities " + nCity;
+
+
 }
 
 
@@ -972,8 +1030,42 @@ var intersectionAttrs = boardIntersections
     .attr("id",function (d) { return d.id; })
     .attr("fill","black")
     .attr("stroke","white")
-    .on("click", function (d) { d3.select(this).attr("fill", color)
-        .attr("stroke","black");});
+    .attr("hasSettlement", "false")
+    .attr("hasCity", "false")
+    .on("click", function (d) {
+
+
+        if(currUser.match(myUsername)){
+            if(boardEnabled){
+
+                if(!settlementPlaced){
+
+                    placeSettlement(d.id);
+
+                }else if(!cityPlaced){
+
+                    placeCity(d.id);
+
+                }else if(enableBuyAndUpgrade){
+
+                    if(d3.select(this).attr("hasSettlement").matches("false")){
+
+                        buildSettlement(d.id);
+
+                    }else if(d3.select(this).attr("hasCity").matches("false")){
+
+                        buildCity(d.id);
+
+                    }
+                }
+            }
+
+
+
+        }
+
+
+    });
 
 // append the board edges to the DOM
 var edges = holder.selectAll("edges")
@@ -987,7 +1079,15 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
     .attr("id", function(d) { return d.id; })
     .attr("stroke-width", function (d) { return d.stroke_width; })
     .attr("fill", function (d) {return d.fill;})
-    .on("click", function (d) { d3.select(this).attr("fill", color);});
+    .on("click", function (d) {
+
+        if(settlementPlaced){
+
+        }
+        d3.select(this).attr("fill", color);
+
+
+    });
 
 // append the board production numbers
 var hexProdCircs = holder.selectAll("prodCircs")

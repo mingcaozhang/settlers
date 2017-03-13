@@ -3,12 +3,12 @@ package com.example.viewobjects;
 /**
  * Created by tooji on 3/9/2017.
  */
-public class ViewPeice {
+public class ViewPiece {
 
     private String id;
     private String color;
 
-    ViewPeice(String pId, String pColor){
+    ViewPiece(String pId, String pColor){
         id = pId;
         color = pColor;
     }

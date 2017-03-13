@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +34,9 @@ public class GameController {
     private static final String player2color = "yellow";
     private static final String player3color = "green";
     private static final String player4color = "blue";
+    private static final PlayerAndPhase pap = new PlayerAndPhase();
 
-
+    private static int turnCounter = 0;
 
 
     public static void setCurrPlayerList(ArrayList<String> pList){
@@ -43,11 +45,14 @@ public class GameController {
         }
 
         currNumPlayers = currPlayerList.size();
+        pap.setSetup1(true);
+        pap.setSetup2(false);
     }
 
     public static void createGame(){
         aGame = new Game(10,currPlayerList,3 );
     }
+
 
 
     @RequestMapping(value="/game", method= RequestMethod.GET)
@@ -92,15 +97,16 @@ public class GameController {
     }
 
 
+
     @MessageMapping("/placepiece")
     @SendTo("/topic/piece")
-    public ViewPeice placepiece(ViewPeice pNew){
+    public ViewPiece placepiece(ViewPiece pNew){
         return pNew;
     }
 
     @MessageMapping("/placecity")
-    @SendTo("/topic/city")
-    public ViewPeice placecity(ViewPeice pNew){
+    @SendTo("/topic/piece")
+    public ViewPiece placecity(ViewPiece pNew){
 
         return pNew;
 
@@ -118,15 +124,38 @@ public class GameController {
 
     @MessageMapping("/endturn")
     @SendTo("/topic/turninfo")
-    public String endTurn(Principal user){
-
-        System.out.println("I am here!!!!!!!!!!!!!");
-        currPlayerTurn = (currPlayerTurn + 1)%currNumPlayers;
-        //backend code goes here
+    public PlayerAndPhase endTurn(Principal user){
 
 
-        System.out.println("Returning!!!!!!!!");
-        return currPlayerList.get(currPlayerTurn);
+        pap.setUsername(user.getName());
+
+
+        if(turnCounter == (currPlayerList.size()-1)){
+            System.out.println("first if");
+            System.out.println(currPlayerList.size()-1);
+            Collections.reverse(currPlayerList);
+            currPlayerTurn = 0;
+            pap.setSetup1(false);
+            pap.setSetup2(true);
+
+        }else if(turnCounter == (2*(currPlayerList.size()-1))){
+            System.out.println("second if");
+            System.out.println(currPlayerList.size()-1);
+            Collections.reverse(currPlayerList);
+            currPlayerTurn = 0;
+            pap.setSetup1(false);
+            pap.setSetup2(false);
+
+        }else{
+            currPlayerTurn = (currPlayerTurn + 1)%currNumPlayers;
+        }
+
+        System.out.println("Player's Turn "+ currPlayerList.get(currPlayerTurn));
+        System.out.println("turn count = "+currPlayerTurn);
+
+        this.turnCounter++;
+
+        return pap;
     }
 
 
