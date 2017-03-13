@@ -9,10 +9,31 @@ public class ViewHex {
     private double y;
     private String stroke;
     private String stroke_width;
+    private String fill;
     private String points;
     private String id;
-    private String terrainType;
+    private String terrain_type;
     private int number;
+
+    public ViewHex(double x, double y, String stroke, String stroke_width, String fill, String points, String id, String terrainType, int number) {
+        this.x = x;
+        this.y = y;
+        this.stroke = stroke;
+        this.stroke_width = stroke_width;
+        this.fill = fill;
+        this.points = points;
+        this.id = id;
+        this.terrain_type = terrainType;
+        this.number = number;
+    }
+
+    public String getFill() {
+        return fill;
+    }
+
+    public void setFill(String fill) {
+        this.fill = fill;
+    }
 
     public double getX() {
         return x;
@@ -63,11 +84,11 @@ public class ViewHex {
     }
 
     public String getTerrainType() {
-        return terrainType;
+        return terrain_type;
     }
 
     public void setTerrainType(String terrainType) {
-        this.terrainType = terrainType;
+        this.terrain_type = terrainType;
     }
 
     public int getNumber() {
