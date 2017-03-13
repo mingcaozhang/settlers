@@ -40,7 +40,13 @@
                         <div class="panel-body text-center" style="height: 500px;">
                             <h1>Player List</h1>
                             <div class="scroll">
+                                
+                                <!--/*@thymesVar id="playerList" type="com.example.controllers.network.GameRoomController.playerList"*/-->
+                                <tr th:each="p : ${playerList}">
+                                    <button type="button" class="player-btn" th:text="${p}"></button>
+                                </tr>
                                 <form id="playerlist">
+
                                 </form>
                             </div>
                         </div>
@@ -48,6 +54,7 @@
                     <div class="player-box col-sm-8" style="padding: 0px; margin: 0px;">
                         <div class="panel-body text-center" style="height: 500px;">
                             <h1>Gameroom name</h1>
+                            <a id="gameroom" th:href="@{/game}">Join Game!</a>
                             <table class="table table-striped">
                                 <tbody id="connections">
                                 </tbody>
@@ -86,6 +93,7 @@
         </section>
     </section>
 </div>
+
 
 <!-- Footer -->
 <footer class="container-fluid bg-4 text-center">

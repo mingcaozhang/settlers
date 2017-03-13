@@ -1,3 +1,4 @@
+/*<![CDATA[*/
 //Event die faces
 var eventFace1 = new Image();
 eventFace1.src = "/images/barbarianShip.png";
@@ -65,10 +66,10 @@ var nGold = 0;
 var barbarianCount = 0;
 
 /*Place road, ship, settlement, city
-var pRoad;
-var pShip;
-var pSettlement;
-var pCity;*/
+ var pRoad;
+ var pShip;
+ var pSettlement;
+ var pCity;*/
 
 //Attributes for id
 var road;
@@ -151,10 +152,10 @@ function enableBtn() {
 //Activated to show attributes when player button is clicked
 function setAttributes() {
     /*Place road, ship, settlement, city
-    pRoad = document.getElementById("pRoad");
-    pShip = document.getElementById("pShip");
-    pSettlement = document.getElementById("pSettlement");
-    pCity = document.getElementById("pCity");*/
+     pRoad = document.getElementById("pRoad");
+     pShip = document.getElementById("pShip");
+     pSettlement = document.getElementById("pSettlement");
+     pCity = document.getElementById("pCity");*/
 
     //Attribute id getters
     road = document.getElementById("road");
@@ -222,10 +223,10 @@ function setAttributes() {
     maritimeTrade.innerHTML = "Maritime Trade";
 
     /*Place road, ship, settlement, city
-    pRoad.innerHTML = "Place Roads " + nRoad;
-    pShip.innerHTML = "Place Ship " + nShip;
-    pSettlement.innerHTML = "Place Settlements " + nSettlement;
-    pCity.innerHTML = "Place Cities " + nCity;*/
+     pRoad.innerHTML = "Place Roads " + nRoad;
+     pShip.innerHTML = "Place Ship " + nShip;
+     pSettlement.innerHTML = "Place Settlements " + nSettlement;
+     pCity.innerHTML = "Place Cities " + nCity;*/
 }
 
 //Build road
@@ -243,11 +244,11 @@ function buildRoad() {
     }
 }
 /*Place road
-function placeRoad() {
-    nRoad++;
-    pRoad = document.getElementById("pRoad");
-    pRoad.innerHTML = "Roads " + nRoad;
-}*/
+ function placeRoad() {
+ nRoad++;
+ pRoad = document.getElementById("pRoad");
+ pRoad.innerHTML = "Roads " + nRoad;
+ }*/
 
 //Build ship
 function buildShip() {
@@ -264,11 +265,11 @@ function buildShip() {
 }
 
 /*Place ship
-function placeShip() {
-    nShip++;
-    pShip = document.getElementById("pShip");
-    pShip.innerHTML = "Ship" + nShip;
-}*/
+ function placeShip() {
+ nShip++;
+ pShip = document.getElementById("pShip");
+ pShip.innerHTML = "Ship" + nShip;
+ }*/
 
 //Build settlement
 function buildSettlement() {
@@ -287,11 +288,11 @@ function buildSettlement() {
 }
 
 /*Place settlement
-function placeSettlement() {
-    nSettlement++;
-    pSettlement = document.getElementById("pSettlement");
-    pSettlement.innerHTML = "Settlements " + nSettlement;
-}*/
+ function placeSettlement() {
+ nSettlement++;
+ pSettlement = document.getElementById("pSettlement");
+ pSettlement.innerHTML = "Settlements " + nSettlement;
+ }*/
 
 //Build city
 function buildCity() {
@@ -308,11 +309,11 @@ function buildCity() {
 }
 
 /*Place city
-function placeCity() {
-    nCity++;
-    pCity = document.getElementById("pCity");
-    pCity.innerHTML = "Cities " + nCity;
-}*/
+ function placeCity() {
+ nCity++;
+ pCity = document.getElementById("pCity");
+ pCity.innerHTML = "Cities " + nCity;
+ }*/
 
 
 //Build wall
@@ -767,13 +768,14 @@ function get() {
         return nBrick++;
     }
 }
-//----------------------Maritime Trade------------------------
+
 
 /////////////////////////// COPY PASTED BOARDMAP BELOW //////////////////////////////////
 
 
 function HexBlueprint(axial_x, axial_y, axial_z, size, resource)
 {
+
     this.axial_x = axial_x;
     this.axial_y = axial_y;
     this.axial_z = axial_z;
@@ -795,6 +797,8 @@ function HexBlueprint(axial_x, axial_y, axial_z, size, resource)
     {
         this.points += this.get_Hex_corner(i).i + "," + this.get_Hex_corner(i).l + " ";
     }
+
+
 }
 
 HexBlueprint.prototype.get_Hex_corner = function(vertex)
@@ -859,7 +863,7 @@ function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
     this.height = size*1.4;
     this.width = 3*size/4;
 
-    var heightoffset = 2.15;
+    var heightoffset =2.15;
     var widthoffset = 3.45;
 
     var height = this.height*heightoffset;
@@ -1240,7 +1244,7 @@ for(q = -board_radius; q<= board_radius; q++)
 }
 
 
-var color ='blue';
+//var color ='blue'; //OH MY LORD
 
 var holder = d3.select("svg");
 
@@ -1278,7 +1282,7 @@ var intersectionAttrs = boardIntersections
     .attr("r", function (d) { return d.radius; })
     .attr("id",function (d) { return d.id; })
     .attr("fill","black")
-    .attr("stroke","white")
+    .attr("stroke","black")
     .on("click", function (d) { d3.select(this).attr("fill", color)
         .attr("stroke","black");});
 
@@ -1288,7 +1292,7 @@ var edges = holder.selectAll("edges")
     .enter()
     .append("polygon");
 
-var edgeAttrs = edges.attr("class", "hex " + "woood")
+var edgeAttrs = edges
     .attr("points", function (d) { return d.points; })
     .attr("stroke", function (d) { return d.stroke; })
     .attr("id", function(d) { return d.id; })
@@ -1324,3 +1328,4 @@ var textLabels = text
     .attr("font-size", "16px")
     .attr("fill", "black")
     .attr("text-anchor", "middle");
+
