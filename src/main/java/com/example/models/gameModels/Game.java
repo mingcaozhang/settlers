@@ -8,12 +8,18 @@ import java.util.*;
  */
 public class Game {
     private final int aID;
-    private final Map<String, Player> aPlayers;
+ //   private final List<Player> aPlayers; // TODO
     private final int aVPsToWin;
-    private final Hex[][] aHexes;
-    private final Edge[][] aEdges;
-    private final Intersection[][] aIntersections;
-    private final HashMap<Integer, ArrayList<LandHex>> aLandHexes;
+
+    private Map<String,Hex> aHexes = new HashMap<String,Hex>();
+    private Map<String,Edge> aEdges = new HashMap<String,Edge>();
+    private Map<String,Intersection> aIntersections = new HashMap<String,Intersection>();
+
+    public Queue<Hex> lHexes = new LinkedList<Hex>();
+    public Queue<Edge> lEdges = new LinkedList<Edge>();
+    public Queue<Intersection> lIntersections = new LinkedList<Intersection>();
+
+    private static HashMap<Integer, ArrayList<LandHex>> aLandHexes; //TODO maybe
     private HashMap<ResourceCard.ResourceType, Queue<ResourceCard>> aResourceCards;
     private HashMap<CommodityCard.CommodityType, Queue<CommodityCard>> aCommodityCards;
     private GamePhase aPhase;
@@ -28,16 +34,16 @@ public class Game {
     private Queue<Player> aPlayerQueue;
     private int aTurnCounter;
 
-    public Game(int pVPsToWin, Map<String, Player> pPlayers, int pID, Hex[][] pHexes, Edge[][] pEdges, Intersection[][] pIntersections, HashMap<Integer,ArrayList<LandHex>> pLandHexes ){
+    public Game(int pVPsToWin, List<String> pPlayers, int pID){
         aID = pID;
         aVPsToWin = pVPsToWin;
-        aHexes = pHexes;
-        aEdges = pEdges;
-        aIntersections = pIntersections;
-        aLandHexes = pLandHexes;
         aBarbarianPosition = 6;
         aGoldBank = 50;
-        aPlayers = pPlayers;
+        // TODO. MAKE NEW PLAYERS
+
+      //  aPlayers = pPlayers;
+
+        // -----------------
         aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
@@ -47,9 +53,9 @@ public class Game {
         aResourceCards = ResourceCard.getResources();
         aCommodityCards = CommodityCard.getCommodities();
         aPlayerQueue = new LinkedList<Player>();
-        for (Player player : aPlayers.values()){
-            aPlayerQueue.add(player);
-        }
+     //   for (Player player : aPlayers.values()){
+    //        aPlayerQueue.add(player);
+     //   }
         aCurrentPlayer = aPlayerQueue.remove();
     }
 
@@ -98,10 +104,10 @@ public class Game {
         aTurnCounter++;
     }
 
-    public Map<String, Player> getPlayers(){
+/*    public List<Player> getPlayers(){ // TODO
         return aPlayers;
     }
-
+*/
     public int getTurnCounter(){
         return aTurnCounter;
     }
@@ -130,8 +136,16 @@ public class Game {
         return aArmyStrength;
     }
 
-    public Intersection[][] getIntersections(){
+    public Map<String, Intersection> getIntersections(){
         return aIntersections;
+    }
+
+    public Map<String, Hex> getHexes(){
+        return aHexes;
+    }
+
+    public Map<String, Edge> getEdges(){
+        return aEdges;
     }
 
     public HashMap<Integer, ArrayList<LandHex>> getLandHexes(){
@@ -156,6 +170,27 @@ public class Game {
 
     public Player getCurrentPlayer(){
         return aCurrentPlayer;
+    }
+
+    public void setAllNeighbours(){
+    for(Hex h: lHexes)
+    {
+        h.setEdgeNeighbours(aEdges);
+        h.setHexNeighbours(aHexes);
+        h.setIntersectionNeighbours(aIntersections);
+    }
+    for(Edge e: lEdges)
+    {
+        e.setEdgeNeighbours(aEdges);
+        e.setHexNeighbours(aHexes);
+        e.setIntersectionNeighbours(aIntersections);
+    }
+    for(Intersection i: lIntersections)
+    {
+        i.setEdgeNeighbours(aEdges);
+        i.setHexNeighbours(aHexes);
+        i.setIntersectionNeighbours(aIntersections);
+    }
     }
 
     public enum GamePhase{
