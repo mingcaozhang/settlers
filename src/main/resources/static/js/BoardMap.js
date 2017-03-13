@@ -470,7 +470,6 @@ for(q = -board_radius; q<= board_radius; q++)
 
 }
 
-
 var color ='blue';
 
 var holder = d3.select("svg");
