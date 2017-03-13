@@ -239,18 +239,6 @@ function init()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     var jsonEdges = [];
     var jsonIntersections = [];
     var board_radius = 4;
@@ -517,14 +505,7 @@ function init()
                     IntersectionNeighbours.push(circleValues);
                 }
 
-                //	for( var a = 0; a < jsonPolygons.length; a++)
-                //	{
-                //	var temp = parsePID(jsonPolygons[a].id);
-                //var tempx = temp.i;
-                //var tempy = temp.j;
-                //window.alert(tempx);
-                //window.alert(x);
-                //	}
+
 
 
             }
@@ -537,35 +518,6 @@ function init()
     }
 
 
-    //parsePID('h_3_2');
-    /*
-     function parsePID(pid){
-     var nbarray = pid.match(/_\d/g);
-     var nb = /\d/;
-     var aa = nbarray[0];
-     var bb = nbarray[1];
-     aa = nb.exec(aa);
-     bb = nb.exec(bb);
-     var obj = {i:aa, j:bb};
-     window.alert(obj.i);
-     window.alert(obj.j);
-     return obj;
-     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
      var circs = [];
@@ -573,219 +525,10 @@ function init()
      var ybaby = (Math.tan(Math.PI*3/18))*halfwidth;
 
 
-     /*
 
-     var i,j;
-
-     for( i = -3; i <= 3; i++)
-     {
-
-     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 + hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 + 2*hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 + 4*hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 + 5*hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 - hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 - 2*hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 - 4*hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 2*i*halfwidth, "y_axis": 350 - 5*hxradius, "radius": 4, "color" : "yellow" });
-
-
-     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 + ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 + 5*ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 + 7*ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 + 11*ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 - ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 - 5*ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 - 7*ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + (2*(i-1)+1)*halfwidth, "y_axis": 350 - 11*ybaby, "radius": 4, "color" : "yellow" });
-
-     //d3.select("svg").append("circle").attr("cx", 600 + 2*i*halfwidth).attr("cy", 500).attr("r", 4).attr("fill", "yellow");
-
-     }
-
-     circs.push({ "x_axis": 600 + 8*halfwidth, "y_axis": 350 - hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 8*halfwidth, "y_axis": 350 - 2*hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 8*halfwidth, "y_axis": 350 + hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 8*halfwidth, "y_axis": 350 + 2*hxradius, "radius": 4, "color" : "yellow" });
-
-     circs.push({ "x_axis": 600 - 8*halfwidth, "y_axis": 350 - hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 - 8*halfwidth, "y_axis": 350 - 2*hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 - 8*halfwidth, "y_axis": 350 + hxradius, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 - 8*halfwidth, "y_axis": 350 + 2*hxradius, "radius": 4, "color" : "yellow" });
-
-     circs.push({ "x_axis": 600 - 9*halfwidth, "y_axis": 350 + ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 - 9*halfwidth, "y_axis": 350 - ybaby, "radius": 4, "color" : "yellow" });
-
-     circs.push({ "x_axis": 600 + 9*halfwidth, "y_axis": 350 + ybaby, "radius": 4, "color" : "yellow" });
-     circs.push({ "x_axis": 600 + 9*halfwidth, "y_axis": 350 - ybaby, "radius": 4, "color" : "yellow" });
-
-     */
-    /*
-     var xcoord = 600;
-     var ycoord = 350;
-
-     var jsonIntersections = [
-     { "x_axis": xcoord, "y_axis": ycoord + hxradius, "radius": 8, "color" : "red", "id" : "a00 10 01"},
-     { "x_axis": xcoord, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "green" },
-     { "x_axis": xcoord, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord, "y_axis": ycoord - hxradius, "radius": 8, "color" : "blue" },
-     { "x_axis": xcoord, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "yellow" },
-     { "x_axis": xcoord, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "gray" },
-     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 2*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 4*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 6*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 2*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 4*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord + 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord + 5*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord - 4*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 6*halfwidth, "y_axis": ycoord - 5*hxradius, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord + 8*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 8*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 8*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 8*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - 8*halfwidth, "y_axis": ycoord - hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 8*halfwidth, "y_axis": ycoord - 2*hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 8*halfwidth, "y_axis": ycoord + hxradius, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 8*halfwidth, "y_axis": ycoord + 2*hxradius, "radius": 8, "color" : "black" },
-
-
-
-
-
-
-     { "x_axis": xcoord + halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 3*halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 5*halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 3*halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord + 11*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 5*halfwidth, "y_axis": ycoord - 11*ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 7*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord - 9*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord - 9*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord + 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord + 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord - 7*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord - 5*ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 7*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" },
-
-     { "x_axis": xcoord + 9*halfwidth, "y_axis": ycoord + ybaby, "radius": 8, "color" : "black" },
-     { "x_axis": xcoord + 9*halfwidth, "y_axis": ycoord - ybaby, "radius": 8, "color" : "black" }
-
-
-
-     ];
-
-
-     */
     var myColor ='blue';
 
-    var holder = d3.select("svg"); // --------------------
+    var holder = d3.select("svg");
 
     var polygons = holder.selectAll("polygon")
         .data(jsonPolygons)
@@ -872,29 +615,6 @@ function init()
         ;
 
 
-    //------------------------------
-
-    //				.on("dblclick", function (d) {})
-    //				.on("click", function(d) {})
-
-
-//console.log(polyPoints);
-//console.log(JSON.stringify(jsonPolygons));	
-    //	var holder = d3.select("svg");
-
-    //	holder.append("text")         // append text
-    //		 .style("fill", "black")   // fill the text with the colour black
-    //		 .attr("x", 200)           // set x position of left side of text
-    //		 .attr("y", 100)           // set y position of bottom of text
-    //		 .attr("text-anchor", "end")  // set anchor y justification
-    //		 .text(JSON.stringify(jsonPolygons.length));        // define the text to display
-
-
-    //	$('button').prop('disabled', true);
-    //		$("#i3_0_0").attr("style","fill:red;");
-}
-
-function roll(dice)
-{
 
 }
+

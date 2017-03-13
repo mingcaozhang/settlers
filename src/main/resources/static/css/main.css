@@ -321,3 +321,8 @@ input[type="checkbox"] {
 .about_us .row{
     margin: 0px 200px 0px 200px;
 }
+
+svg{
+    display: block;
+    margin: auto;
+}
