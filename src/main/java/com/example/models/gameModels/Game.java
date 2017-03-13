@@ -8,7 +8,7 @@ import java.util.*;
  */
 public class Game {
     private final int aID;
- //   private final List<Player> aPlayers; // TODO
+   // private final List<Player> aPlayers; // TODO
     private final int aVPsToWin;
 
     private Map<String,Hex> aHexes = new HashMap<String,Hex>();
@@ -40,10 +40,12 @@ public class Game {
         aBarbarianPosition = 6;
         aGoldBank = 50;
         // TODO. MAKE NEW PLAYERS
-
-      //  aPlayers = pPlayers;
-
-        // -----------------
+/*
+        for(p:pPlayers)
+        {
+            Player aPlayer = new Player();
+        }
+*/
         aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
@@ -56,7 +58,7 @@ public class Game {
      //   for (Player player : aPlayers.values()){
     //        aPlayerQueue.add(player);
      //   }
-        aCurrentPlayer = aPlayerQueue.remove();
+      //  aCurrentPlayer = aPlayerQueue.remove();
     }
 
     public void setPhase(GamePhase pPhase){

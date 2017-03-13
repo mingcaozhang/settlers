@@ -32,7 +32,7 @@ public class GameRoomController {
 
         //Thread.sleep(1000); //simulated delay
         playerList.add(principal.getName());
-        if(playerList.size() ==2){
+        if(playerList.size() ==1){
             GameController.setCurrPlayerList(playerList);
             GameController.createGame();
         }
