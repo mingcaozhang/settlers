@@ -99,32 +99,30 @@ var barbarian;
 var knight;
 
 //Turn Counter
-var counter = 1;
-var color = 'black';
+//var counter = 1;
+//var color = 'black';
 //var myUsername = [[${username}]];
 var stompClient = null;
 
 connect();
 intitializeTurn();
 console.log("my username is: "+myUsername);
+console.log("my color is: "+myColor);
 
-if (counter == 1){ var color = 'blue';}
-if (counter == 2){ var color = 'yellow';}
-if (counter == 3){ var color = 'red';}
-if (counter == 4){ var color = 'orange';}
+
 
 function intitializeTurn(){
 
     if(startingPlayer.match(myUsername)){
         //disable all turn buttons
-        document.getElementById('rolldice').disabled = true;
-        document.getElementById('endTurn').disabled = true;
+        document.getElementById('rolldice').disabled = false;
+        document.getElementById('endTurn').disabled = false;
 
 
     }else{
         //enable all turn buttons
-        document.getElementById('rolldice').disabled = false;
-        document.getElementById('endTurn').disabled = false;
+        document.getElementById('rolldice').disabled = true;
+        document.getElementById('endTurn').disabled = true;
     }
 
 
@@ -132,7 +130,7 @@ function intitializeTurn(){
 
 function connect() {
     //showJoinedUser("I just connected!");
-    var socket = new SockJS('/game-web-socket');
+    var socket = new SockJS('/game-board-socket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
        // setConnected(true);
@@ -158,12 +156,8 @@ function connect() {
             }
 
 
-            counter++;
-            if(counter == 5) {
-                counter = 1;
-            }
-           // var player = document.getElementById("player");
-            //player.innerHTML = currUser+"'s turn";
+
+            //currUser
 
         });
 
@@ -204,6 +198,7 @@ function connect() {
     });
 }
 
+/*Button clicks sent to backend!*/
 
 function sendEdge(Edge){
     stompClient.send("/edge",{},Edge);
@@ -239,8 +234,10 @@ function endTurn() {
 
     stompClient.send("/app/endturn",{}, {});
 
-
 }
+
+
+
 
 
 
@@ -937,7 +934,7 @@ for(q = -board_radius; q<= board_radius; q++)
 }
 
 
-var color ='blue';
+//var color ='blue'; //OH MY LORD
 
 var holder = d3.select("svg");
 

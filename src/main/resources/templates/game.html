@@ -21,6 +21,18 @@
 
     var myUsername = /*[[${username}]]*/ 'User Name';
     var startingPlayer = /*[[${startingPlayer}]]*/ 'Starting Player';
+    var myColor = /*[[${myColor}]]*/ 'My Color';
+
+    var p1name = /*[[${player1}]]*/ 'p1 name';
+    var p2name = /*[[${player2}]]*/ 'p2 name';
+    //var p3name = /*[[${player3}]]*/ 'p3 name';
+   // var p4name = /*[[${player4}]]*/ 'p4 name';
+
+    var p1color = /*[[${player1_c}]]*/ 'p1 color';
+    var p2color = /*[[${player2_c}]]*/ 'p2 color';
+    //var p3name = /*[[${player3_c}]]*/ 'p3 color';
+    //var p4name = /*[[${player4_c}]]*/ 'p4 color';
+
 
     /*]]>*/
 </script>
@@ -44,7 +56,11 @@
 </nav>
 
 <div class="container-fluid bg-5" style="padding-top: 100px; padding-bottom: 0px;">
-
+    <!--PLAYER 2-->
+    <div class="dropdown col-sm-6">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 1100px; width: 300px;">Player 2
+            <span class="caret"></span></button>
+    </div>
 
     <!--PLAYER 1-->
     <div class="dropdown col-sm-6">
@@ -89,24 +105,29 @@
     </div>
     <div>
 
-        <input name="searchTxt" type="text" maxlength="512" id="searchTxt" class="searchField"/>
-
         <svg id="svgcanvas" width="1200" height="700"></svg>
 
-        <div>
-            <button type="button" class="btn btn-primary" id="b" onclick="init()">Draw Hexagon</button>
-        </div>
 
     </div>
 </div>
 
 <div class="container-fluid bg-5" style="height: 1000px;">
+    <!--PLAYER 3-->
+    <div class="dropdown col-sm-4" style="bottom: 10px;">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left:5px; width: 300px;">Player 3
+            <span class="caret"></span></button>
+    </div>
 
     <!--End Turn Button-->
     <div><button type="button" onclick="endTurn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
 
-
+    <!--PLAYER 4-->
+    <div class="dropdown col-sm-4" style="left: 320px; bottom: 10px;">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 800px; width: 300px;">Player 4
+            <span class="caret"></span></button>
+    </div>
 </div>
+
 
 <!-- MODALS -->
 <!-- Modal for Quit Game -->
