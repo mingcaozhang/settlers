@@ -1336,8 +1336,13 @@ function init() {
                  var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
                  "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": Random };
                  jsonPolygons.push(polyValues);
+                 if(startingPlayer.match(myUsername)) {
                  sendHex(polyValues);
+                 }
                  */
+                if (startingPlayer.match(myUsername)) {
+                    sendHex(jsonPolygons);
+            }
                 // MAKE EDGES
 
                 // top left
@@ -1526,7 +1531,9 @@ function init() {
                 }
                 if (search == true) {
                     jsonIntersections.push(circleValues);
-                    sendIntersection(circleValues);
+                    if(startingPlayer.match(myUsername)) {
+                        sendIntersection(circleValues);
+                    }
                 }
 
                 var Intersection = new IntersectionBlueprint(x, y, x + y, 4);
@@ -1546,7 +1553,9 @@ function init() {
                 }
                 if (search == true) {
                     jsonIntersections.push(circleValues);
-                    sendIntersection(circleValues);
+                    if(startingPlayer.match(myUsername)) {
+                        sendIntersection(circleValues);
+                    }
                 }
 
                 var Intersection = new IntersectionBlueprint(x, my, x + my, 4);
@@ -1566,7 +1575,9 @@ function init() {
                 }
                 if (search == true) {
                     jsonIntersections.push(circleValues);
-                    sendIntersection(circleValues);
+                    if(startingPlayer.match(myUsername)) {
+                        sendIntersection(circleValues);
+                    }
                 }
 
 
@@ -1587,7 +1598,9 @@ function init() {
                 }
                 if (search == true) {
                     jsonIntersections.push(circleValues);
-                    sendIntersection(circleValues);
+                    if(startingPlayer.match(myUsername)) {
+                        sendIntersection(circleValues);
+                    }
                 }
 
 
@@ -1608,7 +1621,9 @@ function init() {
                 }
                 if (search == true) {
                     jsonIntersections.push(circleValues);
-                    sendIntersection(circleValues);
+                    if(startingPlayer.match(myUsername)) {
+                        sendIntersection(circleValues);
+                    }
                 }
 
 
@@ -1629,7 +1644,9 @@ function init() {
                 }
                 if (search == true) {
                     jsonIntersections.push(circleValues);
-                    sendIntersection(circleValues);
+                    if(startingPlayer.match(myUsername)) {
+                        sendIntersection(circleValues);
+                    }
                 }
             }
 
@@ -1637,8 +1654,9 @@ function init() {
 
 
     }
-
-    readySetNeighbours();
+    if(startingPlayer.match(myUsername)) {
+        readySetNeighbours();
+    }
 
 //var color ='blue'; //OH MY LORD
 
