@@ -52,7 +52,7 @@ var nCity = 0;
 var nWall = 0;
 var nSettlement = 0;
 var nBrick = 0;
-var nWood = 6;
+var nWood = 0;
 var nOre = 0;
 var nSheep = 0;
 var nWheat = 0;
@@ -116,6 +116,8 @@ var sheepClick = 0;
 var wheatClick = 0;
 //Knight state (active/inactive)
 var knight;
+
+
 
 //Roll Dice
 function rollDice() {
