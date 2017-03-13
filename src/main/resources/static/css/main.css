@@ -257,6 +257,7 @@ input[type="checkbox"] {
     text-decoration: none;
     font-size: 16px;
 }
+
 .hvr-pulse-grow:hover, .hvr-pulse-grow:focus, .hvr-pulse-grow:active {
     position: fixed;
     -webkit-animation-name: hvr-pulse-grow;

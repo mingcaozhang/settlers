@@ -6,31 +6,15 @@ package com.example.viewobjects;
 public class PlayerAndPhase {
 
     private String username;
-    private String turnPhase;
-    private String p1Color = "yellow";
-    private String p2Color = "blue";
-    private String p3Color = "orange";
-    private String p4Color = "Red";
+    private boolean setup1;
+    private boolean setup2;
 
-    public PlayerAndPhase(String pUsername, String pTurnPhase){
-        username = pUsername;
-        turnPhase = pTurnPhase;
-    }
+    public PlayerAndPhase(){}
 
-    public String getP1Color() {
-        return p1Color;
-    }
-
-    public String getP2Color() {
-        return p2Color;
-    }
-
-    public String getP3Color() {
-        return p3Color;
-    }
-
-    public String getP4Color() {
-        return p4Color;
+    public PlayerAndPhase(String username, boolean setup1, boolean setup2) {
+        this.username = username;
+        this.setup1 = setup1;
+        this.setup2 = setup2;
     }
 
     public String getUsername() {
@@ -41,11 +25,19 @@ public class PlayerAndPhase {
         this.username = username;
     }
 
-    public String getTurnPhase() {
-        return turnPhase;
+    public boolean isSetup1() {
+        return setup1;
     }
 
-    public void setTurnPhase(String turnPhase) {
-        this.turnPhase = turnPhase;
+    public void setSetup1(boolean setup1) {
+        this.setup1 = setup1;
+    }
+
+    public boolean isSetup2() {
+        return setup2;
+    }
+
+    public void setSetup2(boolean setup2) {
+        this.setup2 = setup2;
     }
 }

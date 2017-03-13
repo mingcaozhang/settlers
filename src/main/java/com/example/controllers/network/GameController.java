@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,9 @@ public class GameController {
     private static final String player3color = "green";
     private static final String player4color = "blue";
 
+    private static final PlayerAndPhase pap = new PlayerAndPhase();
 
+    private static int turnCounter = 0;
 
 
     public static void setCurrPlayerList(ArrayList<String> pList){
@@ -43,17 +46,25 @@ public class GameController {
         }
 
         currNumPlayers = currPlayerList.size();
+        pap.setSetup1(true);
+        pap.setSetup2(false);
     }
 
     public static void createGame(){
-        aGame = new Game(10,currPlayerList,3 );
+        List<String> myColors = new ArrayList<String>();
+        myColors.add(0,player1color);
+        myColors.add(1,player2color);
+        myColors.add(2,player3color);
+        myColors.add(3,player3color);
+        aGame = new Game(10,currPlayerList,myColors);
     }
 
 
-    @RequestMapping(value="/game", method= RequestMethod.GET)
-    public String game(ModelMap model, Principal principal ) {
 
-        String name = principal.getName(); //get logged in username
+    @RequestMapping(value="/game", method= RequestMethod.GET)
+    public String game(ModelMap model, Principal caller) {
+
+        String name = caller.getName(); //get logged in username
         model.addAttribute("username", name);
         model.addAttribute("startingPlayer",currPlayerList.get(0));
 
@@ -86,61 +97,186 @@ public class GameController {
        // model.addAttribute("player3_c", player3color);
        // model.addAttribute("player4_c", player4color);
 
-
-
         return "game";
     }
 
 
-    @MessageMapping("/placepiece")
-    @SendTo("/topic/piece")
-    public ViewPeice placepiece(ViewPeice pNew){
+
+    @MessageMapping("/placesettlement")
+    @SendTo("/topic/settlement")
+    public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));
         return pNew;
     }
 
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
-    public ViewPeice placecity(ViewPeice pNew){
-
+    public ViewPiece placeCity(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));
         return pNew;
+    }
 
+    @MessageMapping("/placeroad")
+    @SendTo("/topic/road")
+    public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setupsettlement")
+    @SendTo("/topic/settlement")
+    public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setupcity")
+    @SendTo("/topic/city")
+    public ViewPiece setupCity(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setuproad")
+    @SendTo("/topic/road")
+    public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
+        return pNew;
+    }
+
+    @SendTo("/topic/playerIncrement")
+    public PlayerIncrement setupPayout(){
+        PlayerIncrement increment = new PlayerIncrement();
+
+        for(Player player: aGame.getPlayers()){
+            //setp#
+        }
+
+        //        TODO
+//        increment.setp1();
+//        increment.setp2();
+//        increment.setp3();
+//        increment.setp4();
+        return increment;
     }
 
     @MessageMapping("/rolldice")
     @SendTo("/topic/dice")
     public DiceRoll showDice(DiceRoll pDice){
-
-
-        //backend code goes here Payout
-
+        aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());
+        diceRollPayout();
         return pDice;
+    }
+
+    @SendTo("/topic/playerIncrement")
+    private PlayerIncrement diceRollPayout(){
+        PlayerIncrement increment = new PlayerIncrement();
+        for (Player player : aGame.getPlayers()){
+            //setp#
+        }
+//        TODO
+//        increment.setp1();
+//        increment.setp2();
+//        increment.setp3();
+//        increment.setp4();
+        return increment;
     }
 
     @MessageMapping("/endturn")
     @SendTo("/topic/turninfo")
-    public String endTurn(Principal user){
-
-        System.out.println("I am here!!!!!!!!!!!!!");
-        currPlayerTurn = (currPlayerTurn + 1)%currNumPlayers;
-        //backend code goes here
+    public PlayerAndPhase endTurn(Principal user){
 
 
-        System.out.println("Returning!!!!!!!!");
-        return currPlayerList.get(currPlayerTurn);
+        pap.setUsername(user.getName());
+
+
+        if(turnCounter == (currPlayerList.size()-1)){
+            System.out.println("first if");
+            System.out.println(currPlayerList.size()-1);
+            Collections.reverse(currPlayerList);
+            currPlayerTurn = 0;
+            pap.setSetup1(false);
+            pap.setSetup2(true);
+
+        }else if(turnCounter == (2*(currPlayerList.size()-1))){
+            System.out.println("second if");
+            System.out.println(currPlayerList.size()-1);
+            Collections.reverse(currPlayerList);
+            currPlayerTurn = 0;
+            pap.setSetup1(false);
+            pap.setSetup2(false);
+
+        }else{
+            currPlayerTurn = (currPlayerTurn + 1)%currNumPlayers;
+        }
+
+        System.out.println("Player's Turn "+ currPlayerList.get(currPlayerTurn));
+        System.out.println("turn count = "+currPlayerTurn);
+
+        this.turnCounter++;
+
+        return pap;
     }
 
 
     @MessageMapping("/edge")
     public void getEdge(ViewEdge pEdge) throws Exception{
         Edge aEdge = new Edge(pEdge.getId());
-    aGame.getEdges().put(aEdge.getId(),aEdge);
-    aGame.lEdges.add(aEdge);
+    //    System.out.println(aEdge.getId());
+    //    System.out.println(aEdge.getX());
+    //    System.out.println(aEdge.getY());
+    //    System.out.println(aEdge.getPrefix());
+        aGame.getEdges().put(aEdge.getId(),aEdge);
+        aGame.lEdges.add(aEdge);
     }
 
     @MessageMapping("/hex")
     public void getHex(ViewHex pHex) throws Exception{
 
         Hex aHex;
+            System.out.println("Hexagon");
 
         switch (pHex.getTerrainType())
         {
@@ -150,6 +286,7 @@ public class GameController {
             case "sheep" : aHex = new LandHex(pHex.getId(),pHex.getNumber(),TerrainType.Pasture ); break;
             case "gold" : aHex = new LandHex(pHex.getId(),pHex.getNumber(),TerrainType.GoldMine); break;
             case "wheat" : aHex = new LandHex(pHex.getId(),pHex.getNumber(),TerrainType.Fields); break;
+            case "desert" : aHex = new LandHex(pHex.getId(),pHex.getNumber(),TerrainType.Desert); break;
             case "sea" : aHex = new SeaHex(pHex.getId());
             default: aHex= new SeaHex(pHex.getId());
         }
@@ -159,6 +296,7 @@ public class GameController {
 
     @MessageMapping("/intersection")
     public void getIntersection(ViewIntersection pIntersection) throws Exception{
+        System.out.println("Intersection");
         Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
         aGame.getIntersections().put(aIntersection.getId(),aIntersection);
         aGame.lIntersections.add(aIntersection);
@@ -167,6 +305,8 @@ public class GameController {
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception
     {
-       aGame.setAllNeighbours();
+        System.out.println("HNNNNNNNG");
+
+        aGame.setAllNeighbours();
     }
 }

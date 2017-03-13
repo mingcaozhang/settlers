@@ -40,7 +40,7 @@ public class GameRoomController {
         if(playerList.size() == 2){
             System.out.println("creating list!");
             GameController.setCurrPlayerList(playerList);
-            //GameController.createGame();
+            GameController.createGame();
         }
 
         GameRoomView grv = new GameRoomView(principal.getName(), playerList.size());
