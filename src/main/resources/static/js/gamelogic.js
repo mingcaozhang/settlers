@@ -368,6 +368,7 @@ function placeSettlement() {
     nSettlement++;
     pSettlement = document.getElementById("pSettlement");
     pSettlement.innerHTML = "Settlements " + nSettlement;
+    console.log("get ready to place that road");
 }
 
 //Build city

@@ -40,6 +40,11 @@
                         <div class="panel-body text-center" style="height: 500px;">
                             <h1>Player List</h1>
                             <div class="scroll">
+                                
+                                <!--/*@thymesVar id="playerList" type="com.example.controllers.network.GameRoomController.playerList"*/-->
+                                <tr th:each="p : ${playerList}">
+                                    <button type="button" class="player-btn" th:text="${p}"></button>
+                                </tr>
                                 <form id="playerlist">
 
                                 </form>

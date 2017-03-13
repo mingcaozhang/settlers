@@ -20,6 +20,7 @@ function connect() {
            // showJoinedUser(JSON.parse(str.body).content);
             console.log(grv);
             showJoinedUser(JSON.parse(grv.body));
+
             //showJoinedUser(grv.body)
         });
     });
