@@ -46,7 +46,12 @@ public class GameController {
     }
 
     public static void createGame(){
-        aGame = new Game(10,currPlayerList,3 );
+        List<String> myColors = new ArrayList<String>();
+        myColors.add(0,player1color);
+        myColors.add(1,player2color);
+        myColors.add(2,player3color);
+        myColors.add(3,player3color);
+        aGame = new Game(10,currPlayerList,myColors);
     }
 
 
@@ -133,14 +138,19 @@ public class GameController {
     @MessageMapping("/edge")
     public void getEdge(ViewEdge pEdge) throws Exception{
         Edge aEdge = new Edge(pEdge.getId());
-    aGame.getEdges().put(aEdge.getId(),aEdge);
-    aGame.lEdges.add(aEdge);
+    //    System.out.println(aEdge.getId());
+    //    System.out.println(aEdge.getX());
+    //    System.out.println(aEdge.getY());
+    //    System.out.println(aEdge.getPrefix());
+        aGame.getEdges().put(aEdge.getId(),aEdge);
+        aGame.lEdges.add(aEdge);
     }
 
     @MessageMapping("/hex")
     public void getHex(ViewHex pHex) throws Exception{
 
         Hex aHex;
+            System.out.println("Hexagon");
 
         switch (pHex.getTerrainType())
         {
@@ -160,6 +170,7 @@ public class GameController {
 
     @MessageMapping("/intersection")
     public void getIntersection(ViewIntersection pIntersection) throws Exception{
+        System.out.println("Intersection");
         Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
         aGame.getIntersections().put(aIntersection.getId(),aIntersection);
         aGame.lIntersections.add(aIntersection);
@@ -168,6 +179,8 @@ public class GameController {
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception
     {
-       aGame.setAllNeighbours();
+        System.out.println("HNNNNNNNG");
+
+        aGame.setAllNeighbours();
     }
 }

@@ -5,8 +5,7 @@ import java.util.*;
  * Created by G on 17/03/03.
  */
 public class Game {
-    private final int aID;
-   // private final List<Player> aPlayers; // TODO
+    private final List<Player> aPlayers = new ArrayList<Player>(); // TODO
     private final int aVPsToWin;
 
     private Map<String,Hex> aHexes = new HashMap<String,Hex>();
@@ -32,18 +31,15 @@ public class Game {
     private Queue<Player> aPlayerQueue;
     private int aTurnCounter;
 
-    public Game(int pVPsToWin, List<String> pPlayers, int pID){
-        aID = pID;
+    public Game(int pVPsToWin, List<String> pPlayers,List<String> pColors){
         aVPsToWin = pVPsToWin;
         aBarbarianPosition = 6;
         aGoldBank = 50;
-        // TODO. MAKE NEW PLAYERS
-/*
-        for(p:pPlayers)
+        for(int i=0;i<pPlayers.size();i++)
         {
-            Player aPlayer = new Player();
+            Player aPlayer = new Player(pPlayers.get(i),pColors.get(i),i);
+            aPlayers.add(i,aPlayer);
         }
-*/
         aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
@@ -52,11 +48,9 @@ public class Game {
         aCommodityCards = new HashMap<CommodityCard.CommodityType, Queue<CommodityCard>>();
         aResourceCards = ResourceCard.getResources();
         aCommodityCards = CommodityCard.getCommodities();
-        aPlayerQueue = new LinkedList<Player>();
-     //   for (Player player : aPlayers.values()){
-    //        aPlayerQueue.add(player);
-     //   }
-      //  aCurrentPlayer = aPlayerQueue.remove();
+//        aPlayerQueue = new LinkedList<Player>();
+        System.out.println("BILLY BOBBY");
+
     }
 
     public void setPhase(GamePhase pPhase){
@@ -104,10 +98,10 @@ public class Game {
         aTurnCounter++;
     }
 
-/*    public List<Player> getPlayers(){ // TODO
+    public List<Player> getPlayers(){
         return aPlayers;
     }
-*/
+
     public int getTurnCounter(){
         return aTurnCounter;
     }
