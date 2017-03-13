@@ -124,7 +124,7 @@ public class GameController {
     }
 
     @MessageMapping("/placeroad")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/road")
     public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
@@ -138,7 +138,7 @@ public class GameController {
     }
 
     @MessageMapping("/setupsettlement")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/settlement")
     public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
@@ -182,16 +182,8 @@ public class GameController {
     @SendTo("/topic/playerIncrement")
     public PlayerIncrement setupPayout(){
         PlayerIncrement increment = new PlayerIncrement();
-
-        for(Player player: aGame.getPlayers()){
-            //setp#
-        }
-
-        //        TODO
-//        increment.setp1();
-//        increment.setp2();
-//        increment.setp3();
-//        increment.setp4();
+        aGame.setupPayout();
+        setPlayerIncrement(increment);
         return increment;
     }
 
@@ -206,15 +198,60 @@ public class GameController {
     @SendTo("/topic/playerIncrement")
     private PlayerIncrement diceRollPayout(){
         PlayerIncrement increment = new PlayerIncrement();
-        for (Player player : aGame.getPlayers()){
-            //setp#
-        }
-//        TODO
-//        increment.setp1();
-//        increment.setp2();
-//        increment.setp3();
-//        increment.setp4();
+        setPlayerIncrement(increment);
         return increment;
+    }
+
+    private void setPlayerIncrement(PlayerIncrement pIncrement){
+        for (String pUsername : currPlayerList){
+            for (Player player : aGame.getPlayers()) {
+                if (pUsername.equals(player.getUsername())) {
+                    int index = currPlayerList.indexOf(player.getUsername());
+                    switch (index) {
+                        case 1:
+                            pIncrement.setp1(
+                                    player.getGold(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                        case 2:
+                            pIncrement.setp2(
+                                    player.getGold(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                        case 3:
+                            pIncrement.setp3(
+                                    player.getGold(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                        case 4:
+                            pIncrement.setp4(
+                                    player.getGold(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                    }
+                }
+            }
+        }
     }
 
     @MessageMapping("/endturn")

@@ -55,6 +55,10 @@ public class Player {
 
     public String getUsername(){ return aUsername; }
 
+    public int getGold(){
+        return aGold;
+    }
+
     public int getIndex(){
         return aIndex;
     }
