@@ -34,6 +34,7 @@ public class GameController {
     private static final String player2color = "yellow";
     private static final String player3color = "green";
     private static final String player4color = "blue";
+
     private static final PlayerAndPhase pap = new PlayerAndPhase();
 
     private static int turnCounter = 0;
@@ -102,7 +103,7 @@ public class GameController {
 
 
     @MessageMapping("/placesettlement")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/settlement")
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
@@ -116,7 +117,7 @@ public class GameController {
     }
 
     @MessageMapping("/placecity")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
@@ -130,7 +131,7 @@ public class GameController {
     }
 
     @MessageMapping("/placeroad")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/road")
     public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
@@ -144,7 +145,7 @@ public class GameController {
     }
 
     @MessageMapping("/setupsettlement")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/settlement")
     public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){
@@ -172,7 +173,7 @@ public class GameController {
     }
 
     @MessageMapping("/setuproad")
-    @SendTo("/topic/piece")
+    @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
         Player callingPlayer = new Player(null, null, 0);
         for (Player player : aGame.getPlayers()){

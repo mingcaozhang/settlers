@@ -13,6 +13,8 @@ public class ViewPiece {
         color = pColor;
     }
 
+    ViewPiece(){}
+
     public String getId() {
         return id;
     }

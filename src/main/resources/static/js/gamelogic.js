@@ -110,8 +110,13 @@ var road1Placed = false;
 var cityPlaced = false;
 var road2Placed = false;
 
+var enablePlaceRoad1=false;
+var enablePlaceRoad2=false;
+
 var enableBuyAndUpgrade = false;
 var boardEnabled = false;
+
+var currUser;
 
 connect();
 intitializeTurn();
@@ -122,7 +127,7 @@ console.log("my color is: "+myColor);
 
 function intitializeTurn(){
 
-
+    currUser = startingPlayer;
 
     if(startingPlayer.match(myUsername)){
         //enable all turn buttons
@@ -217,13 +222,26 @@ function connect() {
             }
         });
 
-        stompClient.subscribe('/topic/piece', function (piece) {
+        stompClient.subscribe('/topic/road', function (piece) {
             piece = JSON.parse((piece.body));
 
             var myId = piece.id;
             var toColor = piece.color;
 
             d3.select("#"+myId).attr("fill", toColor);
+            d3.select("#"+myId).attr("hasRoad","true");
+
+        });
+
+        stompClient.subscribe('/topic/settlement', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("fill", toColor);
+            d3.select("#"+myId).attr("hasSettlement","true")
+
 
         });
 
@@ -234,6 +252,7 @@ function connect() {
             var toColor = piece.color;
 
             d3.select("#"+myId).attr("stroke", "black").attr("stroke-width",5);
+            d3.select("#"+myId).attr("hasCity", "true");
 
         });
 
@@ -364,6 +383,7 @@ function buildRoad(id) {
         nRoad++;
         road = document.getElementById("road");
         road.innerHTML = "Roads " + nRoad;
+        stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
 
@@ -372,9 +392,17 @@ function buildRoad(id) {
 }
 //Place road
 function placeRoad(id) {
+    if(!road1Placed){
+        road1Placed = true;
+        enablePlaceRoad1 = false;
+    }else if(!road2Placed){
+        road2Placed = true;
+        enablePlaceRoad2 = false;
+    }
     nRoad++;
     pRoad = document.getElementById("pRoad");
     pRoad.innerHTML = "Roads " + nRoad;
+    stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}));
 }
 
 //Build ship
@@ -408,6 +436,7 @@ function buildSettlement(id) {
         nSettlement++;
         settlement = document.getElementById("settlement");
         settlement.innerHTML = "Settlements " + nSettlement;
+        stompClient.send("/app/placesettlement",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
         //Set no resource message to true
@@ -417,11 +446,12 @@ function buildSettlement(id) {
 //Place settlement
 function placeSettlement(id) {
 
-    stompClient.send("/setupsettlement",{}, JSON.stringify({"id":id, "event":myColor}));
     settlementPlaced = true;
+    enablePlaceRoad1 = true;
     nSettlement++;
     pSettlement = document.getElementById("pSettlement");
     pSettlement.innerHTML = "Settlements " + nSettlement;
+    stompClient.send("/app/setupsettlement",{}, JSON.stringify({"id":id, "color":myColor}));
 }
 
 //Build city
@@ -432,6 +462,7 @@ function buildCity(id) {
         nCity++;
         city = document.getElementById("city");
         city.innerHTML = "Cities " + nCity;
+        stompClient.send("/app/placecity",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
         //Set no resource message to true
@@ -439,12 +470,13 @@ function buildCity(id) {
 }
 
 //Place city
-function placeCity() {
-    stompClient.send("/setupcity",{}, JSON.stringify({"id":d.id, "event":myColor}));
+function placeCity(id) {
     cityPlaced = true;
     nCity++;
     pCity = document.getElementById("pCity");
     pCity.innerHTML = "Cities " + nCity;
+    stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor}));
+
 
 
 }
@@ -1039,20 +1071,24 @@ var intersectionAttrs = boardIntersections
             if(boardEnabled){
 
                 if(!settlementPlaced){
-
-                    placeSettlement(d.id);
+                    if(d3.select(this).attr("hasSettlement").match("false")) {
+                        placeSettlement(d.id);
+                        d3.select(this).attr("hasSettlement", "true");
+                    }
 
                 }else if(!cityPlaced){
-
-                    placeCity(d.id);
+                    if(d3.select(this).attr("hasCity").match("false")) {
+                        placeCity(d.id);
+                        d3.select(this).attr("hasCity", "true");
+                    }
 
                 }else if(enableBuyAndUpgrade){
 
-                    if(d3.select(this).attr("hasSettlement").matches("false")){
+                    if(d3.select(this).attr("hasSettlement").match("false")){
 
                         buildSettlement(d.id);
 
-                    }else if(d3.select(this).attr("hasCity").matches("false")){
+                    }else if(d3.select(this).attr("hasCity").match("false")){
 
                         buildCity(d.id);
 
@@ -1079,12 +1115,31 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
     .attr("id", function(d) { return d.id; })
     .attr("stroke-width", function (d) { return d.stroke_width; })
     .attr("fill", function (d) {return d.fill;})
+    .attr("hasRoad", "false")
     .on("click", function (d) {
 
-        if(settlementPlaced){
+        if(currUser.match(myUsername)){
+            if(boardEnabled){
+                if(enablePlaceRoad1){
+                    if(!road1Placed){
+                        placeRoad(d.id);
+                    }
 
+                }else if(enablePlaceRoad2){
+                    if(!road2Placed){
+                        placeRoad(d.id);
+                    }
+                }else if(enableBuyAndUpgrade){
+                    if(d3.select(this).attr("hasRoad").match("false")){
+                        buildRoad(d.id);
+                    }
+                }
+            }
         }
-        d3.select(this).attr("fill", color);
+
+
+
+        d3.select(this).attr("fill", myColor);
 
 
     });
