@@ -56,9 +56,9 @@ public class GameController {
 
 
     @RequestMapping(value="/game", method= RequestMethod.GET)
-    public String game(ModelMap model, Principal principal ) {
+    public String game(ModelMap model, Principal caller) {
 
-        String name = principal.getName(); //get logged in username
+        String name = caller.getName(); //get logged in username
         model.addAttribute("username", name);
         model.addAttribute("startingPlayer",currPlayerList.get(0));
 
@@ -91,34 +91,130 @@ public class GameController {
        // model.addAttribute("player3_c", player3color);
        // model.addAttribute("player4_c", player4color);
 
-
-
         return "game";
     }
 
 
-    @MessageMapping("/placepiece")
+    @MessageMapping("/placesettlement")
     @SendTo("/topic/piece")
-    public ViewPeice placepiece(ViewPeice pNew){
+    public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));
         return pNew;
     }
 
     @MessageMapping("/placecity")
-    @SendTo("/topic/city")
-    public ViewPeice placecity(ViewPeice pNew){
-
+    @SendTo("/topic/piece")
+    public ViewPiece placeCity(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));
         return pNew;
+    }
 
+    @MessageMapping("/placeroad")
+    @SendTo("/topic/piece")
+    public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setupsettlement")
+    @SendTo("/topic/piece")
+    public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setupcity")
+    @SendTo("/topic/piece")
+    public ViewPiece setupCity(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setuproad")
+    @SendTo("/topic/piece")
+    public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
+        return pNew;
+    }
+
+    @SendTo("/topic/playerIncrement")
+    public PlayerIncrement setupPayout(){
+        PlayerIncrement increment = new PlayerIncrement();
+
+        for(Player player: aGame.getPlayers()){
+            //setp#
+        }
+
+        //        TODO
+//        increment.setp1();
+//        increment.setp2();
+//        increment.setp3();
+//        increment.setp4();
+        return increment;
     }
 
     @MessageMapping("/rolldice")
     @SendTo("/topic/dice")
     public DiceRoll showDice(DiceRoll pDice){
-
-
-        //backend code goes here Payout
-
+        aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());
+        diceRollPayout();
         return pDice;
+    }
+
+    @SendTo("/topic/playerIncrement")
+    private PlayerIncrement diceRollPayout(){
+        PlayerIncrement increment = new PlayerIncrement();
+        for (Player player : aGame.getPlayers()){
+            //setp#
+        }
+//        TODO
+//        increment.setp1();
+//        increment.setp2();
+//        increment.setp3();
+//        increment.setp4();
+        return increment;
     }
 
     @MessageMapping("/endturn")

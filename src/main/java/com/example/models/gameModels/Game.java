@@ -27,7 +27,6 @@ public class Game {
     private DiceNumber aRedDice;
     private DiceNumber aYellowDice;
     private EventType aEventDice;
-    private Player aCurrentPlayer;
     private Queue<Player> aPlayerQueue;
     private int aTurnCounter;
 
@@ -48,9 +47,8 @@ public class Game {
         aCommodityCards = new HashMap<CommodityCard.CommodityType, Queue<CommodityCard>>();
         aResourceCards = ResourceCard.getResources();
         aCommodityCards = CommodityCard.getCommodities();
-//        aPlayerQueue = new LinkedList<Player>();
+//      aPlayerQueue = new LinkedList<Player>();
         System.out.println("BILLY BOBBY");
-
     }
 
     public void setPhase(GamePhase pPhase){
@@ -87,11 +85,6 @@ public class Game {
 
     public void resetBarbarianPosition(){
         aBarbarianPosition = 6;
-    }
-
-    public void updateQueue(){
-        aPlayerQueue.add(aCurrentPlayer);
-        aCurrentPlayer = aPlayerQueue.remove();
     }
 
     public void updateTurnCounter(){
@@ -162,10 +155,6 @@ public class Game {
         return aPhase;
     }
 
-    public Player getCurrentPlayer(){
-        return aCurrentPlayer;
-    }
-
     public void setAllNeighbours(){
         for(Hex h: lHexes)
         {
@@ -184,10 +173,6 @@ public class Game {
             i.setHexNeighbours(aHexes);
             i.setIntersectionNeighbours(aIntersections);
         }
-    }
-
-    public Map<String, Player> getPlayers(){
-        return getPlayers();
     }
 
     public void rollDice(int pYellow, int pRed, int pEvent){
@@ -332,63 +317,169 @@ public class Game {
         return false;
     }
 
-    public void placeSettlement(Player pPlayer, Intersection pIntersection){
-        if (pPlayer != getCurrentPlayer()){
-            //do nothing
-        }
-        else {
-            assert (!pIntersection.getOccupancyFlag());
-            assert (pPlayer.canGetSettlement());
-            boolean eligible = checkIntersectionEligibility(pIntersection);
-            assert (eligible);
-
-            Settlement settlement = pPlayer.giveSettlement();
-            pIntersection.setOccupant(settlement);
-            if (getPhase() == Game.GamePhase.SetupRoundOne) {
-                Queue<Hex> neighbours = pIntersection.getHexNeighbours();
-                for (Hex hex : neighbours) {
-                    payout(pPlayer, hex.getTerrainType(), false);
-                }
-            }
-        }
+    private void paySettlement(Player pPlayer){
+        aResourceCards.get(ResourceCard.ResourceType.Sheep).add(pPlayer.removeResource(ResourceCard.ResourceType.Sheep));
+        aResourceCards.get(ResourceCard.ResourceType.Wheat).add(pPlayer.removeResource(ResourceCard.ResourceType.Wheat));
+        aResourceCards.get(ResourceCard.ResourceType.Brick).add(pPlayer.removeResource(ResourceCard.ResourceType.Brick));
+        aResourceCards.get(ResourceCard.ResourceType.Wood).add(pPlayer.removeResource(ResourceCard.ResourceType.Wood));
     }
 
-    public  void placeCity(Player pPlayer, Intersection pIntersection){
-        if (pPlayer != getCurrentPlayer()){
-            //do nothing
-        }
-        else{
-            assert(!pIntersection.getOccupancyFlag());
-            assert(pPlayer.canGetCity());
-            boolean eligible = checkIntersectionEligibility(pIntersection);
-            assert (eligible);
+    private void payCity(Player pPlayer){;
+        aResourceCards.get(ResourceCard.ResourceType.Wheat).add(pPlayer.removeResource(ResourceCard.ResourceType.Wheat));
+        aResourceCards.get(ResourceCard.ResourceType.Wheat).add(pPlayer.removeResource(ResourceCard.ResourceType.Wheat));
+        aResourceCards.get(ResourceCard.ResourceType.Ore).add(pPlayer.removeResource(ResourceCard.ResourceType.Ore));
+        aResourceCards.get(ResourceCard.ResourceType.Ore).add(pPlayer.removeResource(ResourceCard.ResourceType.Ore));
+        aResourceCards.get(ResourceCard.ResourceType.Ore).add(pPlayer.removeResource(ResourceCard.ResourceType.Ore));
+    }
 
-            City city = pPlayer.giveCity();
-            pIntersection.setOccupant(city);
-            if (getPhase() == Game.GamePhase.SetupRoundTwo) {
-                Queue<Hex> neighbours = pIntersection.getHexNeighbours();
-                for (Hex hex : neighbours) {
-                    payout(pPlayer, hex.getTerrainType(), true);
-                }
-            }
-        }
+    private void payRoad(Player pPlayer){
+        aResourceCards.get(ResourceCard.ResourceType.Brick).add(pPlayer.removeResource(ResourceCard.ResourceType.Brick));
+        aResourceCards.get(ResourceCard.ResourceType.Wood).add(pPlayer.removeResource(ResourceCard.ResourceType.Wood));
+    }
+
+    public void placeSettlement(Player pPlayer, Intersection pIntersection){
+        assert(!pIntersection.getOccupancyFlag());
+        assert(pPlayer.canGetSettlement());
+        assert(checkIntersectionEligibility(pIntersection, pPlayer));
+        assert(checkBuySettlement(pPlayer));
+
+        paySettlement(pPlayer);
+        Settlement settlement = pPlayer.giveSettlement();
+        pIntersection.setOccupant(settlement);
+    }
+
+    public void placeCity(Player pPlayer, Intersection pIntersection){
+        assert(pIntersection.getOccupancyFlag());
+        assert(pIntersection.getOccupant().getClass() == Settlement.class);
+        assert(pIntersection.getOccupant().getOwner() == pPlayer);
+        assert(pPlayer.canGetCity());
+        assert(checkBuyCity(pPlayer));
+
+        payCity(pPlayer);
+        City city = pPlayer.giveCity();
+        pPlayer.addSettlement((Settlement)pIntersection.getOccupant());
+        pIntersection.setOccupant(city);
     }
 
     public void placeRoad(Player pPlayer, Edge pEdge){
-        if (pPlayer != getCurrentPlayer()){
-            //do nothing
+        assert(!pEdge.getOccupancyFlag());
+        assert(pPlayer.canGetRoad());
+        assert(checkEdgeEligibility(pEdge, pPlayer));
+        assert(checkBuyRoad(pPlayer));
+
+        payRoad(pPlayer);
+        Road road = pPlayer.giveRoad();
+        pEdge.setOccupant(road);
+    }
+
+    private boolean checkIntersectionEligibility(Intersection pIntersection, Player pPlayer){
+        boolean eligible1 = true;
+        Queue<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
+        for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied
+            if (intersection.getOccupancyFlag()){
+                eligible1 = false;
+                break;
+            }
+        }
+
+        Queue<Edge> neighbourEdges = pIntersection.getEdgeNeighbours();
+        boolean eligible2 = false;
+        for (Edge edge: neighbourEdges){
+            if (edge.getOccupancyFlag()){
+                if (edge.getOccupant().getOwner() == pPlayer) {
+                    eligible2 = true;
+                    break;
+                }
+            }
+        }
+        return (eligible1 && eligible2);
+    }
+
+    private boolean checkEdgeEligibility(Edge pEdge, Player pPlayer){
+        Queue<Edge> neighbourEdges = pEdge.getEdgeNeighbours();
+        boolean eligible = false;
+        for (Edge edge: neighbourEdges) {
+            if (edge.getOccupancyFlag()) {
+                if (edge.getOccupant().getOwner() == pPlayer) {
+                    eligible = true;
+                    break;
+                }
+            }
+        }
+        return eligible;
+    }
+
+    private boolean checkBuySettlement(Player pPlayer) {
+        if (pPlayer.getResourceCards().get(ResourceCard.ResourceType.Sheep).isEmpty()){
+            return false;
+        }
+        else if (pPlayer.getResourceCards().get(ResourceCard.ResourceType.Ore).isEmpty()){
+            return false;
+        }
+        else if (pPlayer.getResourceCards().get(ResourceCard.ResourceType.Wood).isEmpty()){
+            return false;
+        }
+        else if (pPlayer.getResourceCards().get(ResourceCard.ResourceType.Brick).isEmpty()){
+            return false;
         }
         else{
-            assert(!pEdge.getOccupancyFlag());
-            assert(pPlayer.canGetRoad());
-            assert(checkEdgeEligibility(pEdge));
-
-            Road road = pPlayer.giveRoad();
-            pEdge.setOccupant(road);
+            return true;
         }
     }
 
-    private boolean checkIntersectionEligibility(Intersection pIntersection){
+    private boolean checkBuyCity(Player pPlayer){
+        if (pPlayer.getResourceCards().get(ResourceCard.ResourceType.Ore).size() < 3){
+            return false;
+        }
+        else if (pPlayer.getResourceCards().get(ResourceCard.ResourceType.Wheat).size() < 2){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    private boolean checkBuyRoad(Player pPlayer){
+       if (pPlayer.getResourceCards().get(ResourceCard.ResourceType.Wood).isEmpty()){
+           return false;
+       }
+       else if (pPlayer.getResourceCards().get(ResourceCard.ResourceType.Brick).isEmpty()){
+           return false;
+       }
+       else{
+           return true;
+       }
+
+    }
+
+    public void setupSettlement(Player pPlayer, Intersection pIntersection){
+        assert (!pIntersection.getOccupancyFlag());
+        assert (pPlayer.canGetSettlement());
+        assert (checkIntersectionSetupEligibility(pIntersection, pPlayer));
+
+        Settlement settlement = pPlayer.giveSettlement();
+        pIntersection.setOccupant(settlement);
+    }
+
+    public void setupCity(Player pPlayer, Intersection pIntersection){
+        assert(!pIntersection.getOccupancyFlag());
+        assert(pPlayer.canGetCity());
+        assert(checkIntersectionSetupEligibility(pIntersection, pPlayer));
+
+        City city = pPlayer.giveCity();
+        pIntersection.setOccupant(city);
+    }
+
+    public void setupRoad(Player pPlayer, Edge pEdge){
+        assert(!pEdge.getOccupancyFlag());
+        assert(pPlayer.canGetRoad());
+        assert(checkEdgeSetupEligibility(pEdge, pPlayer));
+
+        Road road = pPlayer.giveRoad();
+        pEdge.setOccupant(road);
+    }
+
+    private boolean checkIntersectionSetupEligibility(Intersection pIntersection, Player pPlayer){
         boolean eligible = true;
         Queue<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
         for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied
@@ -397,40 +488,18 @@ public class Game {
                 break;
             }
         }
-        if (getPhase() != Game.GamePhase.SetupRoundOne && getPhase()!= Game.GamePhase.SetupRoundTwo){
-            eligible = checkNonSetupEligibility(pIntersection);
-        }
         return eligible;
     }
 
-    private boolean checkEdgeEligibility(Edge pEdge){
-        boolean eligible = false;
+    private boolean checkEdgeSetupEligibility(Edge pEdge, Player pPlayer){
         Queue<Intersection> neighbourIntersections = pEdge.getIntersectionNeighbours();
-        for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied by the current player
-            if (intersection.getOccupant().getOwner() != getCurrentPlayer()){
-                continue;
-            }
-            else{
-                eligible = true;
-                break;
-            }
-        }
-        if (getPhase()!= Game.GamePhase.SetupRoundOne && getPhase()!= Game.GamePhase.SetupRoundTwo){
-            eligible = checkNonSetupEligibility(pEdge);
-        }
-        return eligible;
-    }
-
-    private boolean checkNonSetupEligibility(Geometry pGeometry){
-        Queue<Edge> neighbourEdges = pGeometry.getEdgeNeighbours();
         boolean eligible = false;
-        for (Edge edge : neighbourEdges){   //if any of the neighbouring edges have a road belonging to the player, it is eligible
-            if (edge.getOccupant().getOwner() != getCurrentPlayer()){
-                continue;
-            }
-            else{
-                eligible = true;
-                break;
+        for (Intersection intersection: neighbourIntersections) {
+            if (intersection.getOccupancyFlag()) {
+                if (intersection.getOccupant().getOwner() == pPlayer) {
+                    eligible = true;
+                    break;
+                }
             }
         }
         return eligible;
@@ -442,7 +511,6 @@ public class Game {
     }
 
     private void nextPlayer(){
-        updateQueue();
         updateTurnCounter();
     }
 
