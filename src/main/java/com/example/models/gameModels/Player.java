@@ -1,9 +1,6 @@
 package com.example.models.gameModels;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
-import java.util.LinkedList;
 
 /**
  * Created by G on 17/02/28.
@@ -58,6 +55,10 @@ public class Player {
 
     public String getUsername(){ return aUsername; }
 
+    public int getGold(){
+        return aGold;
+    }
+
     public int getIndex(){
         return aIndex;
     }
@@ -70,8 +71,16 @@ public class Player {
         aCommodityCards.get(pCommodityCard.getType()).add(pCommodityCard);
     }
 
+    public ResourceCard removeResource(ResourceCard.ResourceType pResourceType){
+        return aResourceCards.get(pResourceType).remove();
+    }
+
     public void addGold(){
         aGold += 2;
+    }
+
+    public void addSettlement(Settlement pSettlement){
+        aSettlements.add(pSettlement);
     }
 
     public void setRoads(Queue<Road> pRoads){
@@ -176,4 +185,11 @@ public class Player {
         return aMightyKnights.remove();
     }
 
+    public HashMap<ResourceCard.ResourceType, Queue<ResourceCard>> getResourceCards(){
+        return aResourceCards;
+    }
+
+    public HashMap<CommodityCard.CommodityType, Queue<CommodityCard>> getCommodityCards(){
+        return aCommodityCards;
+    }
 }

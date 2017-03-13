@@ -57,9 +57,9 @@ public class GameController {
 
 
     @RequestMapping(value="/game", method= RequestMethod.GET)
-    public String game(ModelMap model, Principal principal ) {
+    public String game(ModelMap model, Principal caller) {
 
-        String name = principal.getName(); //get logged in username
+        String name = caller.getName(); //get logged in username
         model.addAttribute("username", name);
         model.addAttribute("startingPlayer",currPlayerList.get(0));
 
@@ -92,34 +92,167 @@ public class GameController {
        // model.addAttribute("player3_c", player3color);
        // model.addAttribute("player4_c", player4color);
 
-
-
         return "game";
     }
 
 
-    @MessageMapping("/placepiece")
-    @SendTo("/topic/piece")
-    public ViewPeice placepiece(ViewPeice pNew){
+    @MessageMapping("/placesettlement")
+    @SendTo("/topic/settlement")
+    public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));
         return pNew;
     }
 
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
-    public ViewPeice placecity(ViewPeice pNew){
-
+    public ViewPiece placeCity(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));
         return pNew;
+    }
 
+    @MessageMapping("/placeroad")
+    @SendTo("/topic/road")
+    public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.placeRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setupsettlement")
+    @SendTo("/topic/settlement")
+    public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setupcity")
+    @SendTo("/topic/city")
+    public ViewPiece setupCity(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));
+        return pNew;
+    }
+
+    @MessageMapping("/setuproad")
+    @SendTo("/topic/road")
+    public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
+        Player callingPlayer = new Player(null, null, 0);
+        for (Player player : aGame.getPlayers()){
+            if (player.getUsername() == caller.getName()){
+                callingPlayer = player;
+                break;
+            }
+        }
+        aGame.setupRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
+        return pNew;
+    }
+
+    @SendTo("/topic/playerIncrement")
+    public PlayerIncrement setupPayout(){
+        PlayerIncrement increment = new PlayerIncrement();
+        aGame.setupPayout();
+        setPlayerIncrement(increment);
+        return increment;
     }
 
     @MessageMapping("/rolldice")
     @SendTo("/topic/dice")
     public DiceRoll showDice(DiceRoll pDice){
-
-
-        //backend code goes here Payout
-
+        aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());
+        diceRollPayout();
         return pDice;
+    }
+
+    @SendTo("/topic/playerIncrement")
+    private PlayerIncrement diceRollPayout(){
+        PlayerIncrement increment = new PlayerIncrement();
+        setPlayerIncrement(increment);
+        return increment;
+    }
+
+    private void setPlayerIncrement(PlayerIncrement pIncrement){
+        for (String pUsername : currPlayerList){
+            for (Player player : aGame.getPlayers()) {
+                if (pUsername.equals(player.getUsername())) {
+                    int index = currPlayerList.indexOf(player.getUsername());
+                    switch (index) {
+                        case 1:
+                            pIncrement.setp1(
+                                    player.getGold(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                        case 2:
+                            pIncrement.setp2(
+                                    player.getGold(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                        case 3:
+                            pIncrement.setp3(
+                                    player.getGold(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                        case 4:
+                            pIncrement.setp4(
+                                    player.getGold(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
+                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
+                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                    }
+                }
+            }
+        }
     }
 
     @MessageMapping("/endturn")
