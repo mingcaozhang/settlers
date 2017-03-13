@@ -130,7 +130,7 @@ function intitializeTurn(){
 
 function connect() {
     //showJoinedUser("I just connected!");
-    var socket = new SockJS('/game-web-socket');
+    var socket = new SockJS('/game-board-socket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
        // setConnected(true);
@@ -933,7 +933,7 @@ for(q = -board_radius; q<= board_radius; q++)
 }
 
 
-var color ='blue'; //OH MY LORD
+//var color ='blue'; //OH MY LORD
 
 var holder = d3.select("svg");
 

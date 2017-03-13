@@ -35,6 +35,8 @@ public class GameController {
     private static final String player4color = "blue";
 
 
+
+
     public static void setCurrPlayerList(ArrayList<String> pList){
         for (String s : pList){
             currPlayerList.add(s);
