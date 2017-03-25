@@ -8,10 +8,12 @@ public class ViewPiece {
     private String id;
     private String color;
 
-    public ViewPiece(String pId, String pColor){
+    ViewPiece(String pId, String pColor){
         id = pId;
         color = pColor;
     }
+
+    ViewPiece(){}
 
     public String getId() {
         return id;
