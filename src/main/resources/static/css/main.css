@@ -256,8 +256,8 @@ input[type="checkbox"] {
     text-align: center;
     text-decoration: none;
     font-size: 16px;
-    width: 500px;
 }
+
 .hvr-pulse-grow:hover, .hvr-pulse-grow:focus, .hvr-pulse-grow:active {
     position: fixed;
     -webkit-animation-name: hvr-pulse-grow;
@@ -274,6 +274,51 @@ input[type="checkbox"] {
 }
 /*turn button end*/
 
+/*player turn start*/
+@-webkit-keyframes turnWabble {
+    to {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+    }
+}
+@keyframes turnWabble {
+    to {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+    }
+}
+.turnWabble {
+    position: fixed;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px transparent;
+    background-color: lightcoral;
+    border: groove #2c313a;
+    color: white;
+    border-radius: 25px;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+}
+.turnWabble:focus, .turnWabble:enabled {
+    position: fixed;
+    -webkit-animation-name: turnWabble;
+    animation-name: turnWabble;
+    -webkit-animation-duration: 0.3s;
+    animation-duration: 0.3s;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+    animation-direction: alternate;
+    background: lightseagreen;
+}
+/*player turn end*/
+
 /*RollDice start*/
 .btn-3d {
     width: 100px;
@@ -281,10 +326,10 @@ input[type="checkbox"] {
     position: relative;
     display: inline-block;
     font-size: 22px;
-    padding: 0px;
+    padding: 0%;
     color: white;
-    margin-left: 665px;
-    margin-top: 0px;
+    margin-left: 46.6%;
+    margin-top: 0%;
     border-radius: 6px;
     border-color: #e74c3c;
     text-align: center;
@@ -320,6 +365,11 @@ input[type="checkbox"] {
 }
 .about_us .row{
     margin: 0px 200px 0px 200px;
+}
+
+svg{
+    display: block;
+    margin: auto;
 }
 
 svg{

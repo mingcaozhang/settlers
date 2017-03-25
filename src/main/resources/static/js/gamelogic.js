@@ -95,6 +95,26 @@ var victoryPt;
 var gold;
 var barbarian;
 
+//Maritime Trade
+var gBrick;
+var gWood;
+var gOre;
+var gSheep;
+var gWheat;
+var maritimeTrade;
+var tBrick;
+var tWood;
+var tOre;
+var tSheep;
+var tWheat;
+
+//Count number of clicks
+var brickClick = 0;
+var woodClick = 0;
+var oreClick = 0;
+var sheepClick = 0;
+var wheatClick = 0;
+
 //Knight state (active/inactive)
 var knight;
 
@@ -104,23 +124,51 @@ var knight;
 //var myUsername = [[${username}]];
 var stompClient = null;
 
+
+var settlementPlaced = false;
+var road1Placed = false;
+var cityPlaced = false;
+var road2Placed = false;
+
+var enablePlaceRoad1=false;
+var enablePlaceRoad2=false;
+
+var enableBuyAndUpgrade = false;
+var boardEnabled = false;
+
+var currUser;
+
 connect();
 intitializeTurn();
+var currPlayer = document.getElementById("currPlayer");
+currPlayer.innerHTML = "Turn: " + startingPlayer;
+
+
 console.log("my username is: "+myUsername);
 console.log("my color is: "+myColor);
 
+var hardCodedCounter = 0;
+var hardCodedBoolean = true;
 
+//element1.id =
 
 function intitializeTurn(){
 
+    currUser = startingPlayer;
+    console.log("Player Starting is: "+startingPlayer);
+
     if(startingPlayer.match(myUsername)){
-        //disable all turn buttons
-        document.getElementById('rolldice').disabled = false;
-        document.getElementById('endTurn').disabled = false;
+        //enable all turn buttons
+        boardEnabled = true;
+        enableBuyAndUpgrade = false;
+        document.getElementById('rolldice').disabled = true;
+        document.getElementById('endTurn').disabled = true;
 
 
     }else{
-        //enable all turn buttons
+        //disable all turn buttons
+        boardEnabled = false;
+        enableBuyAndUpgrade = false;
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
     }
@@ -137,22 +185,55 @@ function connect() {
         console.log('Connected: ' + frame);
 
 
-        stompClient.subscribe('/topic/turninfo', function (user) {
-            currUser = user.body;
+        stompClient.subscribe('/topic/turninfo', function (pap) {
+            pap = JSON.parse((pap.body));
+            currUser = pap.username;
+            currPlayer.innerHTML = "Turn: " + currUser;
 
             //console.log(currUser);
            // console.log(user.body);
 
             if(currUser.match(myUsername)){
                 //disable all turn buttons
-                document.getElementById('rolldice').disabled = true;
-                document.getElementById('endTurn').disabled = true;
+                if(pap.setup1){
+
+                }else if(pap.setup2){
+
+                    document.getElementById('endTurn').disabled = true;
+                }else{
+                    document.getElementById('rolldice').disabled = false;
+                    document.getElementById('endTurn').disabled = true;
+
+
+                }
+
+
 
 
             }else{
-                //enable all turn buttons
-                document.getElementById('rolldice').disabled = false;
-                document.getElementById('endTurn').disabled = false;
+                //disable all turn buttons
+                document.getElementById('rolldice').disabled = true;
+                document.getElementById('endTurn').disabled = true;
+            }
+
+            if(hardCodedBoolean && !pap.setup2){
+
+                if(myUsername.match(p1name)){
+                    nWheat++;
+                    nBrick++;
+
+                }else if(myUsername.match(p2name)){
+                    nSheep++;
+                    nOre++;
+                    nWood++;
+
+                }else if(myUsername.match(p3name)){
+                    nWheat = nWheat +2;
+                    nWood = nWood + 1;
+                }
+
+                hardCodedBoolean = false;
+
             }
 
 
@@ -164,6 +245,7 @@ function connect() {
 
 
         stompClient.subscribe('/topic/dice', function (dice) {
+
             dice = JSON.parse((dice.body));
 
             console.log(dice.red);
@@ -190,6 +272,86 @@ function connect() {
             if(diceTotal == 7){
                 status.innerHTML += " Robber!";
             }
+
+            if(hardCodedCounter == 0){
+                if(myUsername.match(p1name)){
+                    nBrick = nBrick + 1;
+
+                }else if(myUsername.match(p2name)){
+
+
+                }else if(myUsername.match(p3name)){
+                    nBrick = nBrick + 1;
+                }
+            }
+
+            if(hardCodedCounter == 1){
+                if(myUsername.match(p1name)){
+
+
+                }else if(myUsername.match(p2name)){
+
+
+                }else if(myUsername.match(p3name)){
+                    nWheat = nWheat +2;
+                }
+            }
+
+            if(hardCodedCounter == 2){
+                if(myUsername.match(p1name)){
+                    nSheep++;
+
+
+                }else if(myUsername.match(p2name)){
+                    nSheep++;
+                    nCloth++;
+
+                }else if(myUsername.match(p3name)){
+
+
+                }
+            }
+
+
+
+
+            hardCodedCounter++;
+
+
+        });
+
+        stompClient.subscribe('/topic/road', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("fill", toColor);
+            d3.select("#"+myId).attr("hasRoad","true");
+
+        });
+
+        stompClient.subscribe('/topic/settlement', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("fill", toColor);
+            d3.select("#"+myId).attr("hasSettlement","true")
+
+
+        });
+
+        stompClient.subscribe('/topic/city', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("fill", toColor).attr("r",12);
+            d3.select("#"+myId).attr("hasCity", "true");
+
         });
 
 
@@ -220,19 +382,49 @@ function readySetNeighbours(){
 //Roll Dice
 function rollDice() {
     var status = document.getElementById("status");
-    var d1 = Math.floor(Math.random() * 6) + 1;
-    var d2 = Math.floor(Math.random() * 6) + 1;
+    var d1, d2;
+
     var d3 = Math.floor(Math.random() * 6) + 1;
+
+
+    if(hardCodedCounter<=2){
+        if(myUsername.match(p1name)){
+            d1 = 2;
+            d2 = 2;
+
+        }
+
+        else if(myUsername.match(p2name)){
+            d1 = 6;
+            d2 = 5;
+        }
+
+        else if(myUsername.match(p3name)){
+            d1 = 5;
+            d2 = 3;
+        }
+    }else{
+        d1 = Math.floor(Math.random() * 6) + 1;
+        d2 = Math.floor(Math.random() * 6) + 1;
+    }
+
+
 
     stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
+    boardEnabled = true;
+    enableBuyAndUpgrade = true;
     document.getElementById('rolldice').disabled = true;
+    document.getElementById('endTurn').disabled = false;
+
 
 }
 //Used to enable rollDice button when end turn button is pressed
 function endTurn() {
 
     stompClient.send("/app/endturn",{}, {});
+    boardEnabled = false;
+    enableBuyAndUpgrade = false;
 
 }
 
@@ -246,73 +438,92 @@ function endTurn() {
 //Activated to show attributes when player button is clicked
 function setAttributes() {
     //Place road, ship, settlement, city
-    pRoad = document.getElementById("pRoad");
-    pShip = document.getElementById("pShip");
-    pSettlement = document.getElementById("pSettlement");
-    pCity = document.getElementById("pCity");
+     pRoad = document.getElementById("pRoad");
+     pShip = document.getElementById("pShip");
+     pSettlement = document.getElementById("pSettlement");
+     pCity = document.getElementById("pCity");
 
     //Attribute id getters
     road = document.getElementById("road");
     ship = document.getElementById("ship");
+    city = document.getElementById("city");
+    wall = document.getElementById("wall");
+    settlement = document.getElementById("settlement");
+    victoryPt = document.getElementById("victoryPt");
+    gold = document.getElementById("gold");
+    barbarian = document.getElementById("barbarian");
+    road.innerHTML = "Roads " + nRoad;
+    ship.innerHTML = "Ships " + nShip;
+    city.innerHTML = "Cities " + nCity;
+    wall.innerHTML = "Walls " + nWall;
+    settlement.innerHTML = "Settlements " + nSettlement;
+    victoryPt.innerHTML = "Victory Points " + nVictoryPt;
+    gold.innerHTML = "Golds " + nGold;
+
+    //Knights
     knight1 = document.getElementById("knight1");
     knight2 = document.getElementById("knight2");
     knight3 = document.getElementById("knight3");
     totalKnight = document.getElementById("totalKnight");
-    city = document.getElementById("city");
-    wall = document.getElementById("wall");
-    settlement = document.getElementById("settlement");
+    knight1.innerHTML = "Rank 1: " + nKnight1;
+    knight2.innerHTML = "Rank 2: " + nKnight2;
+    knight3.innerHTML = "Rank 3: " + nKnight3;
+    totalKnight.innerHTML = "Knights " + nTotalKnight;
+
+    //Resource Cards
     brick = document.getElementById("brick");
     wood = document.getElementById("wood");
     ore = document.getElementById("ore");
     sheep = document.getElementById("sheep");
     wheat = document.getElementById("wheat");
     resourceCard = document.getElementById("resourceCard");
-    coin = document.getElementById("coin");
-    cloth = document.getElementById("cloth");
-    book = document.getElementById("book");
-    commodityCard = document.getElementById("commodityCard");
-    victoryPt = document.getElementById("victoryPt");
-    gold = document.getElementById("gold");
-    barbarian = document.getElementById("barbarian");
-
-    //Place road, ship, settlement, city
-    pRoad.innerHTML = "Roads " + nRoad;
-    pShip.innerHTML = "Ship " + nShip;
-    pSettlement.innerHTML = "Settlements " + nSettlement;
-    pCity.innerHTML = "Cities " + nCity;
-
-    //Set each attributes
-    road.innerHTML = "Roads " + nRoad;
-    ship.innerHTML = "Ships " + nShip;
-    knight1.innerHTML = "Rank 1: " + nKnight1;
-    knight2.innerHTML = "Rank 2: " + nKnight2;
-    knight3.innerHTML = "Rank 3: " + nKnight3;
-    totalKnight.innerHTML = "Knights " + nTotalKnight;
-    city.innerHTML = "Cities " + nCity;
-    wall.innerHTML = "Walls " + nWall;
-    settlement.innerHTML = "Settlements " + nSettlement;
     brick.innerHTML = nBrick;
     wood.innerHTML = nWood;
     ore.innerHTML = nOre;
     sheep.innerHTML = nSheep;
     wheat.innerHTML = nWheat;
     resourceCard.innerHTML = "Resource Cards " + nResourceCard;
+
+    //Commodity Cards
+    coin = document.getElementById("coin");
+    cloth = document.getElementById("cloth");
+    book = document.getElementById("book");
+    commodityCard = document.getElementById("commodityCard");
     coin.innerHTML = nCoin;
     cloth.innerHTML = nCloth;
     book.innerHTML = nBook;
     commodityCard.innerHTML = "Commodity Cards " + nCommodityCard;
-    victoryPt.innerHTML = "Victory Points " + nVictoryPt;
-    gold.innerHTML = "Golds " + nGold;
+
+    //Maritime Trade
+    gBrick = document.getElementById("tradeBrick");
+    gWood = document.getElementById("tradeWood");
+    gOre = document.getElementById("tradeOre");
+    gSheep = document.getElementById("tradeSheep");
+    gWheat = document.getElementById("tradeWheat");
+    maritimeTrade = document.getElementById("maritimeTrade");
+    gBrick.innerHTML = "Give/Get";
+    gWood.innerHTML = "Give/Get";
+    gOre.innerHTML = "Give/Get";
+    gSheep.innerHTML = "Give/Get";
+    gWheat.innerHTML = "Give/Get";
+    maritimeTrade.innerHTML = "Maritime Trade";
+
+    /*Place road, ship, settlement, city
+     pRoad.innerHTML = "Place Roads " + nRoad;
+     pShip.innerHTML = "Place Ship " + nShip;
+     pSettlement.innerHTML = "Place Settlements " + nSettlement;
+     pCity.innerHTML = "Place Cities " + nCity;*/
 }
 
 //Build road
-function buildRoad() {
+function buildRoad(id) {
     if (nRoad < 15 && nBrick > 0 && nWood > 0 ) {
         nBrick--;
         nWood--;
         nRoad++;
         road = document.getElementById("road");
         road.innerHTML = "Roads " + nRoad;
+        stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
 
@@ -320,14 +531,23 @@ function buildRoad() {
     }
 }
 //Place road
-function placeRoad() {
+function placeRoad(id) {
+    if(!road1Placed){
+        road1Placed = true;
+        enablePlaceRoad1 = false;
+    }else if(!road2Placed){
+        road2Placed = true;
+        enablePlaceRoad2 = false;
+    }
     nRoad++;
     pRoad = document.getElementById("pRoad");
     pRoad.innerHTML = "Roads " + nRoad;
+    stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}))
+    document.getElementById('endTurn').disabled = false;
 }
 
 //Build ship
-function buildShip() {
+function buildShip(id) {
     if (nShip < 15 && nSheep > 0 && nWood > 0) {
         nSheep--;
         nWood--;
@@ -341,14 +561,14 @@ function buildShip() {
 }
 
 //Place ship
-function placeShip() {
+function placeShip(id) {
     nShip++;
     pShip = document.getElementById("pShip");
     pShip.innerHTML = "Ship" + nShip;
 }
 
 //Build settlement
-function buildSettlement() {
+function buildSettlement(id) {
     if (nSettlement < 5 && nWood > 0 && nBrick > 0 && nSheep > 0 && nWheat > 0) {
         nWood--;
         nBrick--;
@@ -357,6 +577,7 @@ function buildSettlement() {
         nSettlement++;
         settlement = document.getElementById("settlement");
         settlement.innerHTML = "Settlements " + nSettlement;
+        stompClient.send("/app/placesettlement",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
         //Set no resource message to true
@@ -364,20 +585,27 @@ function buildSettlement() {
 }
 
 //Place settlement
-function placeSettlement() {
+function placeSettlement(id) {
+
+    settlementPlaced = true;
+    enablePlaceRoad1 = true;
     nSettlement++;
     pSettlement = document.getElementById("pSettlement");
     pSettlement.innerHTML = "Settlements " + nSettlement;
+
+    console.log("my color is:" +myColor);
+    stompClient.send("/app/setupsettlement",{}, JSON.stringify({"id":id, "color":myColor}));
 }
 
 //Build city
-function buildCity() {
+function buildCity(id) {
     if (nCity < 4 && nOre > 2 && nWheat > 1) {
         nOre -= 3;
         nWheat -= 2;
         nCity++;
         city = document.getElementById("city");
         city.innerHTML = "Cities " + nCity;
+        stompClient.send("/app/placecity",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
         //Set no resource message to true
@@ -385,10 +613,16 @@ function buildCity() {
 }
 
 //Place city
-function placeCity() {
+function placeCity(id) {
+    cityPlaced = true;
     nCity++;
     pCity = document.getElementById("pCity");
     pCity.innerHTML = "Cities " + nCity;
+    stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor}));
+
+
+
+
 }
 
 
@@ -458,7 +692,391 @@ function activateKnight() {
     }
 }
 
+//----------------------Maritime Trade------------------------
+function setPreResult() {
+    var tResult = document.getElementById("tResult");
+    tResult.innerHTML = "";
+}
 
+//Give resource
+function giveBrick() {
+    var tResult = document.getElementById("tResult");
+    tResult.innerHTML = "";
+
+    gBrick = document.getElementById("tradeBrick");
+    gBrick.innerHTML = "Give 4";
+    brickClick++;
+
+    //Can Only give 1 resource type
+    if(woodClick == 1){
+        gWood.innerHTML = "Give/Get";
+        woodClick = 0;
+    }
+    else if(oreClick == 1){
+        gOre.innerHTML = "Give/Get";
+        oreClick = 0;
+    }
+    else if(sheepClick == 1){
+        gSheep.innerHTML = "Give/Get";
+        sheepClick = 0;
+    }
+    else if(wheatClick == 1){
+        gWheat.innerHTML = "Give/Get";
+        wheatClick = 0;
+    }
+
+    if(gBrick.onclick && brickClick == 2) {
+        //Can only get 1 resource type
+        if(woodClick == 2){
+            gWood.innerHTML = "Give/Get";
+            woodClick = 0;
+        }
+        else if(oreClick == 2){
+            gOre.innerHTML = "Give/Get";
+            oreClick = 0;
+        }
+        else if(sheepClick == 2){
+            gSheep.innerHTML = "Give/Get";
+            sheepClick = 0;
+        }
+        else if(wheatClick == 2){
+            gWheat.innerHTML = "Give/Get";
+            wheatClick = 0;
+        }
+        getBrick();
+    }
+    else if (gBrick.onclick && brickClick > 2){
+        gBrick.innerHTML = "Give/Get";
+        brickClick = 0;
+    }
+}
+
+function giveWood() {
+    var tResult = document.getElementById("tResult");
+    tResult.innerHTML = "";
+
+    gWood = document.getElementById("tradeWood");
+    gWood.innerHTML = "Give 4";
+    woodClick++;
+
+    //Can Only give 1 resource type
+    if(brickClick == 1){
+        gBrick.innerHTML = "Give/Get";
+        brickClick = 0;
+    }
+    else if(oreClick == 1){
+        gOre.innerHTML = "Give/Get";
+        oreClick = 0;
+    }
+    else if(sheepClick == 1){
+        gSheep.innerHTML = "Give/Get";
+        sheepClick = 0;
+    }
+    else if(wheatClick == 1){
+        gWheat.innerHTML = "Give/Get";
+        wheatClick = 0;
+    }
+
+    if(gWood.onclick && woodClick == 2) {
+        //Can only get 1 resource type
+        if(brickClick == 2){
+            gBrick.innerHTML = "Give/Get";
+            brickClick = 0;
+        }
+        else if(oreClick == 2){
+            gOre.innerHTML = "Give/Get";
+            oreClick = 0;
+        }
+        else if(sheepClick == 2){
+            gSheep.innerHTML = "Give/Get";
+            sheepClick = 0;
+        }
+        else if(wheatClick == 2){
+            gWheat.innerHTML = "Give/Get";
+            wheatClick = 0;
+        }
+        getWood();
+    }
+    else if (gWood.onclick && woodClick > 2){
+        gWood.innerHTML = "Give/Get";
+        woodClick = 0;
+    }
+}
+
+function giveOre() {
+    var tResult = document.getElementById("tResult");
+    tResult.innerHTML = "";
+
+    gOre = document.getElementById("tradeOre");
+    gOre.innerHTML = "Give 4";
+    oreClick++;
+
+    //Can Only give 1 resource type
+    if(woodClick == 1){
+        gWood.innerHTML = "Give/Get";
+        woodClick = 0;
+    }
+    else if(brickClick == 1){
+        gBrick.innerHTML = "Give/Get";
+        brickClick = 0;
+    }
+    else if(sheepClick == 1){
+        gSheep.innerHTML = "Give/Get";
+        sheepClick = 0;
+    }
+    else if(wheatClick == 1){
+        gWheat.innerHTML = "Give/Get";
+        wheatClick = 0;
+    }
+
+    if(gOre.onclick && oreClick == 2) {
+        //Can only get 1 resource type
+        if(woodClick == 2){
+            gWood.innerHTML = "Give/Get";
+            woodClick = 0;
+        }
+        else if(brickClick == 2){
+            gBrick.innerHTML = "Give/Get";
+            brickClick = 0;
+        }
+        else if(sheepClick == 2){
+            gSheep.innerHTML = "Give/Get";
+            sheepClick = 0;
+        }
+        else if(wheatClick == 2){
+            gWheat.innerHTML = "Give/Get";
+            wheatClick = 0;
+        }
+        getOre();
+    }
+    else if (gOre.onclick && oreClick > 2){
+        gOre.innerHTML = "Give/Get";
+        oreClick = 0;
+    }
+}
+
+function giveSheep() {
+    var tResult = document.getElementById("tResult");
+    tResult.innerHTML = "";
+
+    gSheep = document.getElementById("tradeSheep");
+    gSheep.innerHTML = "Give 4";
+    sheepClick++;
+
+    //Can Only give 1 resource type
+    if(woodClick == 1){
+        gWood.innerHTML = "Give/Get";
+        woodClick = 0;
+    }
+    else if(oreClick == 1){
+        gOre.innerHTML = "Give/Get";
+        oreClick = 0;
+    }
+    else if(brickClick == 1){
+        gBrick.innerHTML = "Give/Get";
+        brickClick = 0;
+    }
+    else if(wheatClick == 1){
+        gWheat.innerHTML = "Give/Get";
+        wheatClick = 0;
+    }
+
+    if(gSheep.onclick && sheepClick == 2) {
+        //Can only get 1 resource type
+        if(woodClick == 2){
+            gWood.innerHTML = "Give/Get";
+            woodClick = 0;
+        }
+        else if(oreClick == 2){
+            gOre.innerHTML = "Give/Get";
+            oreClick = 0;
+        }
+        else if(brickClick == 2){
+            gBrick.innerHTML = "Give/Get";
+            brickClick = 0;
+        }
+        else if(wheatClick == 2){
+            gWheat.innerHTML = "Give/Get";
+            wheatClick = 0;
+        }
+        getSheep();
+    }
+    else if (gSheep.onclick && sheepClick > 2){
+        gSheep.innerHTML = "Give/Get";
+        sheepClick = 0;
+    }
+}
+function giveWheat() {
+    var tResult = document.getElementById("tResult");
+    tResult.innerHTML = "";
+
+    gWheat = document.getElementById("tradeWheat");
+    gWheat.innerHTML = "Give 4";
+    wheatClick++;
+
+    //Can Only give 1 resource type
+    if(woodClick == 1){
+        gWood.innerHTML = "Give/Get";
+        woodClick = 0;
+    }
+    else if(oreClick == 1){
+        gOre.innerHTML = "Give/Get";
+        oreClick = 0;
+    }
+    else if(sheepClick == 1){
+        gSheep.innerHTML = "Give/Get";
+        sheepClick = 0;
+    }
+    else if(brickClick == 1){
+        gBrick.innerHTML = "Give/Get";
+        brickClick = 0;
+    }
+
+    if(gWheat.onclick && wheatClick == 2) {
+        //Can only get 1 resource type
+        if(woodClick == 2){
+            gWood.innerHTML = "Give/Get";
+            woodClick = 0;
+        }
+        else if(oreClick == 2){
+            gOre.innerHTML = "Give/Get";
+            oreClick = 0;
+        }
+        else if(sheepClick == 2){
+            gSheep.innerHTML = "Give/Get";
+            sheepClick = 0;
+        }
+        else if(brickClick == 2){
+            gBrick.innerHTML = "Give/Get";
+            brickClick = 0;
+        }
+        getWheat();
+    }
+    else if (gWheat.onclick && wheatClick > 2){
+        gWheat.innerHTML = "Give/Get";
+        wheatClick = 0;
+    }
+}
+
+//Get resource
+function getBrick() {
+    gBrick = document.getElementById("tradeBrick");
+    gBrick.innerHTML = "Get 1";
+}
+function getWood() {
+    gWood = document.getElementById("tradeWood");
+    gWood.innerHTML = "Get 1";
+}
+function getOre() {
+    gOre = document.getElementById("tradeOre");
+    gOre.innerHTML = "Get 1";
+}
+function getSheep() {
+    gSheep = document.getElementById("tradeSheep");
+    gSheep.innerHTML = "Get 1";
+}
+function getWheat() {
+    gWheat = document.getElementById("tradeWheat");
+    gWheat.innerHTML = "Get 1";
+}
+
+function trade() {
+    var tResult = document.getElementById("tResult");
+    gWood.innerHTML = "Give/Get";
+    gBrick.innerHTML = "Give/Get";
+    gOre.innerHTML = "Give/Get";
+    gWheat.innerHTML = "Give/Get";
+    gSheep.innerHTML = "Give/Get";
+
+    if(woodClick == 1){
+        woodClick = 0;
+        if (nWood > 3){
+            nWood -= 4;
+            get();
+            nResourceCard -= 3;
+            tResult.innerHTML = "Trade Success";
+        }
+        else{
+            tResult.innerHTML = "Trade failed";
+        }
+    }
+    else if(brickClick == 1){
+        brickClick = 0;
+        if (nBrick > 3){
+            nBrick -= 4;
+            get();
+            nResourceCard -= 3;
+            tResult.innerHTML = "Trade Success";
+        }
+        else{
+            tResult.innerHTML = "Trade failed";
+
+        }
+    }
+    else if(oreClick == 1){
+        oreClick = 0;
+        if (nOre > 3){
+            nOre -= 4;
+            get();
+            nResourceCard -= 3;
+            tResult.innerHTML = "Trade Success";
+        }
+        else{
+            tResult.innerHTML = "Trade failed";
+        }
+    }
+    else if(wheatClick == 1){
+        wheatClick = 0;
+        if (nWheat > 3){
+            nWheat -= 4;
+            get();
+            nResourceCard -= 3;
+            tResult.innerHTML = "Trade Success";
+        }
+        else{
+            tResult.innerHTML = "Trade failed";
+        }
+    }
+    else if(sheepClick == 1){
+        sheepClick = 0;
+        if (nSheep > 3){
+            nSheep -= 4;
+            get();
+            nResourceCard -= 3;
+            tResult.innerHTML = "Trade Success";
+        }
+        else{
+            tResult.innerHTML = "Trade failed";
+        }
+    }
+}
+function get() {
+    if(wheatClick == 2) {
+        gWheat.innerHTML = "Give/Get";
+        wheatClick = 0;
+        return nWheat++;
+    }
+    else if(woodClick == 2){
+        gWood.innerHTML = "Give/Get";
+        woodClick = 0;
+        return nWood++;
+    }
+    else if(oreClick == 2){
+        gOre.innerHTML = "Give/Get";
+        oreClick = 0;
+        return nOre++;
+    }
+    else if(sheepClick == 2){
+        gSheep.innerHTML = "Give/Get";
+        sheepClick = 0;
+        return nSheep++;
+    }
+    else if(brickClick == 2){
+        gBrick.innerHTML = "Give/Get";
+        brickClick = 0;
+        return nBrick++;
+    }
+}
 /////////////////////////// COPY PASTED BOARDMAP BELOW //////////////////////////////////
 
 
@@ -1660,151 +2278,148 @@ function init() {
 
 //var color ='blue'; //OH MY LORD
 
-    var holder = d3.select("svg");
+var holder = d3.select("svg");
 
 // append the board hexagons to the DOM
-    var boardHexes = holder.selectAll("hexes")
-        .data(jsonPolygons)
-        .enter()
-        .append("polygon");
+var boardHexes = holder.selectAll("hexes")
+    .data(jsonPolygons)
+    .enter()
+    .append("polygon");
 
-    var hexeAttrs = boardHexes
-        .attr("points", function (d) {
-            return d.points;
-        })
-        .attr("stroke", function (d) {
-            return d.stroke;
-        })
-        .attr("id", function (d) {
-            return d.id;
-        }) // NEW
-        .attr("number", function (d) {
-            return d.number;
-        }) // NEW
-        .attr("stroke-width", function (d) {
-            return d.stroke_width;
-        })
-        .style("fill", function (d) {
-            if (d.terrain_type === "sea") {
-                return "#336699";
-            }
-            else if (d.terrain_type === "wheat") {
-                return "#ffff66";
-            }
-            else if (d.terrain_type === "sheep") {
-                return "#99ff66";
-            }
-            else if (d.terrain_type === "wood") {
-                return "#008060";
-            }
-            else if (d.terrain_type === "ore") {
-                return "#999999";
-            }
-            else if (d.terrain_type === "brick") {
-                return "#c65353";
-            }
-            else if (d.terrain_type === "desert") {
-                return "#ffffb3";
-            }
-            else if (d.terrain_type === "gold") {
-                return "#e6b800";
-            }
-            else {
-                return "white";
-            }
-        });
+var hexeAttrs = boardHexes
+    .attr("points", function (d) { return d.points; })
+    .attr("stroke", function (d) { return d.stroke; })
+    .attr("id", function(d) { return d.id; }) // NEW
+    .attr("number", function(d) { return d.number; }) // NEW
+    .attr("stroke-width", function (d) { return d.stroke_width; })
+    .style("fill", function (d) {if (d.terrain_type === "sea"){ return "#336699";}
+    else if(d.terrain_type === "wheat") { return "#ffff66";}
+    else if(d.terrain_type === "sheep"){ return "#99ff66";}
+    else if(d.terrain_type === "wood"){ return "#008060";}
+    else if(d.terrain_type === "ore"){ return "#999999";}
+    else if(d.terrain_type === "brick"){ return "#c65353";}
+    else if(d.terrain_type === "desert"){ return "#ffffb3";}
+    else if(d.terrain_type === "gold"){ return "#e6b800";}
+    else {return "white";}});
 
 // append the board intersections to the DOM
-    var boardIntersections = holder.selectAll("intersections")
-        .data(jsonIntersections)
-        .enter()
-        .append("circle");
+var boardIntersections = holder.selectAll("intersections")
+    .data(jsonIntersections)
+    .enter()
+    .append("circle");
 
-    var intersectionAttrs = boardIntersections
-        .attr("cx", function (d) {
-            return d.x_axis;
-        })
-        .attr("cy", function (d) {
-            return d.y_axis;
-        })
-        .attr("r", function (d) {
-            return d.radius;
-        })
-        .attr("id", function (d) {
-            return d.id;
-        })
-        .attr("fill", "black")
-        .attr("stroke", "white")
-        .on("click", function (d) {
-            d3.select(this).attr("fill", color)
-                .attr("stroke", "black");
-        });
+var intersectionAttrs = boardIntersections
+    .attr("cx", function (d) { return d.x_axis; })
+    .attr("cy", function (d) { return d.y_axis; })
+    .attr("r", function (d) { return d.radius; })
+    .attr("id",function (d) { return d.id; })
+    .attr("fill","black")
+    .attr("stroke","white")
+    .attr("hasSettlement", "false")
+    .attr("hasCity", "false")
+    .on("click", function (d) {
+
+
+        if(currUser.match(myUsername)){
+            //if(boardEnabled){
+
+                if(!settlementPlaced){
+                    if(d3.select(this).attr("hasSettlement").match("false")) {
+                        placeSettlement(d.id);
+                        d3.select(this).attr("hasSettlement", "true");
+                    }
+
+                }else if(!cityPlaced){
+                    if(d3.select(this).attr("hasCity").match("false")) {
+                        placeCity(d.id);
+                        d3.select(this).attr("hasCity", "true");
+                    }
+
+                }else if(enableBuyAndUpgrade){
+
+                    if(d3.select(this).attr("hasSettlement").match("false")){
+
+                        buildSettlement(d.id);
+
+                    }else if(d3.select(this).attr("hasCity").match("false")){
+
+                        buildCity(d.id);
+
+                    }
+                }
+            }
+
+
+
+        //}
+
+
+    });
 
 // append the board edges to the DOM
-    var edges = holder.selectAll("edges")
-        .data(jsonEdges)
-        .enter()
-        .append("polygon");
+var edges = holder.selectAll("edges")
+    .data(jsonEdges)
+    .enter()
+    .append("polygon");
 
-    var edgeAttrs = edges.attr("class", "hex " + "woood")
-        .attr("points", function (d) {
-            return d.points;
-        })
-        .attr("stroke", function (d) {
-            return d.stroke;
-        })
-        .attr("id", function (d) {
-            return d.id;
-        })
-        .attr("stroke-width", function (d) {
-            return d.stroke_width;
-        })
-        .attr("fill", function (d) {
-            return d.fill;
-        })
-        .on("click", function (d) {
-            d3.select(this).attr("fill", color);
-        });
+var edgeAttrs = edges.attr("class", "hex " + "woood")
+    .attr("points", function (d) { return d.points; })
+    .attr("stroke", function (d) { return d.stroke; })
+    .attr("id", function(d) { return d.id; })
+    .attr("stroke-width", function (d) { return d.stroke_width; })
+    .attr("fill", function (d) {return d.fill;})
+    .attr("hasRoad", "false")
+    .on("click", function (d) {
+
+        if(currUser.match(myUsername)){
+            //if(boardEnabled){
+               // if(enablePlaceRoad1){
+                    if(!road1Placed){
+                        placeRoad(d.id);
+                    }
+
+               // }else if(enablePlaceRoad2){
+                    else if(!road2Placed){
+                        placeRoad(d.id);
+                   }
+                //}else if(enableBuyAndUpgrade){
+                    else if(d3.select(this).attr("hasRoad").match("false")){
+                        buildRoad(d.id);
+                    }
+               // }
+           // }
+        }
+
+
+    });
 
 // append the board production numbers
-    var hexProdCircs = holder.selectAll("prodCircs")
-        .data(jsonNumCircles)
-        .enter()
-        .append("circle");
+var hexProdCircs = holder.selectAll("prodCircs")
+    .data(jsonNumCircles)
+    .enter()
+    .append("circle");
 
-    console.log(JSON.stringify(jsonNumCircles));
-    var prodCircAttrs = hexProdCircs
-        .attr("cx", function (d) {
-            return d.x_coord;
-        })
-        .attr("cy", function (d) {
-            return d.y_coord;
-        })
-        .attr("r", function (d) {
-            return d.radius;
-        })
-        .attr("fill", "white")
-        .attr("stroke", "white")
-        .attr("stroke-width", 4);
+console.log(JSON.stringify(jsonNumCircles));
+var prodCircAttrs = hexProdCircs
+    .attr("cx", function (d) { return d.x_coord; })
+    .attr("cy", function (d) { return d.y_coord; })
+    .attr("r", function (d) { return d.radius; })
+    .attr("fill","white")
+    .attr("stroke","white")
+    .attr("stroke-width", 4);
 
-    var text = holder.selectAll("text")
-        .data(jsonNumCircles)
-        .enter()
-        .append("text");
+var text = holder.selectAll("text")
+    .data(jsonNumCircles)
+    .enter()
+    .append("text");
 
-    var textLabels = text
-        .attr("x", function (d) {
-            return d.x_coord;
-        })
-        .attr("y", function (d) {
-            return d.y_coord + 6;
-        })
-        .text(function (d) {
-            return d.number;
-        })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "16px")
-        .attr("fill", "black")
-        .attr("text-anchor", "middle");
+var textLabels = text
+    .attr("x", function(d) { return d.x_coord; })
+    .attr("y", function(d) { return d.y_coord + 6; })
+    .text( function (d) { return d.number; })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "16px")
+    .attr("fill", "black")
+    .attr("text-anchor", "middle");
 
 }

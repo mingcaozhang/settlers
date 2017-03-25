@@ -1,12 +1,12 @@
 package com.example.websecurity;
-import com.example.repositories.User;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
-
-import java.util.Collection;
-import java.util.List;
+import com.example.repositories.User;
 
 public class CustomUserDetails extends com.example.repositories.User implements UserDetails {
 

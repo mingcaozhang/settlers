@@ -8,7 +8,6 @@ import java.util.Queue;
 public class Player {
     private final String aColor;
     private final String aUsername;
-    private final int aIndex;
     private int aVPs;
     private int aGold;
     private int aRouteLength;
@@ -28,10 +27,9 @@ public class Player {
     private Queue<MightyKnight> aMightyKnights;
     private Queue<Wall> aWalls;
 
-    public Player(String pUsername, String pColor, int pIndex){
+    public Player(String pUsername, String pColor){
         aUsername = pUsername;
         aColor = pColor;
-        aIndex = pIndex;
         aVPs = 0;
         aGold = 0;
         aRouteLength = 0;
@@ -57,10 +55,6 @@ public class Player {
 
     public int getGold(){
         return aGold;
-    }
-
-    public int getIndex(){
-        return aIndex;
     }
 
     public void addCard(ResourceCard pResourceCard){
