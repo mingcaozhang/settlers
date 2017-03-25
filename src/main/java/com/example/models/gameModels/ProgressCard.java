@@ -1,18 +1,17 @@
 package com.example.models.gameModels;
 
-/**
- * Created by G on 17/03/03.
- */
-public class ProgressCard extends Card {
-    public interface ProgresssType {}
-    private final String aDescription;
-    private final ProgresssType aProgressType;
-    public ProgresssType getType(){return aProgressType;}
-    public String getDescription(){return aDescription;}
-    protected ProgressCard(ProgresssType pProgressType, String pDescription){
-        aDescription = pDescription;
-        aProgressType = pProgressType;
+public interface ProgressCard {
+    public enum Trade {
+        COMMERCIAL_HARBOR, MASTER_MERCHANT, MERCHANT, MERCHANT_FLEET, RESOURCE_MONOPOLY, TRADE_MONOPOLY
     }
 
+    public enum Politics {
+        BISHOP, CONSTITUTION, DESERTER, DIPLOMAT, INTRIGUE, SABOTEUR, SPY, WARLORD, WEDDING
+    }
 
+    public enum Science {
+        ALCHEMIST, CRANE, ENGINEER, INVENTOR, IRRIGATION, MEDICINE, MINING, PRINTER, ROAD_BUILDING, SMITH
+    }
 }
+
+

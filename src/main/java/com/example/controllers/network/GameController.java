@@ -250,43 +250,43 @@ public class GameController {
                         case 1:
                             pIncrement.setp1(
                                     player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                                    player.getResourceCards().get(StealableCard.Resource.ORE),
+                                    player.getResourceCards().get(StealableCard.Resource.BRICK),
+                                    player.getResourceCards().get(StealableCard.Resource.WOOD),
+                                    player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getCommodityCards().get(StealableCard.Commodity.COIN),
+                                    player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
+                                    player.getCommodityCards().get(StealableCard.Commodity.PAPER));
                         case 2:
                             pIncrement.setp2(
                                     player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                                    player.getResourceCards().get(StealableCard.Resource.ORE),
+                                    player.getResourceCards().get(StealableCard.Resource.BRICK),
+                                    player.getResourceCards().get(StealableCard.Resource.WOOD),
+                                    player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getCommodityCards().get(StealableCard.Commodity.COIN),
+                                    player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
+                                    player.getCommodityCards().get(StealableCard.Commodity.PAPER));
                         case 3:
                             pIncrement.setp3(
                                     player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                                    player.getResourceCards().get(StealableCard.Resource.ORE),
+                                    player.getResourceCards().get(StealableCard.Resource.BRICK),
+                                    player.getResourceCards().get(StealableCard.Resource.WOOD),
+                                    player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getCommodityCards().get(StealableCard.Commodity.COIN),
+                                    player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
+                                    player.getCommodityCards().get(StealableCard.Commodity.PAPER));
                         case 4:
                             pIncrement.setp4(
                                     player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                                    player.getResourceCards().get(StealableCard.Resource.ORE),
+                                    player.getResourceCards().get(StealableCard.Resource.BRICK),
+                                    player.getResourceCards().get(StealableCard.Resource.WOOD),
+                                    player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getCommodityCards().get(StealableCard.Commodity.COIN),
+                                    player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
+                                    player.getCommodityCards().get(StealableCard.Commodity.PAPER));
                     }
                 }
             }
