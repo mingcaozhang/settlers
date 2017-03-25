@@ -9,7 +9,7 @@ import java.util.Map;
 public class Edge extends Geometry{
 
     private boolean isOccupied;
-    private OwnedTransport aTransport;
+    private EdgeUnit aOccupant;
 
     public Edge(String pId)
     {
@@ -22,20 +22,20 @@ public class Edge extends Geometry{
        return isOccupied;
     }
 
-    public OwnedTransport getTransport(){
-        return aTransport;
+    public EdgeUnit getOccupant(){
+        return aOccupant;
     }
 
-    public void setTransport(OwnedTransport pTransport)
+    public void setOccupant(EdgeUnit pOccupant)
     {
-        aTransport = pTransport;
+        aOccupant = pOccupant;
         isOccupied = true;
     }
 
-    public OwnedTransport removeTransport()
+    public EdgeUnit removeOccupant()
     {
-        OwnedTransport tempUnit = aTransport;
-        aTransport = null;
+        EdgeUnit tempUnit = aOccupant;
+        aOccupant = null;
         isOccupied = false;
         return tempUnit;
     }
@@ -158,5 +158,8 @@ public class Edge extends Geometry{
             IntersectionNeighbours.add(pIntersections.get(id1));
         if(pIntersections.get(id2)!=null)
             IntersectionNeighbours.add(pIntersections.get(id2));
+
+
+
     }
 }

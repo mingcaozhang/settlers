@@ -1,18 +1,18 @@
 package com.example.models.gameModels;
 
-public interface StealableCard{
-    public enum Resource{
-        SHEEP, WOOD, ORE, BRICK, WHEAT;
-
-        public static int maxResources(){
-            return 19;
-        }
+/**
+ * Created by G on 17/03/02.
+ */
+public abstract class StealableCard extends Card {
+    private final StealableType aStealableType;
+    public StealableType getType(){
+        return aStealableType;
     }
-    public enum Commodity{
-        COIN, CLOTH, PAPER;
 
-        public static int maxCommodities(){
-            return 12;
-        }
+    protected StealableCard(StealableType pStealableType){
+        aStealableType = pStealableType;
+    }
+
+    public interface StealableType {
     }
 }
