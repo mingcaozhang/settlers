@@ -508,11 +508,11 @@ function setAttributes() {
     gWheat.innerHTML = "Give/Get";
     maritimeTrade.innerHTML = "Maritime Trade";
 
-    /*Place road, ship, settlement, city
+    //Place road, ship, settlement, city
      pRoad.innerHTML = "Place Roads " + nRoad;
      pShip.innerHTML = "Place Ship " + nShip;
      pSettlement.innerHTML = "Place Settlements " + nSettlement;
-     pCity.innerHTML = "Place Cities " + nCity;*/
+     pCity.innerHTML = "Place Cities " + nCity;
 }
 
 //Build road
