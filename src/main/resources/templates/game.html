@@ -14,10 +14,6 @@
 </head>
 
 <body data-spy="scroll" data-target=".navbar" data-offset="50">
-
-
-
-
 <script th:inline="javascript">
 
     /*<![CDATA[*/
@@ -29,12 +25,12 @@
 
     var p1name = /*[[${player1}]]*/ 'p1 name';
     var p2name = /*[[${player2}]]*/ 'p2 name';
-    //var p3name = /*[[${player3}]]*/ 'p3 name';
-    // var p4name = /*[[${player4}]]*/ 'p4 name';
+    var p3name = /*[[${player3}]]*/ 'p3 name';
+   // var p4name = /*[[${player4}]]*/ 'p4 name';
 
     var p1color = /*[[${player1_c}]]*/ 'p1 color';
     var p2color = /*[[${player2_c}]]*/ 'p2 color';
-    //var p3name = /*[[${player3_c}]]*/ 'p3 color';
+    var p3color = /*[[${player3_c}]]*/ 'p3 color';
     //var p4name = /*[[${player4_c}]]*/ 'p4 color';
 
 
@@ -59,10 +55,11 @@
     </div>
 </nav>
 
-<div class="container-fluid bg-5" style="padding-top: 7%; padding-bottom: 0%;">
+<div class="container-fluid bg-5" style="padding-top: 100px; padding-bottom: 0px;">
     <!--PLAYER 2-->
-    <div class="dropdown col-sm-4" style="top:15%; left:76%">
-        <button id="player2box" class="btn btn-primary turnWabble" type="button" data-toggle="dropdown" style="width: 20%; ">Player 2</button>
+    <div class="dropdown col-sm-6">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 1100px; width: 300px;">Player 2
+            <span class="caret"></span></button>
     </div>
 
     <!--PLAYER 1-->
@@ -72,12 +69,12 @@
             <span th:text="${username}"></span>
             <span class="caret"></span></button>
         <ul class="dropdown-menu" style="margin-left: 1.5%; margin-top: 8%; width: 41%;">
-            <!--Place road, settlement, city
+
             <button id="pRoad" onClick="placeRoad()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
             <button id="pShip" onClick="placeShip()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
             <button id="pSettlement" onClick="placeSettlement()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
             <button id="pCity" onClick="placeCity()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;"></button>
--->
+
             <!-- Trigger the Resource Cards modal with a button -->
             <button id="resourceCard" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 20px; width: 250px; height: 30px;" data-toggle="modal" data-target="#myModal2"></button>
             <!-- Trigger the Commodity Cards modal with a button -->
@@ -98,40 +95,44 @@
     </div>
 
     <!--DICE-->
-    <div>
-        <img src="/images/preRed.png" id="die1" class="die1" style="margin-left: 555px; display: inline" width="100" height="100"/>
-        <img src="/images/preYellow.png" id="die2" class="die2" style=" display: inline" width="100" height="100"/>
-        <img src="/images/preWhite.png" id="eventDie" class="eventDie" style="display: inline" width="100" height="100"/>
-        <button class="btn-3d red" style="margin-left: 46.5%" onclick="rollDice()" id="rolldice">Roll Dice</button>
-        <h2 id="status" style="margin-left: 44.5%;"></h2>
-    </div>
+    <img src="/images/preRed.png" id="die1" class="die1" style="margin-left: 555px; display: inline" width="100" height="100"/>
+    <img src="/images/preYellow.png" id="die2" class="die2" style=" display: inline" width="100" height="100"/>
+    <img src="/images/preWhite.png" id="eventDie" class="eventDie" style="display: inline" width="100" height="100"/>
+    <button class="btn-3d red" onclick="rollDice()" id="rolldice">Roll Dice</button>
+    <h2 id="status" style="margin-left: 640px;"></h2>
 
-    <!--No resources message-->
+    <!--No resources message
     <div class="alert alert-warning alert-dismissable" id="noResources" style="width: 330px; margin-left: 550px;">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
         <strong>You do not have enough resources.</strong>
-    </div>
+    </div>-->
+
     <div>
+        <h2 id="currPlayer" style="margin-left: 640px;"></h2>
         <svg id="svgcanvas" width="1200" height="700"></svg>
+
 
     </div>
 </div>
 
-<div class="container-fluid bg-5">
+<div class="container-fluid bg-5" style="height: 1000px;">
     <!--PLAYER 3-->
-    <div class="dropdown col-sm-4"  style="top:91%;">
-        <button id="player3box" class="btn btn-primary turnWabble" type="button" data-toggle="dropdown" style="width: 20%;">Player 3</button>
+    <div class="dropdown col-sm-4" style="bottom: 10px;">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left:5px; width: 300px;">Player 3
+            <span class="caret"></span></button>
     </div>
 
     <!--PLAYER 4-->
-    <div class="dropdown col-sm-4" style="top:91%; left:76%">
-        <button id="player4box" class="btn btn-primary turnWabble" type="button" data-toggle="dropdown" style="width: 20%;">Player 4</button>
+    <div class="dropdown col-sm-4" style="left: 320px; bottom: 10px;">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 800px; width: 300px;">Player 4
+            <span class="caret"></span></button>
     </div>
+
+    <!--End Turn Button-->
+    <div><button type="button" onclick="endTurn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px; padding: 0px; left: 320px; margin-left: 160px;">End Turn</button></div>
+
+
 </div>
-
-<!--End Turn Button-->
-<div><button type="button" onclick="enableBtn()" class="hvr-pulse-grow col-sm-4" id="endTurn" style="bottom: 10px;margin-left: 0px;height: 7%;padding:0%;left: 32%;">End Turn</button></div>
-
 
 
 <!-- MODALS -->
@@ -188,7 +189,7 @@
             </div>
             <div class="modal-body" style="color: black">
                 <img src="/images/ResourceCards.jpg" style="margin-left: 30px; display:inline" width="500" height="145"/>
-                <p id="brick" style="margin-left: 75px;"></p>
+                <p id="brick" style="margin-left: 75px;">1</p>
                 <p id="wood" style="margin-left: 175px; margin-top: -39px;"></p>
                 <p id="ore" style="margin-left: 275px; margin-top: -39px;"></p>
                 <p id="sheep" style="margin-left: 375px; margin-top: -39px;"></p>
@@ -231,10 +232,10 @@
                 <h4 class="modal-title" style="color: black">Knights</h4>
             </div>
             <div class="modal-body" style="color: black">
-                <img src="/images/Knights.png" style="margin-left: 30px; margin-bottom: 10px; display: inline" width="499" height="151"/>
+                <img src="/images/Knights.png" style="margin-left: 30px; display: inline" width="499" height="151"/>
                 <button id="knight1" onclick="getKnight1()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 55px; width: 100px; height: 40px;"></button>
-                <p id="knight2" style="font-size: 20px; margin-left: 240px; margin-top: -40px; width: 100px; height: 40px;"></p>
-                <p id="knight3" style="font-size: 20px; margin-left: 420px; margin-top: -50px; width: 100px; height: 40px;"></p>
+                <button id="knight2" onclick="getKnight2()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 70px; width: 100px; height: 40px;"></button>
+                <button id="knight3" onclick="getKnight3()" type="button" class="btn btn-primary" style="font-size: 20px; margin-left: 70px; width: 100px; height: 40px;"></button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -254,10 +255,10 @@
             <div class="modal-body" style="color: black">
                 <img src="/images/ResourceCards.jpg" style="margin-left: 30px; margin-bottom: 10px; play:inline" width="500" height="145"/>
                 <button id="tradeBrick" onclick="giveBrick()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 35px; width: 80px; height: 40px;"></button>
-                <button id="tradeWood" onclick="giveWood()" ondblclick="getWood()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 20px; width: 80px; height: 40px;"></button>
-                <button id="tradeOre" onclick="giveOre()" ondblclick="getOre()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 15px; width: 80px; height: 40px;"></button>
-                <button id="tradeSheep" onclick="giveSheep()" ondblclick="getSheep()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 20px; width: 80px; height: 40px;"></button>
-                <button id="tradeWheat" onclick="giveWheat()" ondblclick="getWheat()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 15px; width: 80px; height: 40px;"></button>
+                <button id="tradeWood" onclick="giveWood()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 20px; width: 80px; height: 40px;"></button>
+                <button id="tradeOre" onclick="giveOre()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 15px; width: 80px; height: 40px;"></button>
+                <button id="tradeSheep" onclick="giveSheep()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 20px; width: 80px; height: 40px;"></button>
+                <button id="tradeWheat" onclick="giveWheat()" type="button" class="btn btn-primary" style="padding: 0px; font-size: 20px; margin-left: 15px; width: 80px; height: 40px;"></button>
             </div>
             <div class="modal-footer">
                 <a href="#" class="btn btn-primary">Trade</a>
@@ -267,16 +268,8 @@
     </div>
 </div>
 
-
 <script th:src="@{/js/gamelogic.js}"></script>
-<!-- Creates a popup that asks user if he wishes to leave page.-->
-<script language="JavaScript" type="text/javascript">
-    //<![CDATA[
-    window.onbeforeunload = function(){
-        return 'Are you sure you want to leave?';
-    };
-    //]]>
-</script>
+
 
 </body>
 </html>
