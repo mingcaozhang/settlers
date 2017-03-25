@@ -9,8 +9,7 @@ import java.util.Queue;
 public class Intersection extends Geometry {
 
     private HarbourType aHarbour;
-    private OwnedBuilding aBuilding;
-    private OwnedKnight aKnight;
+    private IntersectionUnit aOccupant;
     private boolean isOccupied;
 
 
@@ -25,32 +24,21 @@ public class Intersection extends Geometry {
         return isOccupied;
     }
 
-    public OwnedBuilding getBuilding(){
-        return aBuilding;
+    public IntersectionUnit getOccupant(){
+        return aOccupant;
     }
 
-    public OwnedKnight getKnight(){
-        return aKnight;
-    }
-
-    public void setBuilding(OwnedBuilding pBuilding) {
-        assert(!getOccupancyFlag());
-        aBuilding = pBuilding;
+    public void setOccupant(IntersectionUnit pOccupant)
+    {
+        aOccupant = pOccupant;
         isOccupied = true;
     }
-    public void removeBuilding(){
+    public IntersectionUnit removeOccupant()
+    {
+        IntersectionUnit tempUnit = aOccupant;
+        aOccupant = null;
         isOccupied = false;
-        aBuilding = null;
-    }
-
-    public void setKnight(OwnedKnight pKnight){
-        assert(!getOccupancyFlag());
-        aKnight = pKnight;
-        isOccupied = true;
-    }
-    public void removeKnight(){
-        isOccupied = false;
-        aKnight = null;
+        return tempUnit;
     }
 
     @Override
