@@ -83,19 +83,19 @@ public class Edge extends Geometry{
           //  System.out.println("THIS: "+getId());
 
         if(pEdges.get(id1)!=null) {
-       //     System.out.println(id1);
+        //    System.out.println("    Edge "+id1);
             EdgeNeighbours.add(pEdges.get(id1));
         }
         if(pEdges.get(id2)!=null){
-       //     System.out.println(id2);
+        //    System.out.println("    Edge "+id2);
             EdgeNeighbours.add(pEdges.get(id2));
         }
         if(pEdges.get(id3)!=null) {
-       //     System.out.println(id3);
+        //    System.out.println("    Edge "+id3);
             EdgeNeighbours.add(pEdges.get(id3));
         }
         if(pEdges.get(id4)!=null) {
-      //      System.out.println(id4);
+        //    System.out.println("    Edge "+id4);
             EdgeNeighbours.add(pEdges.get(id4));
         }
 
@@ -121,10 +121,14 @@ public class Edge extends Geometry{
 
             default: id2 = "blah"; //will return null
         }
-        if(pHexes.get(id1)!=null)
+        if(pHexes.get(id1)!=null) {
             HexNeighbours.add(pHexes.get(id1));
-        if(pHexes.get(id2)!=null)
+        //    System.out.println("    Hex "+id1);
+        }
+        if(pHexes.get(id2)!=null) {
             HexNeighbours.add(pHexes.get(id2));
+        //    System.out.println("    Hex "+id2);
+        }
     }
 
     @Override
@@ -154,12 +158,13 @@ public class Edge extends Geometry{
             default: id2 = "blah";
                      id1 = "blah";   //will return null
         }
-        if(pIntersections.get(id1)!=null)
+        if(pIntersections.get(id1)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id1));
-        if(pIntersections.get(id2)!=null)
+        //    System.out.println("    Intersection "+id1);
+        }
+        if(pIntersections.get(id2)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id2));
-
-
-
+        //    System.out.println("    Intersection "+id2);
+        }
     }
 }

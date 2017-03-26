@@ -1,7 +1,4 @@
 package com.example.models.gameModels;
-import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
-
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -52,7 +49,6 @@ public class Game {
         aResourceCards = ResourceCard.getResources();
         aCommodityCards = CommodityCard.getCommodities();
 //      aPlayerQueue = new LinkedList<Player>();
-        System.out.println("BILLY BOBBY");
     }
 
 
@@ -170,41 +166,34 @@ public class Game {
 
 
     public void setAllNeighbours(){
-       // System.out.println("hello YOUTUBE COMMUNITY");
+//        System.out.println("setting Hexes");
         for(int i=0;i< lHexes.size();i++)
         {
-            lHexes.get(i).setEdgeNeighbours(aEdges);
-          //  waitToSet();
-            lHexes.get(i).setHexNeighbours(aHexes);
-           // waitToSet();
-            lHexes.get(i).setIntersectionNeighbours(aIntersections);
-           // waitToSet();
-          //  System.out.println(lHexes.get(i).getIntersectionNeighbours().peek().getId());
-          //  System.out.println(lHexes.get(i).getId());
+//            System.out.println("Setting "+lHexes.get(i).aId);
 
-            //   System.out.println("hello YOUTUBE COMMUNITY");
+            lHexes.get(i).setEdgeNeighbours(aEdges);
+            lHexes.get(i).setHexNeighbours(aHexes);
+            lHexes.get(i).setIntersectionNeighbours(aIntersections);
+
+
         }
+//        System.out.println("setting Edges");
         for(int i=0;i< lEdges.size();i++)
         {
-            /*
-           // waitToSet();
-            lEdges.get(i).setEdgeNeighbours(aEdges);
-           // waitToSet();
-            lEdges.get(i).setHexNeighbours(aHexes);
-           // waitToSet();
-            lEdges.get(i).setIntersectionNeighbours(aIntersections);
-           // waitToSet();
-         //   System.out.println("its my birthday today");
-            */
-        }
-        for(int i=0;i< lIntersections.size();i++) {
-            lIntersections.get(i).setEdgeNeighbours(aEdges);
-           // waitToSet();
-            lIntersections.get(i).setHexNeighbours(aHexes);
-           // waitToSet();
-            lIntersections.get(i).setIntersectionNeighbours(aIntersections);
-          //  System.out.println("And i am just so happy");
+//            System.out.println("Setting "+lEdges.get(i).aId);
 
+            lEdges.get(i).setEdgeNeighbours(aEdges);
+            lEdges.get(i).setHexNeighbours(aHexes);
+            lEdges.get(i).setIntersectionNeighbours(aIntersections);
+
+        }
+//        System.out.println("setting Intersections");
+        for(int i=0;i< lIntersections.size();i++) {
+         //   System.out.println("Setting "+lIntersections.get(i).aId);
+
+            lIntersections.get(i).setEdgeNeighbours(aEdges);
+            lIntersections.get(i).setHexNeighbours(aHexes);
+            lIntersections.get(i).setIntersectionNeighbours(aIntersections);
         }
     }
 
