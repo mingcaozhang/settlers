@@ -13,9 +13,6 @@ public abstract class Hex extends Geometry {
 
     public Hex(String pId) {
         super(pId);
-        String[] Ay = pId.split("_");
-        aId = Ay[0] + "_" + -Integer.parseInt(Ay[2]) + "_" + -Integer.parseInt(splitId[1]);
-        splitId = aId.split("_");
         aVillain = false;
     }
 
@@ -102,7 +99,7 @@ public abstract class Hex extends Geometry {
             HexNeighbours.add(pHexes.get(id2));
         }
         if (pHexes.get(id3) != null) {
-         //   System.out.println("    Hex " + id3);
+        //    System.out.println("    Hex " + id3);
             HexNeighbours.add(pHexes.get(id3));
         }
         if (pHexes.get(id4) != null) {
