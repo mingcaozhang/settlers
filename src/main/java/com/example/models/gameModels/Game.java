@@ -169,7 +169,7 @@ public class Game {
 //        System.out.println("setting Hexes");
         for(int i=0;i< lHexes.size();i++)
         {
-//            System.out.println("Setting "+lHexes.get(i).aId);
+        //    System.out.println("Setting "+lHexes.get(i).getId());
 
             lHexes.get(i).setEdgeNeighbours(aEdges);
             lHexes.get(i).setHexNeighbours(aHexes);
@@ -180,7 +180,7 @@ public class Game {
 //        System.out.println("setting Edges");
         for(int i=0;i< lEdges.size();i++)
         {
-//            System.out.println("Setting "+lEdges.get(i).aId);
+//            System.out.println("Setting "+lEdges.get(i).getId());
 
             lEdges.get(i).setEdgeNeighbours(aEdges);
             lEdges.get(i).setHexNeighbours(aHexes);
@@ -189,7 +189,7 @@ public class Game {
         }
 //        System.out.println("setting Intersections");
         for(int i=0;i< lIntersections.size();i++) {
-         //   System.out.println("Setting "+lIntersections.get(i).aId);
+         //   System.out.println("Setting "+lIntersections.get(i).getId());
 
             lIntersections.get(i).setEdgeNeighbours(aEdges);
             lIntersections.get(i).setHexNeighbours(aHexes);
