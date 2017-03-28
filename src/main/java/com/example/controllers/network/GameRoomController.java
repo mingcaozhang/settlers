@@ -4,6 +4,7 @@ import com.example.viewobjects.GameRoomView;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -17,19 +18,22 @@ public class GameRoomController {
 
 
     @RequestMapping(value="/gameroom", method= RequestMethod.GET)
-    public String gameroom(Map<String, Object> model) {
-
+    public String gameroom(Model model) {
+        model.addAttribute("playerList",playerList);
         return "gameroom";
     }
 
-    public ArrayList<String> playerList = new ArrayList<String>();
+    public static ArrayList<String> playerList = new ArrayList<String>();
+
+    public static void resetGameRoomPlayerList(){
+        playerList.clear();
+    }
 
     @MessageMapping("/ready")
     @SendTo("/topic/gameroom")
-    public GameRoomView greeting(Principal principal) throws Exception{
+    public GameRoomView ready(Principal principal) throws Exception{
 
 
-        //Thread.sleep(1000); //simulated delay
         playerList.add(principal.getName());
         System.out.println("adding to list"+principal.getName());
 

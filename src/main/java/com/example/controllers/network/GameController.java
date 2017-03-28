@@ -70,15 +70,8 @@ public class GameController {
         pap.setSetup2(false);
     }
 
-    public static void createGame(){/*
-        List<String> myColors = new ArrayList<String>();
-        myColors.add(0,player1color);
-        myColors.add(1,player2color);
-        myColors.add(2,player3color);
-        myColors.add(3,player3color);
-        aGame = new Game(10,createPlayers(currPlayerList),myColors);
-        System.out.println(aGame.getPlayers().size());
-        aGame.setPlayerProperties(aGame.getPlayers());*/
+    public static void createGame(){
+
     }
 
 
@@ -119,6 +112,7 @@ public class GameController {
         model.addAttribute("player3_c", player3color);
        // model.addAttribute("player4_c", player4color);
 
+        GameRoomController.resetGameRoomPlayerList();
         return "game";
     }
 
@@ -127,91 +121,42 @@ public class GameController {
     @MessageMapping("/placesettlement")
     @SendTo("/topic/settlement")
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
-        }
-        aGame.placeSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+
         return pNew;
     }
 
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
-        }
-        aGame.placeCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+
         return pNew;
     }
 
     @MessageMapping("/placeroad")
     @SendTo("/topic/road")
     public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
-        }
-        aGame.placeRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));*/
+
         return pNew;
     }
 
     @MessageMapping("/setupsettlement")
     @SendTo("/topic/settlement")
     public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
-        }
-        aGame.setupSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+
         return pNew;
     }
 
     @MessageMapping("/setupcity")
     @SendTo("/topic/city")
     public ViewPiece setupCity(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
-        }
-        aGame.setupCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+
         return pNew;
     }
 
     @MessageMapping("/setuproad")
     @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
-        }
-        aGame.setupRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
-        */
+
         return pNew;
     }
 
@@ -227,7 +172,7 @@ public class GameController {
     @MessageMapping("/rolldice")
     @SendTo("/topic/dice")
     public DiceRoll showDice(DiceRoll pDice){
-        /*aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());*/
+        //aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());*/
         /*diceRollPayout();*/
         return pDice;
     }
@@ -241,64 +186,12 @@ public class GameController {
     }
 
     private void setPlayerIncrement(PlayerIncrement pIncrement){
-        /*
-        for (String pUsername : currPlayerList){
-            for (Player player : aGame.getPlayers()) {
-                if (pUsername.equals(player.getUsername())) {
-                    int index = currPlayerList.indexOf(player.getUsername());
-                    switch (index) {
-                        case 1:
-                            pIncrement.setp1(
-                                    player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
-                        case 2:
-                            pIncrement.setp2(
-                                    player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
-                        case 3:
-                            pIncrement.setp3(
-                                    player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
-                        case 4:
-                            pIncrement.setp4(
-                                    player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
-                    }
-                }
-            }
-        }
-        */
+
     }
 
     @MessageMapping("/endturn")
     @SendTo("/topic/turninfo")
     public PlayerAndPhase endTurn(Principal user){
-
-
 
 
 
@@ -401,20 +294,12 @@ public class GameController {
 
     @MessageMapping("/intersection")
     public void getIntersection(ViewIntersection pIntersection) throws Exception{
-        /*
-    //    System.out.println("Intersection");
-        Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
-        aGame.getIntersections().put(aIntersection.getId(),aIntersection);
-        aGame.lIntersections.add(aIntersection);
-        */
+
     }
 
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception
     {
-        /*
-     //   System.out.println("HNNNNNNNG");
-        aGame.setAllNeighbours();
-        */
+
     }
 }
