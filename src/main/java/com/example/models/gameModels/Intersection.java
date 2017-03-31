@@ -1,7 +1,6 @@
 package com.example.models.gameModels;
 
 import java.util.Map;
-import java.util.Queue;
 
 /**
  * Created by G on 17/02/27.
@@ -9,8 +8,7 @@ import java.util.Queue;
 public class Intersection extends Geometry {
 
     private HarbourType aHarbour;
-    private OwnedBuilding aBuilding;
-    private OwnedKnight aKnight;
+    private IntersectionUnit aOccupant;
     private boolean isOccupied;
 
 
@@ -25,32 +23,21 @@ public class Intersection extends Geometry {
         return isOccupied;
     }
 
-    public OwnedBuilding getBuilding(){
-        return aBuilding;
+    public IntersectionUnit getOccupant(){
+        return aOccupant;
     }
 
-    public OwnedKnight getKnight(){
-        return aKnight;
-    }
-
-    public void setBuilding(OwnedBuilding pBuilding) {
-        assert(!getOccupancyFlag());
-        aBuilding = pBuilding;
+    public void setOccupant(IntersectionUnit pOccupant)
+    {
+        aOccupant = pOccupant;
         isOccupied = true;
     }
-    public void removeBuilding(){
+    public IntersectionUnit removeOccupant()
+    {
+        IntersectionUnit tempUnit = aOccupant;
+        aOccupant = null;
         isOccupied = false;
-        aBuilding = null;
-    }
-
-    public void setKnight(OwnedKnight pKnight){
-        assert(!getOccupancyFlag());
-        aKnight = pKnight;
-        isOccupied = true;
-    }
-    public void removeKnight(){
-        isOccupied = false;
-        aKnight = null;
+        return tempUnit;
     }
 
     @Override
@@ -69,13 +56,14 @@ public class Intersection extends Geometry {
 
         switch (getPrefix()){
             case "i3": id2 = "e1_"+x+"_"+y;
-                id1 = "e2_"+x+"_"+ym;
-                id3 = "e3_"+x+"_"+ym;
+                id1 = "e2_"+x+"_"+y;
+                id3 = "e3_"+xm+"_"+y;
+
                 break;
 
             case "i4":  id2 = "e1_"+x+"_"+y;
-                id1 = "e2_"+x+"_"+y;
-                id3 = "e3_"+xm+"_"+y;
+                id1 = "e2_"+x+"_"+ym;
+                id3 = "e3_"+x+"_"+ym;
                 break;
 
             default: id2 = "blah";
@@ -84,12 +72,18 @@ public class Intersection extends Geometry {
                 //will return null
         }
 
-        if(pEdges.get(id1)!=null)
+        if(pEdges.get(id1)!=null) {
             EdgeNeighbours.add(pEdges.get(id1));
-        if(pEdges.get(id2)!=null)
+        //    System.out.println("    Edge "+ id1);
+        }
+        if(pEdges.get(id2)!=null) {
             EdgeNeighbours.add(pEdges.get(id2));
-        if(pEdges.get(id3)!=null)
+        //    System.out.println("    Edge "+ id2);
+        }
+        if(pEdges.get(id3)!=null) {
             EdgeNeighbours.add(pEdges.get(id3));
+        //    System.out.println("    Edge " + id3);
+        }
     }
 
     @Override
@@ -123,12 +117,19 @@ public class Intersection extends Geometry {
                 //will return null
         }
 
-        if(pHexes.get(id1)!=null)
+        if(pHexes.get(id1)!=null) {
             HexNeighbours.add(pHexes.get(id1));
-        if(pHexes.get(id2)!=null)
+        //    System.out.println("    Hex "+ id1);
+        }
+        if(pHexes.get(id2)!=null) {
             HexNeighbours.add(pHexes.get(id2));
-        if(pHexes.get(id3)!=null)
+        //    System.out.println("    Hex "+ id2);
+
+        }
+        if(pHexes.get(id3)!=null) {
             HexNeighbours.add(pHexes.get(id3));
+        //    System.out.println("    Hex "+ id3);
+        }
     }
 
     @Override
@@ -148,12 +149,12 @@ public class Intersection extends Geometry {
         switch (getPrefix()){
             case "i3": id2 = "i4_"+xm+"_"+yp;
                 id1 = "i4_"+x+"_"+y;
-                id3 = "i4_"+xm+"_"+y;
+                id3 = "i4_"+x+"_"+yp;
                 break;
 
             case "i4":  id2 = "i3_"+x+"_"+y;
-                id1 = "i3_"+xm+"_"+y;
-                id3 = "i3_"+x+"_"+ym;
+                id1 = "i3_"+x+"_"+ym;
+                id3 = "i3_"+xp+"_"+ym;
                 break;
 
             default: id2 = "blah";
@@ -162,12 +163,20 @@ public class Intersection extends Geometry {
                 //will return null
         }
 
-        if(pIntersections.get(id1)!=null)
+        if(pIntersections.get(id1)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id1));
-        if(pIntersections.get(id2)!=null)
+        //    System.out.println("    Intersection "+ id1);
+        }
+        if(pIntersections.get(id2)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id2));
-        if(pIntersections.get(id3)!=null)
+        //    System.out.println("    Intersection "+ id2);
+        }
+
+
+        if(pIntersections.get(id3)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id3));
+        //    System.out.println("    Intersection "+ id3);
+        }
     }
 
 }
