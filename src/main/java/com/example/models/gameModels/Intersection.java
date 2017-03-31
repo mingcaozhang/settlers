@@ -58,6 +58,7 @@ public class Intersection extends Geometry {
             case "i3": id2 = "e1_"+x+"_"+y;
                 id1 = "e2_"+x+"_"+y;
                 id3 = "e3_"+xm+"_"+y;
+
                 break;
 
             case "i4":  id2 = "e1_"+x+"_"+y;
