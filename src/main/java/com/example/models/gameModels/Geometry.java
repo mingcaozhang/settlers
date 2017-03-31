@@ -9,8 +9,8 @@ import java.util.Queue;
  * Created by G on 17/02/27.
  */
 public abstract class Geometry {
-    protected String aId; // should be private final
-    protected String[] splitId; // should be private final
+    private final String aId;
+    private final String[] splitId;
 
     protected Geometry(String pId){
         aId = pId;
