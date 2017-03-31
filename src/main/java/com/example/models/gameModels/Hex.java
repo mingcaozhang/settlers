@@ -102,6 +102,8 @@ public abstract class Hex extends Geometry {
         //    System.out.println("    Hex " + id3);
             HexNeighbours.add(pHexes.get(id3));
         }
+
+        
         if (pHexes.get(id4) != null) {
         //    System.out.println("    Hex " + id4);
             HexNeighbours.add(pHexes.get(id4));
