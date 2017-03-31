@@ -5,8 +5,6 @@ package com.example.viewobjects;
  */
 public class ViewHex {
 
-    // THIS IS THE VIEW HEX FOR THE GENERATED HEXES, NOT THE HARDCODED ONES
-
     private double x;
     private double y;
     private String stroke;
@@ -14,9 +12,20 @@ public class ViewHex {
     private String fill;
     private String points;
     private String id;
- //   private String terrain_type;
+    private String terrain_type;
     private int number;
 
+    public ViewHex(double x, double y, String stroke, String stroke_width, String fill, String points, String id, String terrainType, int number) {
+        this.x = x;
+        this.y = y;
+        this.stroke = stroke;
+        this.stroke_width = stroke_width;
+        this.fill = fill;
+        this.points = points;
+        this.id = id;
+        this.terrain_type = terrainType;
+        this.number = number;
+    }
 
     public String getFill() {
         return fill;
@@ -74,14 +83,14 @@ public class ViewHex {
         this.id = id;
     }
 
- /*   public String getTerrainType() {
+    public String getTerrainType() {
         return terrain_type;
     }
 
     public void setTerrainType(String terrainType) {
         this.terrain_type = terrainType;
     }
-*/
+
     public int getNumber() {
         return number;
     }
