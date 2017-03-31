@@ -36,41 +36,24 @@ public class Board {
     public HashMap<Integer, ArrayList<LandHex>> getLandHexes(){
         return aLandHexes;
     }
-//    public void setAllNeighbours(){
-//        // System.out.println("hello YOUTUBE COMMUNITY");
-//        for(int i=0;i< lHexes.size();i++)
-//        {
-//            lHexes.get(i).setEdgeNeighbours(aEdges);
-//            //  waitToSet();
-//            lHexes.get(i).setHexNeighbours(aHexes);
-//            // waitToSet();
-//            lHexes.get(i).setIntersectionNeighbours(aIntersections);
-//            // waitToSet();
-//            //  System.out.println(lHexes.get(i).getIntersectionNeighbours().peek().getId());
-//            //  System.out.println(lHexes.get(i).getId());
-//
-//            //   System.out.println("hello YOUTUBE COMMUNITY");
-//        }
-//        for(int i=0;i< lEdges.size();i++)
-//        {
-//            // waitToSet();
-//            lEdges.get(i).setEdgeNeighbours(aEdges);
-//            // waitToSet();
-//            lEdges.get(i).setHexNeighbours(aHexes);
-//            // waitToSet();
-//            lEdges.get(i).setIntersectionNeighbours(aIntersections);
-//            // waitToSet();
-//            //   System.out.println("its my birthday today");
-//
-//        }
-//        for(int i=0;i< lIntersections.size();i++) {
-//            lIntersections.get(i).setEdgeNeighbours(aEdges);
-//            // waitToSet();
-//            lIntersections.get(i).setHexNeighbours(aHexes);
-//            // waitToSet();
-//            lIntersections.get(i).setIntersectionNeighbours(aIntersections);
-//            //  System.out.println("And i am just so happy");
-//
-//        }
-//    }
+    public void setAllNeighbours(){
+
+        for (String aKey : aHexes.keySet()){
+            aHexes.get(aKey).setIntersectionNeighbours(aIntersections);
+            aHexes.get(aKey).setHexNeighbours(aHexes);
+            aHexes.get(aKey).setEdgeNeighbours(aEdges);
+        }
+
+        for (String aKey : aEdges.keySet()){
+            aEdges.get(aKey).setIntersectionNeighbours(aIntersections);
+            aEdges.get(aKey).setHexNeighbours(aHexes);
+            aEdges.get(aKey).setEdgeNeighbours(aEdges);
+        }
+
+        for (String aKey : aIntersections.keySet()){
+            aIntersections.get(aKey).setIntersectionNeighbours(aIntersections);
+            aIntersections.get(aKey).setHexNeighbours(aHexes);
+            aIntersections.get(aKey).setEdgeNeighbours(aEdges);
+        }
+    }
 }
