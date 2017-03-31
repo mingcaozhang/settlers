@@ -337,7 +337,7 @@ public class GameController {
     public void getEdge(ViewEdge pEdge) throws Exception{
 
         Edge aEdge = new Edge(pEdge.getId());
-//        System.out.println(aEdge.getId());
+    //    System.out.println(aEdge.getId());
         aGame.getEdges().put(aEdge.getId(),aEdge);
         aGame.lEdges.add(aEdge);
 
@@ -346,7 +346,7 @@ public class GameController {
     @MessageMapping("/hex")
     public void getHex(ViewHex pHex) throws Exception{
         // THIS TAKE IN A SINGLE HEX OBJ, NOT A JSON ARRAY
-      //  System.out.println(pHex.getId());
+    //    System.out.println(pHex.getId());
         Hex aHex;
         /*
         JSONArray aArray = new JSONArray(bigJson);
@@ -402,7 +402,7 @@ public class GameController {
     public void getIntersection(ViewIntersection pIntersection) throws Exception{
 
         Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
-    //    System.out.println(pIntersection.getId());
+  //      System.out.println(pIntersection.getId());
         aGame.getIntersections().put(aIntersection.getId(),aIntersection);
         aGame.lIntersections.add(aIntersection);
 
@@ -411,7 +411,7 @@ public class GameController {
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception
     {
-    //    System.out.println("Setting neighbours");
+        System.out.println("Setting neighbours");
         aGame.setAllNeighbours();
     }
 }
