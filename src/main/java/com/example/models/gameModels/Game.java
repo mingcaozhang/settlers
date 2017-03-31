@@ -1,7 +1,11 @@
 package com.example.models.gameModels;
 import java.util.*;
 
+/**
+ * Created by G on 17/03/03.
+ */
 public class Game {
+  
     public enum GamePhase{
         SetupRoundOne,SetupRoundTwo, TurnFirstPhase, TurnDiceRolled, TurnSecondPhase, Completed
     }
@@ -25,6 +29,7 @@ public class Game {
     private Board aBoard;
     private HashMap<StealableCard.Resource, Integer> aResourceCards;
     private HashMap<StealableCard.Commodity, Integer> aCommodityCards;
+
     private GamePhase aPhase;
     private int aBarbarianPosition;
     private int aGoldBank;
@@ -37,10 +42,12 @@ public class Game {
 
     public Game(int pVPsToWin, List<Player> pPlayers, Board pBoard){
         aBoard = pBoard;
+
         aVPsToWin = pVPsToWin;
         aBarbarianPosition = 6;
         aGoldBank = 50;
         aPlayers = pPlayers;
+
         aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
@@ -53,6 +60,7 @@ public class Game {
         for (StealableCard.Commodity commodity : StealableCard.Commodity.values()){
             aCommodityCards.put(commodity, StealableCard.Commodity.maxCommodities());
         }
+
     }
 
     public void setPhase(GamePhase pPhase){
@@ -97,6 +105,7 @@ public class Game {
 
     public Board getBoard(){
         return aBoard;
+
     }
 
     public List<Player> getPlayers(){
@@ -128,10 +137,11 @@ public class Game {
     }
 
     public HashMap<StealableCard.Resource, Integer> getResourceCards(){
+
         return aResourceCards;
     }
 
-    public HashMap<StealableCard.Commodity, Integer> getCommodityCards(){
+    public HashMap<CommodityCard.CommodityType, Queue<CommodityCard>> getCommodityCards(){
         return aCommodityCards;
     }
 
@@ -145,5 +155,6 @@ public class Game {
 
     public int getTurnCounter(){
         return aTurnCounter;
+
     }
 }

@@ -1256,7 +1256,7 @@ function init() {
     var count = 0;
     var jsonPolygons = [];
 
-
+/*
 // a js object that describes the hexagons that make up the board.
     jsonPolygons = [{
         "x": 340.19237886466846,
@@ -1915,7 +1915,7 @@ function init() {
             "radius": 14,
             "number": 2
         }, {"x_coord": 963.7306695894642, "y_coord": 260, "x_axial": 4, "y_axial": -3, "radius": 14, "number": 12}];
-
+*/
     var jsonEdges = [];
     var jsonIntersections = [];
     var board_radius = 4;
@@ -1948,19 +1948,19 @@ function init() {
 
 
                 // MAKE HEX
-                /*
+
                  var hex = new HexBlueprint(x, y, x+y, hxradius, '#00b377');
                  var Random = Math.floor(Math.random() * 12) +1;
                  var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
-                 "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": Random };
+                 "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": 0 };
                  jsonPolygons.push(polyValues);
                  if(startingPlayer.match(myUsername)) {
                  sendHex(polyValues);
                  }
-                 */
-                if (startingPlayer.match(myUsername)) {
-                    sendHex(jsonPolygons);
-            }
+
+        //        if (startingPlayer.match(myUsername)) {
+        //            sendHex(jsonPolygons);
+        //    }
                 // MAKE EDGES
 
                 // top left
@@ -2272,8 +2272,10 @@ function init() {
 
 
     }
+
     if(startingPlayer.match(myUsername)) {
-        readySetNeighbours();
+        setTimeout(readySetNeighbours,10000);
+        //set timeout to less when hexes arent hardcoded
     }
 
 //var color ='blue'; //OH MY LORD
