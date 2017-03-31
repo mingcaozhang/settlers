@@ -50,7 +50,6 @@ public class Edge extends Geometry{
         final int y = getY();
         final int ym = y-1;
         final int yp = y+1;
-        //sysout
         String id1;
         String id2;
         String id3;
