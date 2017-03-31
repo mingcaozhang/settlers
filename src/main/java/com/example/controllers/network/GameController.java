@@ -2,6 +2,9 @@ package com.example.controllers.network;
 
 import com.example.models.gameModels.*;
 import com.example.viewobjects.*;
+import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -10,10 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class GameController {
@@ -37,20 +37,6 @@ public class GameController {
         pap.setSetup1(true);
         pap.setSetup2(false);
     }
-
-  // FROM NEIGHBOURS BRANCH
- /*   public static void createGame(){
-        List<String> myColors = new ArrayList<String>();
-        myColors.add(0,player1color);
-        myColors.add(1,player2color);
-        myColors.add(2,player3color);
-        myColors.add(3,player3color);
-        aGame = new Game(10,createPlayers(currPlayerList),myColors);
-        System.out.println(aGame.getPlayers().size());
-        aGame.setPlayerProperties(aGame.getPlayers());
-    }
-*/
-
 
     @RequestMapping(value="/game", method= RequestMethod.GET)
     public String game(ModelMap model, Principal caller) {
@@ -205,43 +191,43 @@ public class GameController {
                         case 1:
                             pIncrement.setp1(
                                     player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                                    player.getResourceCards().get(StealableCard.Resource.ORE),
+                                    player.getResourceCards().get(StealableCard.Resource.BRICK),
+                                    player.getResourceCards().get(StealableCard.Resource.WOOD),
+                                    player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getCommodityCards().get(StealableCard.Commodity.COIN),
+                                    player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
+                                    player.getCommodityCards().get(StealableCard.Commodity.PAPER));
                         case 2:
                             pIncrement.setp2(
                                     player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                                    player.getResourceCards().get(StealableCard.Resource.ORE),
+                                    player.getResourceCards().get(StealableCard.Resource.BRICK),
+                                    player.getResourceCards().get(StealableCard.Resource.WOOD),
+                                    player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getCommodityCards().get(StealableCard.Commodity.COIN),
+                                    player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
+                                    player.getCommodityCards().get(StealableCard.Commodity.PAPER));
                         case 3:
                             pIncrement.setp3(
                                     player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                                    player.getResourceCards().get(StealableCard.Resource.ORE),
+                                    player.getResourceCards().get(StealableCard.Resource.BRICK),
+                                    player.getResourceCards().get(StealableCard.Resource.WOOD),
+                                    player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getCommodityCards().get(StealableCard.Commodity.COIN),
+                                    player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
+                                    player.getCommodityCards().get(StealableCard.Commodity.PAPER));
                         case 4:
                             pIncrement.setp4(
                                     player.getGold(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Ore).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Brick).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Wood).size(),
-                                    player.getResourceCards().get(ResourceCard.ResourceType.Sheep).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Coin).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Cloth).size(),
-                                    player.getCommodityCards().get(CommodityCard.CommodityType.Paper).size());
+                                    player.getResourceCards().get(StealableCard.Resource.ORE),
+                                    player.getResourceCards().get(StealableCard.Resource.BRICK),
+                                    player.getResourceCards().get(StealableCard.Resource.WOOD),
+                                    player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getCommodityCards().get(StealableCard.Commodity.COIN),
+                                    player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
+                                    player.getCommodityCards().get(StealableCard.Commodity.PAPER));
                     }
                 }
             }
@@ -290,20 +276,23 @@ public class GameController {
 
     @MessageMapping("/edge")
     public void getEdge(ViewEdge pEdge) throws Exception{
-
+        /*
         Edge aEdge = new Edge(pEdge.getId());
     //    System.out.println(aEdge.getId());
+    //    System.out.println(aEdge.getX());
+    //    System.out.println(aEdge.getY());
+    //    System.out.println(aEdge.getPrefix());
         aGame.getEdges().put(aEdge.getId(),aEdge);
         aGame.lEdges.add(aEdge);
-
+        */
     }
 
     @MessageMapping("/hex")
-    public void getHex(ViewHex pHex) throws Exception{
-        // THIS TAKE IN A SINGLE HEX OBJ, NOT A JSON ARRAY
-    //    System.out.println(pHex.getId());
-        Hex aHex;
+    public void getHex(String bigJson) throws Exception{
         /*
+
+        Hex aHex;
+       // System.out.println("Hexagon");
         JSONArray aArray = new JSONArray(bigJson);
         Gson gson = new Gson();
 
@@ -313,7 +302,7 @@ public class GameController {
             JSONObject jsonHex = aArray.getJSONObject(i);
          //   System.out.println(jsonHex);
 
-           ViewHex pHex = gson.fromJson(jsonHex.toString(), ViewHex.class);
+            ViewHex pHex = gson.fromJson(jsonHex.toString(), ViewHex.class);
           //  System.out.println(pHex.getId());
 
 
@@ -344,29 +333,29 @@ public class GameController {
                 default:
                     aHex = new SeaHex(pHex.getId());
             }
-*/
-            aHex = new SeaHex(pHex.getId());
-       //     System.out.println(aHex.getId());
+
             aGame.getHexes().put(aHex.getId(), aHex);
             aGame.lHexes.add(aHex);
-       // }
-
+        }
+        */
     }
 
     @MessageMapping("/intersection")
     public void getIntersection(ViewIntersection pIntersection) throws Exception{
-
+        /*
+    //    System.out.println("Intersection");
         Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
-  //      System.out.println(pIntersection.getId());
         aGame.getIntersections().put(aIntersection.getId(),aIntersection);
         aGame.lIntersections.add(aIntersection);
-
+        */
     }
 
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception
     {
-        System.out.println("Setting neighbours");
+        /*
+     //   System.out.println("HNNNNNNNG");
         aGame.setAllNeighbours();
+        */
     }
 }
