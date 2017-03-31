@@ -11,7 +11,7 @@ public class Edge extends Geometry{
     private boolean isOccupied;
     private EdgeUnit aOccupant;
 
-    
+
     public Edge(String pId)
     {
         super(pId);

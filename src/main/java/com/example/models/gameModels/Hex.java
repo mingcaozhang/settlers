@@ -66,7 +66,6 @@ public abstract class Hex extends Geometry {
         }
         if (pEdges.get(id6) != null) {
             EdgeNeighbours.add(pEdges.get(id6));
-
         //    System.out.println("    Edge " + id6);
         }
 

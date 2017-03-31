@@ -171,6 +171,8 @@ public class Intersection extends Geometry {
             IntersectionNeighbours.add(pIntersections.get(id2));
         //    System.out.println("    Intersection "+ id2);
         }
+
+
         if(pIntersections.get(id3)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id3));
         //    System.out.println("    Intersection "+ id3);
