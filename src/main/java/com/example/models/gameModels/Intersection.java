@@ -8,7 +8,8 @@ import java.util.Map;
 public class Intersection extends Geometry {
 
     private HarbourType aHarbour;
-    private IntersectionUnit aOccupant;
+    private OwnedBuilding aOccupant;
+    private OwnedKnight aKnight;
     private boolean isOccupied;
 
 
@@ -23,18 +24,24 @@ public class Intersection extends Geometry {
         return isOccupied;
     }
 
-    public IntersectionUnit getOccupant(){
+    public OwnedBuilding getBuilding(){
         return aOccupant;
     }
 
-    public void setOccupant(IntersectionUnit pOccupant)
+    public OwnedKnight getKnight(){
+        return aKnight;
+    }
+
+    public void setKnight(){ }
+
+    public void setBuilding(OwnedBuilding pOccupant)
     {
         aOccupant = pOccupant;
         isOccupied = true;
     }
-    public IntersectionUnit removeOccupant()
+    public OwnedBuilding removeOccupant()
     {
-        IntersectionUnit tempUnit = aOccupant;
+        OwnedBuilding tempUnit = aOccupant;
         aOccupant = null;
         isOccupied = false;
         return tempUnit;
@@ -74,15 +81,15 @@ public class Intersection extends Geometry {
 
         if(pEdges.get(id1)!=null) {
             EdgeNeighbours.add(pEdges.get(id1));
-        //    System.out.println("    Edge "+ id1);
+            System.out.println("    Edge "+ id1);
         }
         if(pEdges.get(id2)!=null) {
             EdgeNeighbours.add(pEdges.get(id2));
-        //    System.out.println("    Edge "+ id2);
+            System.out.println("    Edge "+ id2);
         }
         if(pEdges.get(id3)!=null) {
             EdgeNeighbours.add(pEdges.get(id3));
-        //    System.out.println("    Edge " + id3);
+            System.out.println("    Edge " + id3);
         }
     }
 
@@ -119,16 +126,16 @@ public class Intersection extends Geometry {
 
         if(pHexes.get(id1)!=null) {
             HexNeighbours.add(pHexes.get(id1));
-        //    System.out.println("    Hex "+ id1);
+            System.out.println("    Hex "+ id1);
         }
         if(pHexes.get(id2)!=null) {
             HexNeighbours.add(pHexes.get(id2));
-        //    System.out.println("    Hex "+ id2);
+            System.out.println("    Hex "+ id2);
 
         }
         if(pHexes.get(id3)!=null) {
             HexNeighbours.add(pHexes.get(id3));
-        //    System.out.println("    Hex "+ id3);
+            System.out.println("    Hex "+ id3);
         }
     }
 
@@ -165,17 +172,17 @@ public class Intersection extends Geometry {
 
         if(pIntersections.get(id1)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id1));
-        //    System.out.println("    Intersection "+ id1);
+            System.out.println("    Intersection "+ id1);
         }
         if(pIntersections.get(id2)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id2));
-        //    System.out.println("    Intersection "+ id2);
+            System.out.println("    Intersection "+ id2);
         }
 
 
         if(pIntersections.get(id3)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id3));
-        //    System.out.println("    Intersection "+ id3);
+            System.out.println("    Intersection "+ id3);
         }
     }
 

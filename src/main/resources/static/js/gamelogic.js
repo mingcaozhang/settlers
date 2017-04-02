@@ -125,41 +125,40 @@ var knight;
 var stompClient = null;
 
 
-var settlementPlaced = false;
-var road1Placed = false;
-var cityPlaced = false;
-var road2Placed = false;
+var settlementPlaced = false; /*Indicates whether the first settlement has been placed in the setup phase*/
+var road1Placed = false;    /*Indicates whther the first road has been placed in the setup phase*/
+var cityPlaced = false;     /*Indicates whether the first city has been placed in the setup phase*/
+var road2Placed = false;    /*Indicates whether the second road has been placed in the setup phase*/
 
-var enablePlaceRoad1=false;
-var enablePlaceRoad2=false;
+var isSetup1 = false;
+var isSetup2 = false;
+
 
 var enableBuyAndUpgrade = false;
-var boardEnabled = false;
-
+//var boardEnabled = false;
 var currUser;
 
-connect();
-intitializeTurn();
 var currPlayer = document.getElementById("currPlayer");
-currPlayer.innerHTML = "Turn: " + startingPlayer;
+
+connect();
+initializeTurn();
 
 
-console.log("my username is: "+myUsername);
-console.log("my color is: "+myColor);
 
-var hardCodedCounter = 0;
-var hardCodedBoolean = true;
+function initializeTurn(){
 
-//element1.id =
+    currPlayer.innerHTML = "Turn: " + startingPlayer;
 
-function intitializeTurn(){
+    console.log("my username is: "+myUsername);
+    console.log("my color is: "+myColor);
 
     currUser = startingPlayer;
     console.log("Player Starting is: "+startingPlayer);
 
     if(startingPlayer.match(myUsername)){
         //enable all turn buttons
-        boardEnabled = true;
+        //boardEnabled = true;
+        isSetup1 = true;
         enableBuyAndUpgrade = false;
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
@@ -167,7 +166,8 @@ function intitializeTurn(){
 
     }else{
         //disable all turn buttons
-        boardEnabled = false;
+
+        //boardEnabled = false;
         enableBuyAndUpgrade = false;
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
@@ -187,27 +187,34 @@ function connect() {
 
         stompClient.subscribe('/topic/turninfo', function (pap) {
             pap = JSON.parse((pap.body));
+
             currUser = pap.username;
             currPlayer.innerHTML = "Turn: " + currUser;
 
-            //console.log(currUser);
-           // console.log(user.body);
 
             if(currUser.match(myUsername)){
                 //disable all turn buttons
+                console.log("it's my turn!")
+                console.log(pap)
                 if(pap.setup1){
+                    isSetup1 = true;
+                    console.log("Setup1 is true!")
 
                 }else if(pap.setup2){
+                    isSetup1 = false;
+                    isSetup2 = true;
+                    console.log("Setup1 is false!")
+                    console.log("Setup2 is true!")
 
                     document.getElementById('endTurn').disabled = true;
                 }else{
+                    isSetup1 = false;
+                    isSetup2 = false;
                     document.getElementById('rolldice').disabled = false;
                     document.getElementById('endTurn').disabled = true;
 
 
                 }
-
-
 
 
             }else{
@@ -216,29 +223,6 @@ function connect() {
                 document.getElementById('endTurn').disabled = true;
             }
 
-            if(hardCodedBoolean && !pap.setup2){
-
-                if(myUsername.match(p1name)){
-                    nWheat++;
-                    nBrick++;
-
-                }else if(myUsername.match(p2name)){
-                    nSheep++;
-                    nOre++;
-                    nWood++;
-
-                }else if(myUsername.match(p3name)){
-                    nWheat = nWheat +2;
-                    nWood = nWood + 1;
-                }
-
-                hardCodedBoolean = false;
-
-            }
-
-
-
-            //currUser
 
         });
 
@@ -273,49 +257,8 @@ function connect() {
                 status.innerHTML += " Robber!";
             }
 
-            if(hardCodedCounter == 0){
-                if(myUsername.match(p1name)){
-                    nBrick = nBrick + 1;
-
-                }else if(myUsername.match(p2name)){
 
 
-                }else if(myUsername.match(p3name)){
-                    nBrick = nBrick + 1;
-                }
-            }
-
-            if(hardCodedCounter == 1){
-                if(myUsername.match(p1name)){
-
-
-                }else if(myUsername.match(p2name)){
-
-
-                }else if(myUsername.match(p3name)){
-                    nWheat = nWheat +2;
-                }
-            }
-
-            if(hardCodedCounter == 2){
-                if(myUsername.match(p1name)){
-                    nSheep++;
-
-
-                }else if(myUsername.match(p2name)){
-                    nSheep++;
-                    nCloth++;
-
-                }else if(myUsername.match(p3name)){
-
-
-                }
-            }
-
-
-
-
-            hardCodedCounter++;
 
 
         });
@@ -323,11 +266,21 @@ function connect() {
         stompClient.subscribe('/topic/road', function (piece) {
             piece = JSON.parse((piece.body));
 
+            var legalMove = true; //need this to be returned
+
+
+            if (legalMove){
+
+
+            }
+
             var myId = piece.id;
             var toColor = piece.color;
 
             d3.select("#"+myId).attr("fill", toColor);
             d3.select("#"+myId).attr("hasRoad","true");
+
+
 
         });
 
@@ -336,9 +289,18 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
+            var valid = piece.valid;
 
-            d3.select("#"+myId).attr("fill", toColor);
-            d3.select("#"+myId).attr("hasSettlement","true")
+            if(valid){
+                d3.select("#"+myId).attr("fill", toColor);
+                d3.select("#"+myId).attr("hasSettlement","true");
+            }else{
+                if(currUser.match(myUsername)){
+
+                }
+
+            }
+
 
 
         });
@@ -360,7 +322,6 @@ function connect() {
     });
 }
 
-/*Button clicks sent to backend!*/
 
 function sendEdge(Edge){
     stompClient.send("/app/edge",{},JSON.stringify(Edge));
@@ -382,58 +343,39 @@ function readySetNeighbours(){
 //Roll Dice
 function rollDice() {
     var status = document.getElementById("status");
-    var d1, d2;
+    var d1, d2, d3;
 
-    var d3 = Math.floor(Math.random() * 6) + 1;
-
-
-    if(hardCodedCounter<=2){
-        if(myUsername.match(p1name)){
-            d1 = 2;
-            d2 = 2;
-
-        }
-
-        else if(myUsername.match(p2name)){
-            d1 = 6;
-            d2 = 5;
-        }
-
-        else if(myUsername.match(p3name)){
-            d1 = 5;
-            d2 = 3;
-        }
-    }else{
-        d1 = Math.floor(Math.random() * 6) + 1;
-        d2 = Math.floor(Math.random() * 6) + 1;
-    }
-
-
+    d1 = Math.floor(Math.random() * 6) + 1;
+    d2 = Math.floor(Math.random() * 6) + 1;
+    d3 = Math.floor(Math.random() * 6) + 1;
 
     stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
-    boardEnabled = true;
+    //boardEnabled = true;
     enableBuyAndUpgrade = true;
     document.getElementById('rolldice').disabled = true;
     document.getElementById('endTurn').disabled = false;
-
 
 }
 //Used to enable rollDice button when end turn button is pressed
 function endTurn() {
 
     stompClient.send("/app/endturn",{}, {});
-    boardEnabled = false;
+
+    //boardEnabled = false;
     enableBuyAndUpgrade = false;
 
 }
 
 
+function disableMyButtons(){
 
+    //boardEnabled = false;
+    enableBuyAndUpgrade = false;
+    document.getElementById('rolldice').disabled = true;
+    document.getElementById('endTurn').disabled = true;
 
-
-
-
+}
 
 //Activated to show attributes when player button is clicked
 function setAttributes() {
@@ -534,15 +476,16 @@ function buildRoad(id) {
 function placeRoad(id) {
     if(!road1Placed){
         road1Placed = true;
-        enablePlaceRoad1 = false;
+       // enablePlaceRoad1 = false;
     }else if(!road2Placed){
         road2Placed = true;
-        enablePlaceRoad2 = false;
+       // enablePlaceRoad2 = false;
     }
     nRoad++;
     pRoad = document.getElementById("pRoad");
     pRoad.innerHTML = "Roads " + nRoad;
     stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}))
+
     document.getElementById('endTurn').disabled = false;
 }
 
@@ -588,7 +531,7 @@ function buildSettlement(id) {
 function placeSettlement(id) {
 
     settlementPlaced = true;
-    enablePlaceRoad1 = true;
+    //enablePlaceRoad1 = true;
     nSettlement++;
     pSettlement = document.getElementById("pSettlement");
     pSettlement.innerHTML = "Settlements " + nSettlement;
@@ -1258,6 +1201,8 @@ function init() {
 
 
 // a js object that describes the hexagons that make up the board.
+    jsonPolygons = [];
+    /*
     jsonPolygons = [{
         "x": 340.19237886466846,
         "y": 620,
@@ -1915,6 +1860,7 @@ function init() {
             "radius": 14,
             "number": 2
         }, {"x_coord": 963.7306695894642, "y_coord": 260, "x_axial": 4, "y_axial": -3, "radius": 14, "number": 12}];
+*/
 
     var jsonEdges = [];
     var jsonIntersections = [];
@@ -1948,19 +1894,19 @@ function init() {
 
 
                 // MAKE HEX
-                /*
+
                  var hex = new HexBlueprint(x, y, x+y, hxradius, '#00b377');
                  var Random = Math.floor(Math.random() * 12) +1;
-                 var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
-                 "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": Random };
+                var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
+                    "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": 0 };
                  jsonPolygons.push(polyValues);
                  if(startingPlayer.match(myUsername)) {
                  sendHex(polyValues);
                  }
-                 */
-                if (startingPlayer.match(myUsername)) {
+
+            /*    if (startingPlayer.match(myUsername)) {
                     sendHex(jsonPolygons);
-            }
+            }*/
                 // MAKE EDGES
 
                 // top left
@@ -2323,13 +2269,13 @@ var intersectionAttrs = boardIntersections
         if(currUser.match(myUsername)){
             //if(boardEnabled){
 
-                if(!settlementPlaced){
+                if(!settlementPlaced && isSetup1){
                     if(d3.select(this).attr("hasSettlement").match("false")) {
                         placeSettlement(d.id);
                         d3.select(this).attr("hasSettlement", "true");
                     }
 
-                }else if(!cityPlaced){
+                }else if(!cityPlaced && settlementPlaced && road1Placed && isSetup2){
                     if(d3.select(this).attr("hasCity").match("false")) {
                         placeCity(d.id);
                         d3.select(this).attr("hasCity", "true");
@@ -2372,22 +2318,22 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
     .on("click", function (d) {
 
         if(currUser.match(myUsername)){
-            //if(boardEnabled){
-               // if(enablePlaceRoad1){
-                    if(!road1Placed){
+
+                    if(!road1Placed && settlementPlaced && isSetup1){
                         placeRoad(d.id);
                     }
 
-               // }else if(enablePlaceRoad2){
-                    else if(!road2Placed){
+
+                    else if(!road2Placed && road1Placed && cityPlaced && isSetup2){
                         placeRoad(d.id);
-                   }
-                //}else if(enableBuyAndUpgrade){
-                    else if(d3.select(this).attr("hasRoad").match("false")){
+                    }
+
+                 if(enableBuyAndUpgrade){
+                    if(d3.select(this).attr("hasRoad").match("false")){
                         buildRoad(d.id);
                     }
-               // }
-           // }
+                }
+
         }
 
 
@@ -2395,11 +2341,11 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
 
 // append the board production numbers
 var hexProdCircs = holder.selectAll("prodCircs")
-    .data(jsonNumCircles)
+ //   .data(jsonNumCircles)
     .enter()
     .append("circle");
 
-console.log(JSON.stringify(jsonNumCircles));
+//console.log(JSON.stringify(jsonNumCircles));
 var prodCircAttrs = hexProdCircs
     .attr("cx", function (d) { return d.x_coord; })
     .attr("cy", function (d) { return d.y_coord; })

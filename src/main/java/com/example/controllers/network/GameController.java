@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 
 @Controller
 public class GameController {
@@ -53,12 +55,13 @@ public class GameController {
         }
 
         for(int i = 0 ; i < currPlayerList.size(); i++){
-            model.addAttribute("player1",currPlayerList.get(i));
+            model.addAttribute("player"+(i+1),currPlayerList.get(i));
         }
 
         for(int i = 0 ; i < currPlayerList.size(); i++){
-            model.addAttribute("player1_c", GameManager.getGame().getPlayers().get(i).getColor());
+            model.addAttribute("player"+(i+1)+"_c", GameManager.getGame().getPlayers().get(i).getColor());
         }
+        aGame = GameManager.getGame();
 
         return "game";
     }
@@ -77,6 +80,7 @@ public class GameController {
             }
         }
         aGame.placeSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -92,6 +96,7 @@ public class GameController {
             }
         }
         aGame.placeCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -107,6 +112,7 @@ public class GameController {
             }
         }
         aGame.placeRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -122,6 +128,7 @@ public class GameController {
             }
         }
         aGame.setupSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -136,14 +143,18 @@ public class GameController {
                 break;
             }
         }
+
         aGame.setupCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
+
     }
 
     @MessageMapping("/setuproad")
     @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
-        /*
+
+         /*
         Player callingPlayer = new Player(null, null);
         for (Player player : aGame.getPlayers()){
             if (player.getUsername() == caller.getName()){
@@ -153,6 +164,7 @@ public class GameController {
         }
         aGame.setupRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
         */
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -168,7 +180,7 @@ public class GameController {
     @MessageMapping("/rolldice")
     @SendTo("/topic/dice")
     public DiceRoll showDice(DiceRoll pDice){
-        /*aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());*/
+        //aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());*/
         /*diceRollPayout();*/
         return pDice;
     }
@@ -241,8 +253,6 @@ public class GameController {
 
 
 
-
-
         if(turnCounter == (currPlayerList.size()-1)){
             System.out.println("first if");
             System.out.println(currPlayerList.size()-1);
@@ -276,24 +286,25 @@ public class GameController {
 
     @MessageMapping("/edge")
     public void getEdge(ViewEdge pEdge) throws Exception{
-        /*
+
         Edge aEdge = new Edge(pEdge.getId());
     //    System.out.println(aEdge.getId());
     //    System.out.println(aEdge.getX());
     //    System.out.println(aEdge.getY());
     //    System.out.println(aEdge.getPrefix());
-        aGame.getEdges().put(aEdge.getId(),aEdge);
-        aGame.lEdges.add(aEdge);
-        */
+        GameManager.getGame().getBoard().getEdges().put(aEdge.getId(),aEdge);
+
     }
 
     @MessageMapping("/hex")
-    public void getHex(String bigJson) throws Exception{
-        /*
+    public void getHex(ViewHex pHex) throws Exception{
+
 
         Hex aHex;
+        SeaHex seaHex = new SeaHex(pHex.getId());
+        //System.out.println(seaHex.getId());
        // System.out.println("Hexagon");
-        JSONArray aArray = new JSONArray(bigJson);
+      /*  JSONArray aArray = new JSONArray(bigJson);
         Gson gson = new Gson();
 
         for(int i=0;i<aArray.length();i++) {
@@ -333,29 +344,23 @@ public class GameController {
                 default:
                     aHex = new SeaHex(pHex.getId());
             }
+*/
+            GameManager.getGame().getBoard().getHexes().put(seaHex.getId(), seaHex);
+      //  }
 
-            aGame.getHexes().put(aHex.getId(), aHex);
-            aGame.lHexes.add(aHex);
-        }
-        */
     }
 
     @MessageMapping("/intersection")
     public void getIntersection(ViewIntersection pIntersection) throws Exception{
-        /*
-    //    System.out.println("Intersection");
+
+       // System.out.println("Intersection");
         Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
-        aGame.getIntersections().put(aIntersection.getId(),aIntersection);
-        aGame.lIntersections.add(aIntersection);
-        */
+        GameManager.getGame().getBoard().getIntersections().put(aIntersection.getId(),aIntersection);
     }
 
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception
     {
-        /*
-     //   System.out.println("HNNNNNNNG");
-        aGame.setAllNeighbours();
-        */
+        GameManager.getGame().getBoard().setAllNeighbours();
     }
 }

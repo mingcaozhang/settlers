@@ -6,7 +6,7 @@ import java.util.Queue;
 /**
  * Created by G on 17/03/02.
  */
-public class Wall extends OwnableUnit{
+public class Wall /*extends OwnableUnit*/{
     private static final Queue<Wall> aWalls = new LinkedList<Wall>();
 
     static {

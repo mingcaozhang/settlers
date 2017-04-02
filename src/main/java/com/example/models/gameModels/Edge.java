@@ -83,19 +83,19 @@ public class Edge extends Geometry{
           //  System.out.println("THIS: "+getId());
 
         if(pEdges.get(id1)!=null) {
-       //     System.out.println(id1);
+            System.out.println(id1);
             EdgeNeighbours.add(pEdges.get(id1));
         }
         if(pEdges.get(id2)!=null){
-       //     System.out.println(id2);
+            System.out.println(id2);
             EdgeNeighbours.add(pEdges.get(id2));
         }
         if(pEdges.get(id3)!=null) {
-       //     System.out.println(id3);
+            System.out.println(id3);
             EdgeNeighbours.add(pEdges.get(id3));
         }
         if(pEdges.get(id4)!=null) {
-      //      System.out.println(id4);
+            System.out.println(id4);
             EdgeNeighbours.add(pEdges.get(id4));
         }
 
