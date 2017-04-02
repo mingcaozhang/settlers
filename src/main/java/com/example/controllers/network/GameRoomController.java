@@ -1,5 +1,6 @@
 package com.example.controllers.network;
 
+import com.example.models.gameModels.GameManager;
 import com.example.viewobjects.GameRoomView;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Map;
 
 @Controller
 public class GameRoomController {
@@ -38,7 +38,7 @@ public class GameRoomController {
         if(playerList.size() == 3){
             System.out.println("creating list!");
             GameController.setCurrPlayerList(playerList);
-            GameController.createGame();
+            GameManager.createGame(10, playerList);
         }
 
         GameRoomView grv = new GameRoomView(principal.getName(), playerList.size());

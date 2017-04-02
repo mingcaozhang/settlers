@@ -1258,6 +1258,8 @@ function init() {
 
 
 // a js object that describes the hexagons that make up the board.
+    jsonPolygons = [];
+    /*
     jsonPolygons = [{
         "x": 340.19237886466846,
         "y": 620,
@@ -1915,6 +1917,7 @@ function init() {
             "radius": 14,
             "number": 2
         }, {"x_coord": 963.7306695894642, "y_coord": 260, "x_axial": 4, "y_axial": -3, "radius": 14, "number": 12}];
+*/
 
     var jsonEdges = [];
     var jsonIntersections = [];
@@ -1948,19 +1951,19 @@ function init() {
 
 
                 // MAKE HEX
-                /*
+
                  var hex = new HexBlueprint(x, y, x+y, hxradius, '#00b377');
                  var Random = Math.floor(Math.random() * 12) +1;
-                 var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
-                 "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": Random };
+                var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
+                    "stroke":"black", "stroke_width": "4", "fill" : "white", "points": hex.points,"id": "h_"+x+"_"+y,"number": 0 };
                  jsonPolygons.push(polyValues);
                  if(startingPlayer.match(myUsername)) {
                  sendHex(polyValues);
                  }
-                 */
-                if (startingPlayer.match(myUsername)) {
+
+            /*    if (startingPlayer.match(myUsername)) {
                     sendHex(jsonPolygons);
-            }
+            }*/
                 // MAKE EDGES
 
                 // top left
@@ -2395,11 +2398,11 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
 
 // append the board production numbers
 var hexProdCircs = holder.selectAll("prodCircs")
-    .data(jsonNumCircles)
+ //   .data(jsonNumCircles)
     .enter()
     .append("circle");
 
-console.log(JSON.stringify(jsonNumCircles));
+//console.log(JSON.stringify(jsonNumCircles));
 var prodCircAttrs = hexProdCircs
     .attr("cx", function (d) { return d.x_coord; })
     .attr("cy", function (d) { return d.y_coord; })

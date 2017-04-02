@@ -99,6 +99,8 @@ public class Game {
         return aBoard;
     }
 
+    public void setBoard(Board pBoard) {aBoard = pBoard; }
+
     public List<Player> getPlayers(){
         return aPlayers;
     }

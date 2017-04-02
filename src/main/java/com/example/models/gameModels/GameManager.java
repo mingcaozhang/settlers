@@ -30,13 +30,9 @@ public class GameManager {
         return aPlayers;
     }
 
-    public static Board createBoard() {
-        return null;
-    }
-
     public static void createGame(int pVPsToWin, ArrayList<String> playerNames) {
         List<Player> aPlayers = createPlayers(playerNames);
-        Board aBoard = createBoard();
+        Board aBoard = new Board();
         Game game = new Game(pVPsToWin, aPlayers, aBoard);
         aGame = game;
     }
