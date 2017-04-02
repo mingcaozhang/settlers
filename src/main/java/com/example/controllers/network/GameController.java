@@ -2,6 +2,9 @@ package com.example.controllers.network;
 
 import com.example.models.gameModels.*;
 import com.example.viewobjects.*;
+import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -52,13 +55,14 @@ public class GameController {
         }
 
         for(int i = 0 ; i < currPlayerList.size(); i++){
-            model.addAttribute("player1",currPlayerList.get(i));
+            model.addAttribute("player"+(i+1),currPlayerList.get(i));
         }
 
         for(int i = 0 ; i < currPlayerList.size(); i++){
-            model.addAttribute("player1_c", GameManager.getGame().getPlayers().get(i).getColor());
+            model.addAttribute("player"+(i+1)+"_c", GameManager.getGame().getPlayers().get(i).getColor());
         }
         aGame = GameManager.getGame();
+
         return "game";
     }
 
@@ -76,6 +80,7 @@ public class GameController {
             }
         }
         aGame.placeSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -91,6 +96,7 @@ public class GameController {
             }
         }
         aGame.placeCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -106,6 +112,7 @@ public class GameController {
             }
         }
         aGame.placeRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -121,6 +128,7 @@ public class GameController {
             }
         }
         aGame.setupSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -135,14 +143,18 @@ public class GameController {
                 break;
             }
         }
+
         aGame.setupCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
+        pNew.setValid(true);
         return pNew;
+
     }
 
     @MessageMapping("/setuproad")
     @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
-        /*
+
+         /*
         Player callingPlayer = new Player(null, null);
         for (Player player : aGame.getPlayers()){
             if (player.getUsername() == caller.getName()){
@@ -152,6 +164,7 @@ public class GameController {
         }
         aGame.setupRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
         */
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -167,7 +180,7 @@ public class GameController {
     @MessageMapping("/rolldice")
     @SendTo("/topic/dice")
     public DiceRoll showDice(DiceRoll pDice){
-        /*aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());*/
+        //aGame.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());*/
         /*diceRollPayout();*/
         return pDice;
     }
@@ -237,8 +250,6 @@ public class GameController {
     @MessageMapping("/endturn")
     @SendTo("/topic/turninfo")
     public PlayerAndPhase endTurn(Principal user){
-
-
 
 
 
