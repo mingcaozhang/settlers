@@ -7,6 +7,7 @@ import java.util.*;
 /**
  * Created by G on 17/03/03.
  */
+
 public class Game {
     private ArrayList<Player> aPlayers = new ArrayList<Player>();
     private final int aVPsToWin;

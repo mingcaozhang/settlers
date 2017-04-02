@@ -45,7 +45,7 @@ public class City extends IntersectionUnit {
     public void addWall(){
         assert hasWall == false;
         assert aWall == null;
-        //aMetropolis;
+        //aMetropolis
         hasWall = true;
     }
 

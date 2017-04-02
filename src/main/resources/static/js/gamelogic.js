@@ -289,9 +289,18 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
+            var valid = piece.valid;
 
-            d3.select("#"+myId).attr("fill", toColor);
-            d3.select("#"+myId).attr("hasSettlement","true")
+            if(valid){
+                d3.select("#"+myId).attr("fill", toColor);
+                d3.select("#"+myId).attr("hasSettlement","true");
+            }else{
+                if(currUser.match(myUsername)){
+
+                }
+
+            }
+
 
 
         });

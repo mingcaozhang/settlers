@@ -121,7 +121,7 @@ public class GameController {
     @MessageMapping("/placesettlement")
     @SendTo("/topic/settlement")
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
-
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -129,6 +129,7 @@ public class GameController {
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
 
+        pNew.setValid(true);
         return pNew;
     }
 
@@ -136,27 +137,28 @@ public class GameController {
     @SendTo("/topic/road")
     public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
 
+        pNew.setValid(true);
         return pNew;
     }
 
     @MessageMapping("/setupsettlement")
     @SendTo("/topic/settlement")
     public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
-
+        pNew.setValid(true);
         return pNew;
     }
 
     @MessageMapping("/setupcity")
     @SendTo("/topic/city")
     public ViewPiece setupCity(ViewPiece pNew, Principal caller){
-
+        pNew.setValid(true);
         return pNew;
     }
 
     @MessageMapping("/setuproad")
     @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
-
+        pNew.setValid(true);
         return pNew;
     }
 
