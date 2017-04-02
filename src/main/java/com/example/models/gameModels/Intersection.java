@@ -8,7 +8,8 @@ import java.util.Map;
 public class Intersection extends Geometry {
 
     private HarbourType aHarbour;
-    private IntersectionUnit aOccupant;
+    private OwnedBuilding aOccupant;
+    private OwnedKnight aKnight;
     private boolean isOccupied;
 
 
@@ -23,18 +24,24 @@ public class Intersection extends Geometry {
         return isOccupied;
     }
 
-    public IntersectionUnit getOccupant(){
+    public OwnedBuilding getBuilding(){
         return aOccupant;
     }
 
-    public void setOccupant(IntersectionUnit pOccupant)
+    public OwnedKnight getKnight(){
+        return aKnight;
+    }
+
+    public void setKnight(){ }
+
+    public void setBuilding(OwnedBuilding pOccupant)
     {
         aOccupant = pOccupant;
         isOccupied = true;
     }
-    public IntersectionUnit removeOccupant()
+    public OwnedBuilding removeOccupant()
     {
-        IntersectionUnit tempUnit = aOccupant;
+        OwnedBuilding tempUnit = aOccupant;
         aOccupant = null;
         isOccupied = false;
         return tempUnit;
