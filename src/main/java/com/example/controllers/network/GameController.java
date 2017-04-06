@@ -2,9 +2,6 @@ package com.example.controllers.network;
 
 import com.example.models.gameModels.*;
 import com.example.viewobjects.*;
-import com.google.gson.Gson;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -87,8 +84,17 @@ public class GameController {
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
+            // TODO Check if player has enough resources
 
-        pNew.setValid(true);
+        Intersection Checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean valid = GameManager.checkCitySetupEligibility(Checker,pNew.getColor());
+
+        if(valid)
+        {
+            // TODO Spend players resources
+            // TODO Add city to Intersection
+        }
+        pNew.setValid(valid);
         return pNew;
     }
 
@@ -129,56 +135,48 @@ public class GameController {
     }
 
     // SETUP IS FIRST 2 TURNS
-
     @MessageMapping("/setupsettlement")
     @SendTo("/topic/settlement")
     public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
+
+        Intersection Checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean valid = GameManager.freeIntersectionEligibility(Checker);
+
+        if(valid)
+        {
+            // TODO Add settlement to Intersection
         }
-        aGame.setupSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
-        pNew.setValid(true);
+        pNew.setValid(valid);
         return pNew;
     }
 
     @MessageMapping("/setupcity")
     @SendTo("/topic/city")
     public ViewPiece setupCity(ViewPiece pNew, Principal caller){
-        /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
+
+        Intersection Checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean valid = GameManager.freeIntersectionEligibility(Checker);
+
+        if(valid)
+        {
+            // TODO Add city to Intersection
         }
-
-        aGame.setupCity(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
-        pNew.setValid(true);
+        pNew.setValid(valid);
         return pNew;
-
     }
 
     @MessageMapping("/setuproad")
     @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller){
 
-         /*
-        Player callingPlayer = new Player(null, null);
-        for (Player player : aGame.getPlayers()){
-            if (player.getUsername() == caller.getName()){
-                callingPlayer = player;
-                break;
-            }
+        System.out.println(pNew.getId());
+        Edge Checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        boolean valid = GameManager.checkRoadSetupEligibility(Checker,pNew.getColor());
+
+        if(valid){
+            // TODO Add road to edge
         }
-        aGame.setupRoad(callingPlayer, aGame.getEdges().get(pNew.getId()));
-        */
-        pNew.setValid(true);
+        pNew.setValid(valid);
         return pNew;
     }
 

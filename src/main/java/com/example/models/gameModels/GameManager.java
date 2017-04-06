@@ -1,9 +1,11 @@
 package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
-import com.example.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GameManager {
     private static GameManager gameManager = new GameManager();
@@ -388,12 +390,43 @@ public class GameManager {
         pEdge.setTransport(road);
     }
 
+    public static boolean freeIntersectionEligibility(Intersection pIntersection){
+        if(pIntersection.getOccupancyFlag())
+            return false;
+
+        List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
+        List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
+        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
+        boolean water = true;
+        for(Hex aHex:hNeighbours) {
+            if(aHex.getTerrainType() != TerrainType.Sea)
+                water =false;
+        }
+        if(water){  // settlement is surrounded by water
+            return false;
+        }
+        for(Intersection aIntersection:iNeighbours) {
+            if(aIntersection.getBuilding() != null)
+                return  false;
+        }
+        return false;
+    }
+
     public static boolean checkSettlementSetupEligibility(Intersection pIntersection, String pColor){
         if(pIntersection.getOccupancyFlag())
             return false;
 
         List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
         List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
+        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
+        boolean water = true;
+        for(Hex aHex:hNeighbours) {
+            if(aHex.getTerrainType() != TerrainType.Sea)
+                water =false;
+        }
+        if(water){  // settlement is surrounded by water
+            return false;
+        }
 
         for(Intersection aIntersection:iNeighbours) {
             if(aIntersection.getBuilding() != null)
@@ -480,7 +513,6 @@ public class GameManager {
         }
         return false;
     }
-
 
 
     public void playerTrade(Player pPlayer1, Player pPlayer2, HashMap<StealableCard.Resource, Integer> pResources1,
