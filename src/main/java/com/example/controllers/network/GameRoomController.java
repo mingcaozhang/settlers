@@ -42,6 +42,7 @@ public class GameRoomController {
             System.out.println("creating list!");
             GameController.setCurrPlayerList(playerList);
             GameManager.createGame(10, playerList);
+            GameManager.saveGame();
         }
 
         GameRoomView grv = new GameRoomView(principal.getName(), playerList.size());

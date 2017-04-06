@@ -1,7 +1,13 @@
 package com.example.models.gameModels;
+import javax.persistence.*;
 import java.util.*;
 
+
+@Entity
 public class Game {
+
+    public Game(){aPlayers = null; aVPsToWin = 10;}
+
     public enum GamePhase{
         SetupRoundOne,SetupRoundTwo, TurnFirstPhase, TurnDiceRolled, TurnSecondPhase, Completed
     }
@@ -20,11 +26,23 @@ public class Game {
         Barbarian, Trade, Politics, Science
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long gameid;
+
+    @OneToMany
     private final List<Player> aPlayers;
+
     private final int aVPsToWin;
+
+    @OneToOne
     private Board aBoard;
-    private HashMap<StealableCard.Resource, Integer> aResourceCards;
-    private HashMap<StealableCard.Commodity, Integer> aCommodityCards;
+
+    @ElementCollection
+    private Map<StealableCard.Resource, Integer> aResourceCards = new HashMap<>();
+    @ElementCollection
+    private Map<StealableCard.Commodity, Integer> aCommodityCards = new HashMap<>();
+
     private GamePhase aPhase;
     private int aBarbarianPosition;
     private int aGoldBank;
@@ -36,6 +54,7 @@ public class Game {
     private int aTurnCounter;
 
     public Game(int pVPsToWin, List<Player> pPlayers, Board pBoard){
+        this.gameid = gameid;
         aBoard = pBoard;
         aVPsToWin = pVPsToWin;
         aBarbarianPosition = 6;
@@ -55,6 +74,24 @@ public class Game {
         }
     }
 
+    /*public Game(){
+        aVPsToWin =10;
+        aBarbarianPosition = 6;
+        aGoldBank = 50;
+        aPhase = GamePhase.SetupRoundOne;
+        aArmyStrength = 0;
+        aBarbarianStrength = 0;
+        aTurnCounter = 1;
+        aResourceCards = new HashMap<>();
+        aCommodityCards = new HashMap<>();
+        for (StealableCard.Resource resource : StealableCard.Resource.values()){
+            aResourceCards.put(resource, StealableCard.Resource.maxResources());
+        }
+        for (StealableCard.Commodity commodity : StealableCard.Commodity.values()){
+            aCommodityCards.put(commodity, StealableCard.Commodity.maxCommodities());
+        }
+    }
+        */
     public void setPhase(GamePhase pPhase){
         aPhase = pPhase;
     }
@@ -129,11 +166,11 @@ public class Game {
         return aArmyStrength;
     }
 
-    public HashMap<StealableCard.Resource, Integer> getResourceCards(){
+    public Map<StealableCard.Resource, Integer> getResourceCards(){
         return aResourceCards;
     }
 
-    public HashMap<StealableCard.Commodity, Integer> getCommodityCards(){
+    public Map<StealableCard.Commodity, Integer> getCommodityCards(){
         return aCommodityCards;
     }
 

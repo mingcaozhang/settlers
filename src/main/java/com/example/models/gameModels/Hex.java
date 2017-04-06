@@ -1,13 +1,27 @@
 package com.example.models.gameModels;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import java.util.Map;
 
 /**
  * Created by G on 17/02/27.
  */
+@Entity
 public abstract class Hex extends Geometry {
 
+    public boolean isaVillain() {
+        return aVillain;
+    }
+
+    public void setaVillain(boolean aVillain) {
+        this.aVillain = aVillain;
+    }
+
+    public Hex(){}
+
     public abstract TerrainType getTerrainType();
+
 
     private boolean aVillain;
 

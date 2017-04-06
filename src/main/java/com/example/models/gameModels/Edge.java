@@ -1,12 +1,33 @@
 package com.example.models.gameModels;
 
 
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import java.util.Map;
 
 /**
  * Created by G on 17/02/27.
  */
+@Entity
 public class Edge extends Geometry{
+
+    public Edge(){}
+
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
+    }
+
+    public OwnedTransport getaTransport() {
+        return aTransport;
+    }
+
+    public void setaTransport(OwnedTransport aTransport) {
+        this.aTransport = aTransport;
+    }
 
     private boolean isOccupied;
     private OwnedTransport aTransport;
@@ -21,6 +42,8 @@ public class Edge extends Geometry{
     {
        return isOccupied;
     }
+
+    public void setOccupancyFlag(boolean p){isOccupied = p;}
 
     public OwnedTransport getTransport(){
         return aTransport;

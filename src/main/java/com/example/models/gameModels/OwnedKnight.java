@@ -1,6 +1,15 @@
 package com.example.models.gameModels;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.persistence.OneToOne;
+
+@Embeddable
 public class OwnedKnight {
+
+    public OwnedKnight(){}
+
+    @OneToOne
     private Player aOwner;
     private Unit.Knight aUnit;
     private boolean aActiveState;
