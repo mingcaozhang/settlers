@@ -24,14 +24,17 @@ public class GameRoomController {
         return "gameroom";
     }
 
-    public ArrayList<String> playerList = new ArrayList<String>();
+    public static ArrayList<String> playerList = new ArrayList<String>();
+
+    public static void resetGameRoomPlayerList(){
+        playerList.clear();
+    }
 
     @MessageMapping("/ready")
     @SendTo("/topic/gameroom")
-    public GameRoomView greeting(Principal principal) throws Exception{
+    public GameRoomView ready(Principal principal) throws Exception{
 
 
-        //Thread.sleep(1000); //simulated delay
         playerList.add(principal.getName());
         System.out.println("adding to list" + principal.getName());
 
@@ -39,6 +42,7 @@ public class GameRoomController {
             System.out.println("creating list!");
             GameController.setCurrPlayerList(playerList);
             GameManager.createGame(10, playerList);
+            GameManager.saveGame();
         }
 
         GameRoomView grv = new GameRoomView(principal.getName(), playerList.size());

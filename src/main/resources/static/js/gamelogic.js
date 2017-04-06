@@ -125,41 +125,40 @@ var knight;
 var stompClient = null;
 
 
-var settlementPlaced = false;
-var road1Placed = false;
-var cityPlaced = false;
-var road2Placed = false;
+var settlementPlaced = false; /*Indicates whether the first settlement has been placed in the setup phase*/
+var road1Placed = false;    /*Indicates whther the first road has been placed in the setup phase*/
+var cityPlaced = false;     /*Indicates whether the first city has been placed in the setup phase*/
+var road2Placed = false;    /*Indicates whether the second road has been placed in the setup phase*/
 
-var enablePlaceRoad1=false;
-var enablePlaceRoad2=false;
+var isSetup1 = false;
+var isSetup2 = false;
+
 
 var enableBuyAndUpgrade = false;
-var boardEnabled = false;
-
+//var boardEnabled = false;
 var currUser;
 
-connect();
-intitializeTurn();
 var currPlayer = document.getElementById("currPlayer");
-currPlayer.innerHTML = "Turn: " + startingPlayer;
+
+connect();
+initializeTurn();
 
 
-console.log("my username is: "+myUsername);
-console.log("my color is: "+myColor);
 
-var hardCodedCounter = 0;
-var hardCodedBoolean = true;
+function initializeTurn(){
 
-//element1.id =
+    currPlayer.innerHTML = "Turn: " + startingPlayer;
 
-function intitializeTurn(){
+    console.log("my username is: "+myUsername);
+    console.log("my color is: "+myColor);
 
     currUser = startingPlayer;
     console.log("Player Starting is: "+startingPlayer);
 
     if(startingPlayer.match(myUsername)){
         //enable all turn buttons
-        boardEnabled = true;
+        //boardEnabled = true;
+        isSetup1 = true;
         enableBuyAndUpgrade = false;
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
@@ -167,7 +166,8 @@ function intitializeTurn(){
 
     }else{
         //disable all turn buttons
-        boardEnabled = false;
+
+        //boardEnabled = false;
         enableBuyAndUpgrade = false;
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
@@ -187,27 +187,34 @@ function connect() {
 
         stompClient.subscribe('/topic/turninfo', function (pap) {
             pap = JSON.parse((pap.body));
+
             currUser = pap.username;
             currPlayer.innerHTML = "Turn: " + currUser;
 
-            //console.log(currUser);
-           // console.log(user.body);
 
             if(currUser.match(myUsername)){
                 //disable all turn buttons
+                console.log("it's my turn!")
+                console.log(pap)
                 if(pap.setup1){
+                    isSetup1 = true;
+                    console.log("Setup1 is true!")
 
                 }else if(pap.setup2){
+                    isSetup1 = false;
+                    isSetup2 = true;
+                    console.log("Setup1 is false!")
+                    console.log("Setup2 is true!")
 
                     document.getElementById('endTurn').disabled = true;
                 }else{
+                    isSetup1 = false;
+                    isSetup2 = false;
                     document.getElementById('rolldice').disabled = false;
                     document.getElementById('endTurn').disabled = true;
 
 
                 }
-
-
 
 
             }else{
@@ -216,29 +223,6 @@ function connect() {
                 document.getElementById('endTurn').disabled = true;
             }
 
-            if(hardCodedBoolean && !pap.setup2){
-
-                if(myUsername.match(p1name)){
-                    nWheat++;
-                    nBrick++;
-
-                }else if(myUsername.match(p2name)){
-                    nSheep++;
-                    nOre++;
-                    nWood++;
-
-                }else if(myUsername.match(p3name)){
-                    nWheat = nWheat +2;
-                    nWood = nWood + 1;
-                }
-
-                hardCodedBoolean = false;
-
-            }
-
-
-
-            //currUser
 
         });
 
@@ -273,49 +257,8 @@ function connect() {
                 status.innerHTML += " Robber!";
             }
 
-            if(hardCodedCounter == 0){
-                if(myUsername.match(p1name)){
-                    nBrick = nBrick + 1;
-
-                }else if(myUsername.match(p2name)){
 
 
-                }else if(myUsername.match(p3name)){
-                    nBrick = nBrick + 1;
-                }
-            }
-
-            if(hardCodedCounter == 1){
-                if(myUsername.match(p1name)){
-
-
-                }else if(myUsername.match(p2name)){
-
-
-                }else if(myUsername.match(p3name)){
-                    nWheat = nWheat +2;
-                }
-            }
-
-            if(hardCodedCounter == 2){
-                if(myUsername.match(p1name)){
-                    nSheep++;
-
-
-                }else if(myUsername.match(p2name)){
-                    nSheep++;
-                    nCloth++;
-
-                }else if(myUsername.match(p3name)){
-
-
-                }
-            }
-
-
-
-
-            hardCodedCounter++;
 
 
         });
@@ -323,11 +266,45 @@ function connect() {
         stompClient.subscribe('/topic/road', function (piece) {
             piece = JSON.parse((piece.body));
 
+
             var myId = piece.id;
             var toColor = piece.color;
+            var valid = piece.valid;
 
-            d3.select("#"+myId).attr("fill", toColor);
-            d3.select("#"+myId).attr("hasRoad","true");
+            if(valid){
+                d3.select("#"+myId).attr("fill", toColor);
+                d3.select("#"+myId).attr("hasRoad","true");
+
+                if(currUser.match(myUsername)){
+                    if(!road1Placed){
+                        road1Placed = true;
+                        document.getElementById('endTurn').disabled = false;
+                    }else if(!road2Placed){
+                        road2Placed = true;
+                        document.getElementById('endTurn').disabled = false;
+                    }else{
+                        nBrick--;
+                        nWood--;
+                    }
+
+                    nRoad++;
+                    pRoad = document.getElementById("pRoad");
+                    pRoad.innerHTML = "Roads " + nRoad;
+                }
+
+
+
+            }else{
+                if(currUser.match(myUsername)){
+                    //place alert invalid road here
+
+                }
+
+            }
+
+
+
+
 
         });
 
@@ -336,9 +313,35 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
+            var valid = piece.valid;
 
-            d3.select("#"+myId).attr("fill", toColor);
-            d3.select("#"+myId).attr("hasSettlement","true")
+            if(valid){
+                if(currUser.match(myUsername)){
+                    if(!settlementPlaced){
+                        settlementPlaced = true;
+                    }else{
+                        //maybe replace with resources
+                        nWood--;
+                        nBrick--;
+                        nSheep--;
+                        nWheat--;
+
+                    }
+                    nSettlement++;
+                    pSettlement = document.getElementById("pSettlement");
+                    pSettlement.innerHTML = "Settlements " + nSettlement;
+                }
+
+                d3.select("#"+myId).attr("fill", toColor);
+                d3.select("#"+myId).attr("hasSettlement","true");
+
+            }else{
+                if(currUser.match(myUsername)){
+                    //illegal settlement error
+                }
+
+            }
+
 
 
         });
@@ -348,9 +351,34 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
+            var valid  = piece.valid;
 
-            d3.select("#"+myId).attr("fill", toColor).attr("r",12);
-            d3.select("#"+myId).attr("hasCity", "true");
+            if(valid){
+                if(currUser.match(myUsername)){
+                    if(!cityPlaced){
+                        cityPlaced = true;
+                    }else{
+                        nOre -= 3;
+                        nWheat -= 2;
+                    }
+
+                    nCity++;
+                    pCity = document.getElementById("pCity");
+                    pCity.innerHTML = "Cities " + nCity;
+                }
+                d3.select("#"+myId).attr("fill", toColor).attr("r",12);
+                d3.select("#"+myId).attr("hasCity", "true");
+            }else{
+                if(currUser.match(myUsername)){
+                    //invalid city alert here
+                }
+
+
+            }
+
+
+
+
 
         });
 
@@ -360,7 +388,6 @@ function connect() {
     });
 }
 
-/*Button clicks sent to backend!*/
 
 function sendEdge(Edge){
     stompClient.send("/app/edge",{},JSON.stringify(Edge));
@@ -382,58 +409,39 @@ function readySetNeighbours(){
 //Roll Dice
 function rollDice() {
     var status = document.getElementById("status");
-    var d1, d2;
+    var d1, d2, d3;
 
-    var d3 = Math.floor(Math.random() * 6) + 1;
-
-
-    if(hardCodedCounter<=2){
-        if(myUsername.match(p1name)){
-            d1 = 2;
-            d2 = 2;
-
-        }
-
-        else if(myUsername.match(p2name)){
-            d1 = 6;
-            d2 = 5;
-        }
-
-        else if(myUsername.match(p3name)){
-            d1 = 5;
-            d2 = 3;
-        }
-    }else{
-        d1 = Math.floor(Math.random() * 6) + 1;
-        d2 = Math.floor(Math.random() * 6) + 1;
-    }
-
-
+    d1 = Math.floor(Math.random() * 6) + 1;
+    d2 = Math.floor(Math.random() * 6) + 1;
+    d3 = Math.floor(Math.random() * 6) + 1;
 
     stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
-    boardEnabled = true;
+    //boardEnabled = true;
     enableBuyAndUpgrade = true;
     document.getElementById('rolldice').disabled = true;
     document.getElementById('endTurn').disabled = false;
-
 
 }
 //Used to enable rollDice button when end turn button is pressed
 function endTurn() {
 
     stompClient.send("/app/endturn",{}, {});
-    boardEnabled = false;
+
+    //boardEnabled = false;
     enableBuyAndUpgrade = false;
 
 }
 
 
+function disableMyButtons(){
 
+    //boardEnabled = false;
+    enableBuyAndUpgrade = false;
+    document.getElementById('rolldice').disabled = true;
+    document.getElementById('endTurn').disabled = true;
 
-
-
-
+}
 
 //Activated to show attributes when player button is clicked
 function setAttributes() {
@@ -518,11 +526,7 @@ function setAttributes() {
 //Build road
 function buildRoad(id) {
     if (nRoad < 15 && nBrick > 0 && nWood > 0 ) {
-        nBrick--;
-        nWood--;
-        nRoad++;
-        road = document.getElementById("road");
-        road.innerHTML = "Roads " + nRoad;
+
         stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
@@ -532,18 +536,9 @@ function buildRoad(id) {
 }
 //Place road
 function placeRoad(id) {
-    if(!road1Placed){
-        road1Placed = true;
-        enablePlaceRoad1 = false;
-    }else if(!road2Placed){
-        road2Placed = true;
-        enablePlaceRoad2 = false;
-    }
-    nRoad++;
-    pRoad = document.getElementById("pRoad");
-    pRoad.innerHTML = "Roads " + nRoad;
+
     stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}))
-    document.getElementById('endTurn').disabled = false;
+
 }
 
 //Build ship
@@ -570,13 +565,7 @@ function placeShip(id) {
 //Build settlement
 function buildSettlement(id) {
     if (nSettlement < 5 && nWood > 0 && nBrick > 0 && nSheep > 0 && nWheat > 0) {
-        nWood--;
-        nBrick--;
-        nSheep--;
-        nWheat--;
-        nSettlement++;
-        settlement = document.getElementById("settlement");
-        settlement.innerHTML = "Settlements " + nSettlement;
+
         stompClient.send("/app/placesettlement",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
@@ -587,24 +576,13 @@ function buildSettlement(id) {
 //Place settlement
 function placeSettlement(id) {
 
-    settlementPlaced = true;
-    enablePlaceRoad1 = true;
-    nSettlement++;
-    pSettlement = document.getElementById("pSettlement");
-    pSettlement.innerHTML = "Settlements " + nSettlement;
-
-    console.log("my color is:" +myColor);
     stompClient.send("/app/setupsettlement",{}, JSON.stringify({"id":id, "color":myColor}));
 }
 
 //Build city
 function buildCity(id) {
     if (nCity < 4 && nOre > 2 && nWheat > 1) {
-        nOre -= 3;
-        nWheat -= 2;
-        nCity++;
-        city = document.getElementById("city");
-        city.innerHTML = "Cities " + nCity;
+
         stompClient.send("/app/placecity",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
@@ -614,10 +592,7 @@ function buildCity(id) {
 
 //Place city
 function placeCity(id) {
-    cityPlaced = true;
-    nCity++;
-    pCity = document.getElementById("pCity");
-    pCity.innerHTML = "Cities " + nCity;
+
     stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor}));
 
 
@@ -2326,13 +2301,13 @@ var intersectionAttrs = boardIntersections
         if(currUser.match(myUsername)){
             //if(boardEnabled){
 
-                if(!settlementPlaced){
+                if(!settlementPlaced && isSetup1){
                     if(d3.select(this).attr("hasSettlement").match("false")) {
                         placeSettlement(d.id);
                         d3.select(this).attr("hasSettlement", "true");
                     }
 
-                }else if(!cityPlaced){
+                }else if(!cityPlaced && settlementPlaced && road1Placed && isSetup2){
                     if(d3.select(this).attr("hasCity").match("false")) {
                         placeCity(d.id);
                         d3.select(this).attr("hasCity", "true");
@@ -2375,22 +2350,22 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
     .on("click", function (d) {
 
         if(currUser.match(myUsername)){
-            //if(boardEnabled){
-               // if(enablePlaceRoad1){
-                    if(!road1Placed){
+
+                    if(!road1Placed && settlementPlaced && isSetup1){
                         placeRoad(d.id);
                     }
 
-               // }else if(enablePlaceRoad2){
-                    else if(!road2Placed){
+
+                    else if(!road2Placed && road1Placed && cityPlaced && isSetup2){
                         placeRoad(d.id);
-                   }
-                //}else if(enableBuyAndUpgrade){
-                    else if(d3.select(this).attr("hasRoad").match("false")){
+                    }
+
+                 if(enableBuyAndUpgrade){
+                    if(d3.select(this).attr("hasRoad").match("false")){
                         buildRoad(d.id);
                     }
-               // }
-           // }
+                }
+
         }
 
 
