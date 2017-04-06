@@ -266,19 +266,43 @@ function connect() {
         stompClient.subscribe('/topic/road', function (piece) {
             piece = JSON.parse((piece.body));
 
-            var legalMove = true; //need this to be returned
-
-
-            if (legalMove){
-
-
-            }
 
             var myId = piece.id;
             var toColor = piece.color;
+            var valid = piece.valid;
 
-            d3.select("#"+myId).attr("fill", toColor);
-            d3.select("#"+myId).attr("hasRoad","true");
+            if(valid){
+                d3.select("#"+myId).attr("fill", toColor);
+                d3.select("#"+myId).attr("hasRoad","true");
+
+                if(currUser.match(myUsername)){
+                    if(!road1Placed){
+                        road1Placed = true;
+                        document.getElementById('endTurn').disabled = false;
+                    }else if(!road2Placed){
+                        road2Placed = true;
+                        document.getElementById('endTurn').disabled = false;
+                    }else{
+                        nBrick--;
+                        nWood--;
+                    }
+
+                    nRoad++;
+                    pRoad = document.getElementById("pRoad");
+                    pRoad.innerHTML = "Roads " + nRoad;
+                }
+
+
+
+            }else{
+                if(currUser.match(myUsername)){
+                    //place alert invalid road here
+
+                }
+
+            }
+
+
 
 
 
@@ -292,11 +316,28 @@ function connect() {
             var valid = piece.valid;
 
             if(valid){
+                if(currUser.match(myUsername)){
+                    if(!settlementPlaced){
+                        settlementPlaced = true;
+                    }else{
+                        //maybe replace with resources
+                        nWood--;
+                        nBrick--;
+                        nSheep--;
+                        nWheat--;
+
+                    }
+                    nSettlement++;
+                    pSettlement = document.getElementById("pSettlement");
+                    pSettlement.innerHTML = "Settlements " + nSettlement;
+                }
+
                 d3.select("#"+myId).attr("fill", toColor);
                 d3.select("#"+myId).attr("hasSettlement","true");
+
             }else{
                 if(currUser.match(myUsername)){
-
+                    //illegal settlement error
                 }
 
             }
@@ -310,9 +351,34 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
+            var valid  = piece.valid;
 
-            d3.select("#"+myId).attr("fill", toColor).attr("r",12);
-            d3.select("#"+myId).attr("hasCity", "true");
+            if(valid){
+                if(currUser.match(myUsername)){
+                    if(!cityPlaced){
+                        cityPlaced = true;
+                    }else{
+                        nOre -= 3;
+                        nWheat -= 2;
+                    }
+
+                    nCity++;
+                    pCity = document.getElementById("pCity");
+                    pCity.innerHTML = "Cities " + nCity;
+                }
+                d3.select("#"+myId).attr("fill", toColor).attr("r",12);
+                d3.select("#"+myId).attr("hasCity", "true");
+            }else{
+                if(currUser.match(myUsername)){
+                    //invalid city alert here
+                }
+
+
+            }
+
+
+
+
 
         });
 
@@ -460,11 +526,7 @@ function setAttributes() {
 //Build road
 function buildRoad(id) {
     if (nRoad < 15 && nBrick > 0 && nWood > 0 ) {
-        nBrick--;
-        nWood--;
-        nRoad++;
-        road = document.getElementById("road");
-        road.innerHTML = "Roads " + nRoad;
+
         stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
@@ -474,19 +536,9 @@ function buildRoad(id) {
 }
 //Place road
 function placeRoad(id) {
-    if(!road1Placed){
-        road1Placed = true;
-       // enablePlaceRoad1 = false;
-    }else if(!road2Placed){
-        road2Placed = true;
-       // enablePlaceRoad2 = false;
-    }
-    nRoad++;
-    pRoad = document.getElementById("pRoad");
-    pRoad.innerHTML = "Roads " + nRoad;
+
     stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}))
 
-    document.getElementById('endTurn').disabled = false;
 }
 
 //Build ship
@@ -513,13 +565,7 @@ function placeShip(id) {
 //Build settlement
 function buildSettlement(id) {
     if (nSettlement < 5 && nWood > 0 && nBrick > 0 && nSheep > 0 && nWheat > 0) {
-        nWood--;
-        nBrick--;
-        nSheep--;
-        nWheat--;
-        nSettlement++;
-        settlement = document.getElementById("settlement");
-        settlement.innerHTML = "Settlements " + nSettlement;
+
         stompClient.send("/app/placesettlement",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
@@ -530,24 +576,13 @@ function buildSettlement(id) {
 //Place settlement
 function placeSettlement(id) {
 
-    settlementPlaced = true;
-    //enablePlaceRoad1 = true;
-    nSettlement++;
-    pSettlement = document.getElementById("pSettlement");
-    pSettlement.innerHTML = "Settlements " + nSettlement;
-
-    console.log("my color is:" +myColor);
     stompClient.send("/app/setupsettlement",{}, JSON.stringify({"id":id, "color":myColor}));
 }
 
 //Build city
 function buildCity(id) {
     if (nCity < 4 && nOre > 2 && nWheat > 1) {
-        nOre -= 3;
-        nWheat -= 2;
-        nCity++;
-        city = document.getElementById("city");
-        city.innerHTML = "Cities " + nCity;
+
         stompClient.send("/app/placecity",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
@@ -557,10 +592,7 @@ function buildCity(id) {
 
 //Place city
 function placeCity(id) {
-    cityPlaced = true;
-    nCity++;
-    pCity = document.getElementById("pCity");
-    pCity.innerHTML = "Cities " + nCity;
+
     stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor}));
 
 

@@ -1,7 +1,15 @@
 package com.example.models.gameModels;
+import javax.persistence.*;
 import java.util.HashMap;
+import java.util.Map;
 
+@Entity
 public class Player {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long gameid;
+
     private final String aColor;
     private final String aUsername;
     private final int aIndex;
@@ -14,17 +22,30 @@ public class Player {
     private boolean aAqueduct;
     private boolean aFortress;
     private boolean aTradingHouse;
-    private HashMap<StealableCard.Resource, Integer> aResourceCards;
-    private HashMap<StealableCard.Commodity, Integer> aCommodityCards;
-    private HashMap<ProgressCard.Trade, Integer> aTradeCards;
-    private HashMap<ProgressCard.Politics, Integer> aPoliticsCards;
-    private HashMap<ProgressCard.Science, Integer> aScienceCards;
-    private HashMap<Unit.Building, Integer> aBuildings;
-    private HashMap<Unit.Knight, Integer> aKnights;
-    private HashMap<Unit.Transport, Integer> aTransports;
+    @ElementCollection
+    private Map<StealableCard.Resource, Integer> aResourceCards = new HashMap<>();
+    @ElementCollection
+    private Map<StealableCard.Commodity, Integer> aCommodityCards = new HashMap<>();
+    @ElementCollection
+    private Map<ProgressCard.Trade, Integer> aTradeCards= new HashMap<>();
+    @ElementCollection
+    private Map<ProgressCard.Politics, Integer> aPoliticsCards= new HashMap<>();
+    @ElementCollection
+    private Map<ProgressCard.Science, Integer> aScienceCards= new HashMap<>();
+    @ElementCollection
+    private Map<Unit.Building, Integer> aBuildings = new HashMap<>();
+    @ElementCollection
+    private Map<Unit.Knight, Integer> aKnights;
+    @ElementCollection
+    private Map<Unit.Transport, Integer> aTransports;
+    @Embedded
     private ExecuteCard exec = new ExecuteCard();
 
-
+    protected Player(){
+        aUsername = null;
+        aColor = null;
+        aIndex = 0;
+    }
     public Player(String pUsername, String pColor, int pIndex) {
         aUsername = pUsername;
         aColor = pColor;
@@ -65,12 +86,202 @@ public class Player {
         }
     }
 
+    public void setaResourceCards(Map<StealableCard.Resource, Integer> aResourceCards) {
+        this.aResourceCards = aResourceCards;
+    }
+
+    public void setaCommodityCards(Map<StealableCard.Commodity, Integer> aCommodityCards) {
+        this.aCommodityCards = aCommodityCards;
+    }
+
+    public void setaTradeCards(Map<ProgressCard.Trade, Integer> aTradeCards) {
+        this.aTradeCards = aTradeCards;
+    }
+
+    public void setaPoliticsCards(Map<ProgressCard.Politics, Integer> aPoliticsCards) {
+        this.aPoliticsCards = aPoliticsCards;
+    }
+
+    public void setaScienceCards(Map<ProgressCard.Science, Integer> aScienceCards) {
+        this.aScienceCards = aScienceCards;
+    }
+
+    public void setaBuildings(Map<Unit.Building, Integer> aBuildings) {
+        this.aBuildings = aBuildings;
+    }
+
+    public void setaKnights(Map<Unit.Knight, Integer> aKnights) {
+        this.aKnights = aKnights;
+    }
+
+    public void setaTransports(Map<Unit.Transport, Integer> aTransports) {
+        this.aTransports = aTransports;
+    }
+
+
+
     public String getColor() {
         return aColor;
     }
 
     public String getUsername() {
         return aUsername;
+    }
+
+    public String getaColor() {
+        return aColor;
+    }
+
+    public String getaUsername() {
+        return aUsername;
+    }
+
+    public int getaIndex() {
+        return aIndex;
+    }
+
+    public int getaVPs() {
+        return aVPs;
+    }
+
+    public void setaVPs(int aVPs) {
+        this.aVPs = aVPs;
+    }
+
+    public int getaGold() {
+        return aGold;
+    }
+
+    public void setaGold(int aGold) {
+        this.aGold = aGold;
+    }
+
+    public int getaRouteLength() {
+        return aRouteLength;
+    }
+
+    public void setaRouteLength(int aRouteLength) {
+        this.aRouteLength = aRouteLength;
+    }
+
+    public int getaProgressCardAmount() {
+        return aProgressCardAmount;
+    }
+
+    public void setaProgressCardAmount(int aProgressCardAmount) {
+        this.aProgressCardAmount = aProgressCardAmount;
+    }
+
+    public boolean isaMerchant() {
+        return aMerchant;
+    }
+
+    public void setaMerchant(boolean aMerchant) {
+        this.aMerchant = aMerchant;
+    }
+
+    public boolean isaLongestTradeRoute() {
+        return aLongestTradeRoute;
+    }
+
+    public void setaLongestTradeRoute(boolean aLongestTradeRoute) {
+        this.aLongestTradeRoute = aLongestTradeRoute;
+    }
+
+    public boolean isaAqueduct() {
+        return aAqueduct;
+    }
+
+    public void setaAqueduct(boolean aAqueduct) {
+        this.aAqueduct = aAqueduct;
+    }
+
+    public boolean isaFortress() {
+        return aFortress;
+    }
+
+    public void setaFortress(boolean aFortress) {
+        this.aFortress = aFortress;
+    }
+
+    public boolean isaTradingHouse() {
+        return aTradingHouse;
+    }
+
+    public void setaTradingHouse(boolean aTradingHouse) {
+        this.aTradingHouse = aTradingHouse;
+    }
+
+    public Map<StealableCard.Resource, Integer> getaResourceCards() {
+        return aResourceCards;
+    }
+
+    public void setaResourceCards(HashMap<StealableCard.Resource, Integer> aResourceCards) {
+        this.aResourceCards = aResourceCards;
+    }
+
+    public Map<StealableCard.Commodity, Integer> getaCommodityCards() {
+        return aCommodityCards;
+    }
+
+    public void setaCommodityCards(HashMap<StealableCard.Commodity, Integer> aCommodityCards) {
+        this.aCommodityCards = aCommodityCards;
+    }
+
+    public Map<ProgressCard.Trade, Integer> getaTradeCards() {
+        return aTradeCards;
+    }
+
+    public void setaTradeCards(HashMap<ProgressCard.Trade, Integer> aTradeCards) {
+        this.aTradeCards = aTradeCards;
+    }
+
+    public Map<ProgressCard.Politics, Integer> getaPoliticsCards() {
+        return aPoliticsCards;
+    }
+
+    public void setaPoliticsCards(HashMap<ProgressCard.Politics, Integer> aPoliticsCards) {
+        this.aPoliticsCards = aPoliticsCards;
+    }
+
+    public Map<ProgressCard.Science, Integer> getaScienceCards() {
+        return aScienceCards;
+    }
+
+    public void setaScienceCards(HashMap<ProgressCard.Science, Integer> aScienceCards) {
+        this.aScienceCards = aScienceCards;
+    }
+
+    public Map<Unit.Building, Integer> getaBuildings() {
+        return aBuildings;
+    }
+
+    public void setaBuildings(HashMap<Unit.Building, Integer> aBuildings) {
+        this.aBuildings = aBuildings;
+    }
+
+    public Map<Unit.Knight, Integer> getaKnights() {
+        return aKnights;
+    }
+
+    public void setaKnights(HashMap<Unit.Knight, Integer> aKnights) {
+        this.aKnights = aKnights;
+    }
+
+    public Map<Unit.Transport, Integer> getaTransports() {
+        return aTransports;
+    }
+
+    public void setaTransports(HashMap<Unit.Transport, Integer> aTransports) {
+        this.aTransports = aTransports;
+    }
+
+    public ExecuteCard getExec() {
+        return exec;
+    }
+
+    public void setExec(ExecuteCard exec) {
+        this.exec = exec;
     }
 
     public int getGold() {
@@ -101,11 +312,12 @@ public class Player {
         return aTradingHouse;
     }
 
-    public HashMap<StealableCard.Resource, Integer> getResourceCards(){
+
+    public Map<StealableCard.Resource, Integer> getResourceCards(){
         return aResourceCards;
     }
 
-    public HashMap<StealableCard.Commodity, Integer> getCommodityCards(){
+    public Map<StealableCard.Commodity, Integer> getCommodityCards(){
         return aCommodityCards;
     }
 

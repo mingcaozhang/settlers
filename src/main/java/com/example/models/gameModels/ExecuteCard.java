@@ -2,6 +2,9 @@ package com.example.models.gameModels;
 
 import com.sun.javaws.progress.Progress;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class ExecuteCard {
     public void executeTradeCard(ProgressCard.Trade pCard, Player pPlayer){
         switch(pCard){
