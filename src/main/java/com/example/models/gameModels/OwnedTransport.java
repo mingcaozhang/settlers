@@ -12,4 +12,5 @@ public class OwnedTransport {
     public Player getOwner(){
         return aOwner;
     }
+    public  Unit.Transport getUnit() { return  aUnit; }
 }
