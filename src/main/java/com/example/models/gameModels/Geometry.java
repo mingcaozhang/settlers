@@ -15,7 +15,7 @@ public abstract class Geometry {
     public Geometry(){}
     @Id
     protected String aId; // should be private final
-    @OneToMany
+    @ElementCollection
     protected String[] splitId; // should be private final
 
     protected Geometry(String pId){
