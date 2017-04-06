@@ -80,7 +80,12 @@ public class GameController {
             }
         }
         aGame.placeSettlement(callingPlayer, aGame.getIntersections().get(pNew.getId()));*/
-        pNew.setValid(true);
+
+        //if move valid
+             pNew.setValid(true);
+        //else move invald
+            //pNew.setValid(false);
+
         return pNew;
     }
 

@@ -1,9 +1,16 @@
 package com.example.models.gameModels;
+import com.example.repositories.GameRepository;
+import com.example.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.*;
 
 public class GameManager {
     private static GameManager gameManager = new GameManager();
     private static Game aGame;
+
+    @Autowired
+    private static GameRepository gameRepository;
 
 
     private GameManager() {
@@ -33,11 +40,12 @@ public class GameManager {
     public static void createGame(int pVPsToWin, ArrayList<String> playerNames) {
         List<Player> aPlayers = createPlayers(playerNames);
         Board aBoard = new Board();
-        Game game = new Game(pVPsToWin, aPlayers, aBoard);
+        Game game = new Game( pVPsToWin, aPlayers, aBoard);
         aGame = game;
     }
 
     public static void saveGame(){
+        gameRepository.save(aGame);
     }
 
     public static Game getGame(){
@@ -155,7 +163,7 @@ public class GameManager {
         int numberRolled = aGame.getRedDice().add(aGame.getYellowDice());
         ArrayList<LandHex> tempLandHexes = aGame.getBoard().getLandHexes().get(numberRolled);
         for (LandHex hex : tempLandHexes) {
-            Queue<Intersection> tempIntersections = hex.getIntersectionNeighbours();
+            List<Intersection> tempIntersections = hex.getIntersectionNeighbours();
             for (Intersection intersection : tempIntersections) {
                 if (intersection.getOccupancyFlag()) {
                     Player owner = getPayee(intersection);
@@ -290,7 +298,7 @@ public class GameManager {
 
     private boolean checkIntersectionEligibility(Intersection pIntersection, Player pPlayer){
         boolean eligible1 = true;
-        Queue<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
+        List<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
         for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied
             if (intersection.getOccupancyFlag()){
                 eligible1 = false;
@@ -298,7 +306,7 @@ public class GameManager {
             }
         }
 
-        Queue<Edge> neighbourEdges = pIntersection.getEdgeNeighbours();
+        List<Edge> neighbourEdges = pIntersection.getEdgeNeighbours();
         boolean eligible2 = false;
         for (Edge edge: neighbourEdges){
             if (edge.getOccupancyFlag()){
@@ -312,7 +320,7 @@ public class GameManager {
     }
 
     private boolean checkEdgeEligibility(Edge pEdge, Player pPlayer){
-        Queue<Edge> neighbourEdges = pEdge.getEdgeNeighbours();
+        List<Edge> neighbourEdges = pEdge.getEdgeNeighbours();
         boolean eligible = false;
         for (Edge edge: neighbourEdges) {
             if (edge.getOccupancyFlag()) {
@@ -382,7 +390,7 @@ public class GameManager {
 
     private boolean checkIntersectionSetupEligibility(Intersection pIntersection){
         boolean eligible = true;
-        Queue<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
+        List<Intersection> neighbourIntersections = pIntersection.getIntersectionNeighbours();
         for (Intersection intersection: neighbourIntersections){    //Iterate through all neighbours to see if they are occupied
             if (intersection.getOccupancyFlag()){
                 eligible = false;
@@ -393,7 +401,7 @@ public class GameManager {
     }
 
     private boolean checkEdgeSetupEligibility(Edge pEdge, Player pPlayer){
-        Queue<Intersection> neighbourIntersections = pEdge.getIntersectionNeighbours();
+        List<Intersection> neighbourIntersections = pEdge.getIntersectionNeighbours();
         boolean eligible = false;
         for (Intersection intersection: neighbourIntersections) {
             if (intersection.getOccupancyFlag()) {

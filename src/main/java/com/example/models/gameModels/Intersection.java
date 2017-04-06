@@ -1,14 +1,22 @@
 package com.example.models.gameModels;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import java.util.Map;
 
 /**
  * Created by G on 17/02/27.
  */
+@Entity
 public class Intersection extends Geometry {
 
+    public Intersection(){}
+
     private HarbourType aHarbour;
+    @Embedded
     private OwnedBuilding aOccupant;
+    @Embedded
     private OwnedKnight aKnight;
     private boolean isOccupied;
 

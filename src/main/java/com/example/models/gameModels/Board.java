@@ -1,13 +1,25 @@
 package com.example.models.gameModels;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+@Entity
 public class Board {
-    private HashMap<String,Hex> aHexes;
-    private HashMap<String,Edge> aEdges;
-    private HashMap<String,Intersection> aIntersections;
-    private HashMap<Integer, ArrayList<LandHex>> aLandHexes;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long boardid;
+
+    @OneToMany
+    private Map<String,Hex> aHexes = new HashMap<>();
+    @OneToMany
+    private Map<String,Edge> aEdges  = new HashMap<>();
+    @OneToMany
+    private Map<String,Intersection> aIntersections  = new HashMap<>();
+    @ElementCollection
+    private Map<Integer, ArrayList<LandHex>> aLandHexes = new HashMap<>();
 
 
     public Board(){
@@ -17,21 +29,27 @@ public class Board {
         aLandHexes = new HashMap<>();
     }
 
-    public HashMap<String, Hex> getHexes(){
+
+    public Map<String, Hex> getHexes(){
         return aHexes;
     }
 
-    public HashMap<String, Edge> getEdges(){
+
+    public Map<String, Edge> getEdges(){
         return aEdges;
     }
 
-    public HashMap<String, Intersection> getIntersections(){
+
+    public Map<String, Intersection> getIntersections(){
         return aIntersections;
     }
 
-    public HashMap<Integer, ArrayList<LandHex>> getLandHexes(){
+
+    public Map<Integer, ArrayList<LandHex>> getLandHexes(){
         return aLandHexes;
     }
+
+
     public void setAllNeighbours(){
         for (String aKey : aHexes.keySet()){
             System.out.println(aHexes.get(aKey).getId());
