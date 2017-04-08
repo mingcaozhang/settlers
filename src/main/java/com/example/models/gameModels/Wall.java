@@ -1,26 +1,27 @@
 package com.example.models.gameModels;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by G on 17/03/02.
  */
-public class Wall extends OwnableUnit{
-    private static final List<Wall> aWalls = new ArrayList<Wall>();
+public class Wall /*extends OwnableUnit*/{
+    private static final Queue<Wall> aWalls = new LinkedList<Wall>();
 
     static {
         int maxWalls = 12;
         for (int i = 0; i < maxWalls; i++) {
             Wall newWall = new Wall();
+            aWalls.add(newWall);
         }
     }
 
     private Wall(){
     }
 
-    public List<Wall> getUnits(){
-        List<Wall> aCopy = new ArrayList<Wall>();
+    public static Queue<Wall> getUnits(){
+        Queue<Wall> aCopy = new LinkedList<Wall>();
         aCopy = aWalls;
         return aCopy;
     }
