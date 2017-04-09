@@ -1,6 +1,6 @@
 package com.example.models.gameModels;
 
-public interface StealableCard{
+public class StealableCard{
     public enum Resource{
         SHEEP, WOOD, ORE, BRICK, WHEAT;
 

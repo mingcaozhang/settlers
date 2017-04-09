@@ -6,6 +6,13 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class ExecuteCard {
+    @Override
+    public String toString() {
+        return "ExecuteCard{}";
+    }
+
+
+
     public void executeTradeCard(ProgressCard.Trade pCard, Player pPlayer){
         switch(pCard){
             case COMMERCIAL_HARBOR:

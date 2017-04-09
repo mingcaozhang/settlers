@@ -2,6 +2,7 @@ package com.example.controllers.network;
 
 import com.example.models.gameModels.GameManager;
 import com.example.viewobjects.GameRoomView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,9 @@ import java.util.ArrayList;
 
 @Controller
 public class GameRoomController {
+
+    @Autowired
+    private GameManager gameManager;
 
 
 
@@ -41,8 +45,8 @@ public class GameRoomController {
         if(playerList.size() == 3){
             System.out.println("creating list!");
             GameController.setCurrPlayerList(playerList);
-            GameManager.createGame(10, playerList);
-            GameManager.saveGame();
+            gameManager.createGame(10, playerList);
+            gameManager.saveGame();
         }
 
         GameRoomView grv = new GameRoomView(principal.getName(), playerList.size());

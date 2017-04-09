@@ -12,7 +12,7 @@ public class ViewHex {
     private String fill;
     private String points;
     private String id;
-  //  private String terrain_type;
+    private String terrain_type;
     private int number;
 
     public String getFill() {
@@ -70,7 +70,7 @@ public class ViewHex {
     public void setId(String id) {
         this.id = id;
     }
-/*
+
     public String getTerrainType() {
         return terrain_type;
     }
@@ -78,7 +78,7 @@ public class ViewHex {
     public void setTerrainType(String terrainType) {
         this.terrain_type = terrainType;
     }
-*/
+
     public int getNumber() {
         return number;
     }

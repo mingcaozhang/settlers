@@ -10,6 +10,55 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gameid;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
+
+        Player player = (Player) o;
+
+        if (aIndex != player.aIndex) return false;
+        if (aVPs != player.aVPs) return false;
+        if (aGold != player.aGold) return false;
+        if (aRouteLength != player.aRouteLength) return false;
+        if (aProgressCardAmount != player.aProgressCardAmount) return false;
+        if (aMerchant != player.aMerchant) return false;
+        if (aLongestTradeRoute != player.aLongestTradeRoute) return false;
+        if (aAqueduct != player.aAqueduct) return false;
+        if (aFortress != player.aFortress) return false;
+        if (aTradingHouse != player.aTradingHouse) return false;
+        if (gameid != null ? !gameid.equals(player.gameid) : player.gameid != null) return false;
+        if (aColor != null ? !aColor.equals(player.aColor) : player.aColor != null) return false;
+        if (aUsername != null ? !aUsername.equals(player.aUsername) : player.aUsername != null) return false;
+        if (aResourceCards != null ? !aResourceCards.equals(player.aResourceCards) : player.aResourceCards != null)
+            return false;
+        if (aCommodityCards != null ? !aCommodityCards.equals(player.aCommodityCards) : player.aCommodityCards != null)
+            return false;
+        if (aTradeCards != null ? !aTradeCards.equals(player.aTradeCards) : player.aTradeCards != null) return false;
+        if (aPoliticsCards != null ? !aPoliticsCards.equals(player.aPoliticsCards) : player.aPoliticsCards != null)
+            return false;
+        if (aScienceCards != null ? !aScienceCards.equals(player.aScienceCards) : player.aScienceCards != null)
+            return false;
+        if (aBuildings != null ? !aBuildings.equals(player.aBuildings) : player.aBuildings != null) return false;
+        if (aKnights != null ? !aKnights.equals(player.aKnights) : player.aKnights != null) return false;
+        if (aTransports != null ? !aTransports.equals(player.aTransports) : player.aTransports != null) return false;
+        return exec != null ? exec.equals(player.exec) : player.exec == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = gameid.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                ", aColor='" + aColor + '\'' +
+                ", aUsername='" + aUsername + '\'' +
+                '}';
+    }
+
     private final String aColor;
     private final String aUsername;
     private final int aIndex;
