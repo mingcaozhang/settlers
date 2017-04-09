@@ -178,10 +178,10 @@ public class GameController {
         return pNew;
     }
 
-    //TODO @MessageMapping(" ")
     @SendTo("/topic/playerIncrement")
     public void setupPayout(){
         GameManager.setupPayout();
+        showPlayerIncrement();
     }
 
     @MessageMapping("/rolldice")
@@ -212,6 +212,7 @@ public class GameController {
                                     player.getResourceCards().get(StealableCard.Resource.BRICK),
                                     player.getResourceCards().get(StealableCard.Resource.WOOD),
                                     player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getResourceCards().get(StealableCard.Resource.WHEAT),
                                     player.getCommodityCards().get(StealableCard.Commodity.COIN),
                                     player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
                                     player.getCommodityCards().get(StealableCard.Commodity.PAPER));
@@ -222,6 +223,7 @@ public class GameController {
                                     player.getResourceCards().get(StealableCard.Resource.BRICK),
                                     player.getResourceCards().get(StealableCard.Resource.WOOD),
                                     player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getResourceCards().get(StealableCard.Resource.WHEAT),
                                     player.getCommodityCards().get(StealableCard.Commodity.COIN),
                                     player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
                                     player.getCommodityCards().get(StealableCard.Commodity.PAPER));
@@ -232,6 +234,7 @@ public class GameController {
                                     player.getResourceCards().get(StealableCard.Resource.BRICK),
                                     player.getResourceCards().get(StealableCard.Resource.WOOD),
                                     player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getResourceCards().get(StealableCard.Resource.WHEAT),
                                     player.getCommodityCards().get(StealableCard.Commodity.COIN),
                                     player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
                                     player.getCommodityCards().get(StealableCard.Commodity.PAPER));
@@ -242,6 +245,7 @@ public class GameController {
                                     player.getResourceCards().get(StealableCard.Resource.BRICK),
                                     player.getResourceCards().get(StealableCard.Resource.WOOD),
                                     player.getResourceCards().get(StealableCard.Resource.SHEEP),
+                                    player.getResourceCards().get(StealableCard.Resource.WHEAT),
                                     player.getCommodityCards().get(StealableCard.Commodity.COIN),
                                     player.getCommodityCards().get(StealableCard.Commodity.CLOTH),
                                     player.getCommodityCards().get(StealableCard.Commodity.PAPER));
