@@ -132,6 +132,7 @@ var road2Placed = false;    /*Indicates whether the second road has been placed 
 
 var isSetup1 = false;
 var isSetup2 = false;
+var gotSetupResources = false;
 
 
 var enableBuyAndUpgrade = false;
@@ -211,6 +212,10 @@ function connect() {
                 }else{
                     isSetup1 = false;
                     isSetup2 = false;
+                    if (!gotSetupResources){
+                        setupDone();
+                        gotSetupResources = true;
+                    }
                     document.getElementById('rolldice').disabled = false;
                     document.getElementById('endTurn').disabled = true;
 
@@ -258,9 +263,9 @@ function connect() {
                 status.innerHTML += " Robber!";
             }
 
-
-
-
+            if(currUser.match(myUsername)){
+                getResources();
+            }
 
         });
 
@@ -309,6 +314,39 @@ function connect() {
 
         });
 
+
+        stompClient.subscribe('/topic/playerIncrement', function (players) {
+
+            if (!setupDone){
+                gotSetupResources = true;
+            }
+            players = JSON.parse((players.body));
+            var me = 'p';
+
+            if (myUsername.match(p1name)){
+                me = me+'1';
+            }else if (myUsername.match(p1name)){
+                me = me+'2';
+            }else if (myUsername.match(p2name)){
+                me = me+'3';
+            }else{
+                me = me+'4';
+            }
+
+            nBrick = players[me+'Brick'];
+            nWood = players[me+'Wood'] ;
+            nOre = players[me+'Ore'];
+            nSheep = players[me+'Sheep'];
+            //wheat = players[me+'Wheat'];
+            nCoin = players[me+'Coin'];
+            nCloth = players[me+'Cloth'];
+            nBook = players[me+'Paper'];
+            nGold = players[me+'Gold'];
+
+
+
+        });
+
         stompClient.subscribe('/topic/settlement', function (piece) {
             piece = JSON.parse((piece.body));
 
@@ -343,8 +381,6 @@ function connect() {
 
             }
 
-
-
         });
 
         stompClient.subscribe('/topic/city', function (piece) {
@@ -371,14 +407,11 @@ function connect() {
                 d3.select("#"+myId).attr("hasCity", "true");
             }else{
                 if(currUser.match(myUsername)){
-                    //invalid city alert here
+                    console.log("invalid city location");
                 }
 
 
             }
-
-
-
 
 
         });
@@ -406,6 +439,15 @@ function sendIntersection(Intersection){
 
 function readySetNeighbours(){
     stompClient.send("/app/setNeighbours",{},{});
+}
+
+function getResources(){
+    stompClient.send("/app/getResources",{},{});
+
+}
+
+function setupDone(){
+    stompClient.send("/app/setupDone",{},{});
 }
 
 
@@ -530,7 +572,7 @@ function setAttributes() {
 function buildRoad(id) {
     if (nRoad < 15 && nBrick > 0 && nWood > 0 ) {
 
-        stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}));
+        stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
     }
     else {
 
@@ -540,7 +582,7 @@ function buildRoad(id) {
 //Place road
 function placeRoad(id) {
 
-    stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}))
+    stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
 
 }
 
@@ -569,7 +611,7 @@ function placeShip(id) {
 function buildSettlement(id) {
     if (nSettlement < 5 && nWood > 0 && nBrick > 0 && nSheep > 0 && nWheat > 0) {
 
-        stompClient.send("/app/placesettlement",{}, JSON.stringify({"id":id, "color":myColor}));
+        stompClient.send("/app/placesettlement",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
     }
     else {
         //Set no resource message to true
@@ -579,14 +621,14 @@ function buildSettlement(id) {
 //Place settlement
 function placeSettlement(id) {
 
-    stompClient.send("/app/setupsettlement",{}, JSON.stringify({"id":id, "color":myColor}));
+    stompClient.send("/app/setupsettlement",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
 }
 
 //Build city
 function buildCity(id) {
     if (nCity < 4 && nOre > 2 && nWheat > 1) {
 
-        stompClient.send("/app/placecity",{}, JSON.stringify({"id":id, "color":myColor}));
+        stompClient.send("/app/placecity",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
     }
     else {
         //Set no resource message to true
@@ -596,9 +638,7 @@ function buildCity(id) {
 //Place city
 function placeCity(id) {
 
-    stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor}));
-
-
+    stompClient.send("/app/setupcity",{},{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
 
 
 }

@@ -21,6 +21,27 @@ public abstract class Hex extends Geometry {
 
     public abstract TerrainType getTerrainType();
 
+    @Override
+    public String toString() {
+        return "Hex{" +
+                "aVillain=" + aVillain +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Hex)) return false;
+
+        Hex hex = (Hex) o;
+
+        return aVillain == hex.aVillain;
+    }
+
+    @Override
+    public int hashCode() {
+        return aId.hashCode();
+    }
 
     private boolean aVillain;
 

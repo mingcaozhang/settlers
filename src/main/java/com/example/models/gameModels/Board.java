@@ -7,16 +7,22 @@ import java.util.Map;
 
 @Entity
 public class Board {
+    @Override
+    public String toString() {
+        return "Board{" +
+                "boardid=" + boardid +
+                '}';
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long boardid;
 
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private Map<String,Hex> aHexes = new HashMap<>();
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private Map<String,Edge> aEdges  = new HashMap<>();
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private Map<String,Intersection> aIntersections  = new HashMap<>();
     @ElementCollection
     private Map<Integer, ArrayList<LandHex>> aLandHexes = new HashMap<>();
@@ -75,5 +81,12 @@ public class Board {
             aIntersections.get(aKey).setEdgeNeighbours(aEdges);
         }
         System.out.println("Neighbours set");
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = boardid.hashCode();
+        return result;
     }
 }

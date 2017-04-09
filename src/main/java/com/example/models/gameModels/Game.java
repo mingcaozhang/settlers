@@ -26,16 +26,31 @@ public class Game {
         Barbarian, Trade, Politics, Science
     }
 
+    @Override
+    public String toString() {
+        return "Game{" +
+                "gameid=" + gameid +
+                '}';
+    }
+
+
+
+    @Override
+    public int hashCode() {
+        int result = gameid.hashCode();
+        return result;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gameid;
 
-    @OneToMany
+    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private final List<Player> aPlayers;
 
     private final int aVPsToWin;
 
-    @OneToOne
+    @OneToOne(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private Board aBoard;
 
     private GamePhase aPhase;
@@ -46,6 +61,8 @@ public class Game {
     private DiceNumber aYellowDice;
     private EventType aEventDice;
     private int aTurnCounter;
+
+
 
     public Game(int pVPsToWin, List<Player> pPlayers, Board pBoard){
         this.gameid = gameid;
@@ -136,4 +153,6 @@ public class Game {
     public int getTurnCounter(){
         return aTurnCounter;
     }
+
+    public long getId(){return gameid;}
 }
