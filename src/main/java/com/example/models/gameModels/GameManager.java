@@ -2,24 +2,20 @@ package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
 import com.example.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class GameManager {
-    private static GameManager gameManager = new GameManager();
-    private static Game aGame;
+
+    private  Game aGame;
 
     @Autowired
-    private static GameRepository gameRepository;
+    private  GameRepository gameRepository;
 
-    private GameManager() {
-    }
 
-    public static GameManager instance() {
-        return gameManager;
-    }
-
-    private ArrayList<Player> createPlayers(ArrayList<String> pPlayerNames) {
+    public  ArrayList<Player> createPlayers(ArrayList<String> pPlayerNames) {
         ArrayList<String> aPlayerColors = new ArrayList<>();
         ArrayList<String> aPlayerNames = new ArrayList<>();
         ArrayList<Player> aPlayers = new ArrayList<>();
@@ -44,8 +40,10 @@ public class GameManager {
     }
 
     public void saveGame(){
+        System.out.println(aGame);
         gameRepository.save(aGame);
     }
+
 
     public Game getGame(){
         return aGame;
@@ -155,7 +153,7 @@ public class GameManager {
         return (pIntersection.getBuilding() != null && pIntersection.getBuilding().isCity());
     }
 
-    public void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
+    private void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
         if (pTerrainType == TerrainType.GoldMine){
             pOwner.addGold();
         }
@@ -198,7 +196,6 @@ public class GameManager {
     public void payKnight(Player pPlayer){
         pPlayer.removeResource(StealableCard.Resource.SHEEP, 1);
         pPlayer.removeResource(StealableCard.Resource.ORE, 1);
-    }
     public void placeKnight(Player pPlayer, Intersection pIntersection){
         OwnedKnight knight = pPlayer.removeKnight(Unit.Knight.BASIC);
         pIntersection.setKnight(knight);
@@ -276,6 +273,15 @@ public class GameManager {
 
         List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
         List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
+        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
+        boolean water = true;
+        for(Hex aHex:hNeighbours) {
+            if(aHex.getTerrainType() != TerrainType.Sea)
+                water =false;
+        }
+        if(water){  // settlement is surrounded by water
+            return false;
+        }
 
         for(Intersection aIntersection:iNeighbours) {
             if(aIntersection.getBuilding() != null)
@@ -367,8 +373,6 @@ public class GameManager {
     }
     //END FUNCTIONS FOR ROADS
 
-
-    //START FUNCTIONS FOR SHIPS
     public boolean checkShipEligibility(Edge pEdge, String pColor){
         if(pEdge.getOccupancyFlag())
             return false;

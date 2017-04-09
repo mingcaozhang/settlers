@@ -1,8 +1,6 @@
 package com.example.models.gameModels;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.Map;
 
 /**
@@ -14,14 +12,39 @@ public class Intersection extends Geometry {
     public Intersection(){}
 
     private HarbourType aHarbour;
-    @Embedded
+    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.LAZY)
     private OwnedBuilding aOccupant;
-    @Embedded
+    @OneToOne(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private OwnedKnight aKnight;
+
     private boolean isOccupied;
 
+    @Override
+    public String toString() {
+        return "Intersection{" +
+                '}';
+    }
 
-    public Intersection(String pId,HarbourType pHarbour)
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Intersection)) return false;
+
+        Intersection that = (Intersection) o;
+
+        if (isOccupied != that.isOccupied) return false;
+        if (aHarbour != that.aHarbour) return false;
+        if (aOccupant != null ? !aOccupant.equals(that.aOccupant) : that.aOccupant != null) return false;
+        return aKnight != null ? aKnight.equals(that.aKnight) : that.aKnight == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = aId.hashCode();
+        return result;
+    }
+
+    public Intersection(String pId, HarbourType pHarbour)
     {
         super(pId);
         aHarbour = pHarbour;
