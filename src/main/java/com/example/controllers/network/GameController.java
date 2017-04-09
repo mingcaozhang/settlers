@@ -5,6 +5,7 @@ import com.example.viewobjects.*;
 import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,9 @@ import java.util.Map;
 
 @Controller
 public class GameController {
+
+    @Autowired
+    private GameManager gameManager;
 
     private static ArrayList<String> currPlayerList = new ArrayList<String>(); // Get a list of players too?
     private static Game aGame;
@@ -49,7 +53,7 @@ public class GameController {
 
         for(int i = 0 ; i < currPlayerList.size(); i++){
             if (currPlayerList.get(i).matches(name)){
-                String color = GameManager.instance().getGame().getPlayers().get(i).getColor();
+                String color = gameManager.getGame().getPlayers().get(i).getColor();
                 model.addAttribute("myColor", color);
             }
         }
@@ -59,9 +63,9 @@ public class GameController {
         }
 
         for(int i = 0 ; i < currPlayerList.size(); i++){
-            model.addAttribute("player"+(i+1)+"_c", GameManager.getGame().getPlayers().get(i).getColor());
+            model.addAttribute("player"+(i+1)+"_c", gameManager.getGame().getPlayers().get(i).getColor());
         }
-        aGame = GameManager.getGame();
+        aGame = gameManager.getGame();
 
         return "game";
     }
@@ -72,8 +76,8 @@ public class GameController {
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
         // TODO Check if player has enough resources
 
-        Intersection Checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        boolean valid = GameManager.checkSettlementSetupEligibility(Checker,pNew.getColor());
+        Intersection Checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean valid = gameManager.checkSettlementSetupEligibility(Checker,pNew.getColor());
 
         if(valid)
         {
@@ -99,8 +103,8 @@ public class GameController {
         // TODO Check if player has enough resources
 
         System.out.println(pNew.getId());
-        Edge Checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        boolean valid = GameManager.checkRoadSetupEligibility(Checker,pNew.getColor());
+        Edge Checker = gameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        boolean valid = gameManager.checkRoadSetupEligibility(Checker,pNew.getColor());
 
         if(valid){
             // TODO Spend players resources
@@ -117,8 +121,8 @@ public class GameController {
         // TODO Check if player has enough resources
 
         System.out.println(pNew.getId());
-        Edge Checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        boolean valid= GameManager.checkShipSetupEligibility(Checker,pNew.getColor());
+        Edge Checker = gameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        boolean valid= gameManager.checkShipSetupEligibility(Checker,pNew.getColor());
 
         if(valid){
             // TODO Spend players resources
@@ -182,7 +186,7 @@ public class GameController {
         return pNew;
     }
 
-    @SendTo("/topic/playerIncrement")
+    @MessageMapping("/setupDone")
     public PlayerIncrement setupPayout(){
 
         PlayerIncrement increment = new PlayerIncrement();
@@ -199,8 +203,9 @@ public class GameController {
         return pDice;
     }
 
+    @MessageMapping("/getResources")
     @SendTo("/topic/playerIncrement")
-    private PlayerIncrement diceRollPayout(){
+    public PlayerIncrement diceRollPayout(){
 
         PlayerIncrement increment = new PlayerIncrement();
         //setPlayerIncrement(increment);
@@ -265,8 +270,6 @@ public class GameController {
     @SendTo("/topic/turninfo")
     public PlayerAndPhase endTurn(Principal user){
 
-
-
         if(turnCounter == (currPlayerList.size()-1)){
             System.out.println("first if");
             System.out.println(currPlayerList.size()-1);
@@ -306,7 +309,7 @@ public class GameController {
     //    System.out.println(aEdge.getX());
     //    System.out.println(aEdge.getY());
     //    System.out.println(aEdge.getPrefix());
-        GameManager.getGame().getBoard().getEdges().put(aEdge.getId(),aEdge);
+        gameManager.getGame().getBoard().getEdges().put(aEdge.getId(),aEdge);
 
     }
 
@@ -359,7 +362,7 @@ public class GameController {
                     aHex = new SeaHex(pHex.getId());
             }
 */
-            GameManager.getGame().getBoard().getHexes().put(aLandHex.getId(), aLandHex);
+            gameManager.getGame().getBoard().getHexes().put(aLandHex.getId(), aLandHex);
       //  }
 
     }
@@ -369,12 +372,14 @@ public class GameController {
 
        // System.out.println("Intersection");
         Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
-        GameManager.getGame().getBoard().getIntersections().put(aIntersection.getId(),aIntersection);
+        gameManager.getGame().getBoard().getIntersections().put(aIntersection.getId(),aIntersection);
     }
 
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception
     {
-        GameManager.getGame().getBoard().setAllNeighbours();
+        gameManager.getGame().getBoard().setAllNeighbours();
+        //gameManager.saveGame();
+
     }
 }

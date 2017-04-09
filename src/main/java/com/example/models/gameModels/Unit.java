@@ -1,5 +1,8 @@
 package com.example.models.gameModels;
 
+import javax.persistence.Embeddable;
+
+
 public interface Unit {
     public enum Building{
         SETTLEMENT, CITY;

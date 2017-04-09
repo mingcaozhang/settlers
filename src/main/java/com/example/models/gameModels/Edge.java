@@ -1,7 +1,10 @@
 package com.example.models.gameModels;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 import java.util.Map;
 
 /**
@@ -29,6 +32,8 @@ public class Edge extends Geometry{
     }
 
     private boolean isOccupied;
+
+    @OneToOne(cascade= CascadeType.ALL, fetch = FetchType.LAZY)
     private OwnedTransport aTransport;
 
     public Edge(String pId)
@@ -179,5 +184,30 @@ public class Edge extends Geometry{
             IntersectionNeighbours.add(pIntersections.get(id1));
         if(pIntersections.get(id2)!=null)
             IntersectionNeighbours.add(pIntersections.get(id2));
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "isOccupied=" + isOccupied +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Edge)) return false;
+        if (!super.equals(o)) return false;
+
+        Edge edge = (Edge) o;
+
+        if (isOccupied != edge.isOccupied) return false;
+        return aTransport != null ? aTransport.equals(edge.aTransport) : edge.aTransport == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = aId.hashCode();
+        return result;
     }
 }
