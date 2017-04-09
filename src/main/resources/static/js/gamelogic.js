@@ -117,6 +117,234 @@ var wheatClick = 0;
 //Knight state (active/inactive)
 var knight;
 
+//Turn Counter
+//var counter = 1;
+//var color = 'black';
+//var myUsername = [[${username}]];
+var stompClient = null;
+
+
+var settlementPlaced = false;
+var road1Placed = false;
+var cityPlaced = false;
+var road2Placed = false;
+
+var enablePlaceRoad1=false;
+var enablePlaceRoad2=false;
+
+var enableBuyAndUpgrade = false;
+var boardEnabled = false;
+
+var currUser;
+
+var colorList = [];
+var userList = [];
+userList.push(p1name);
+userList.push(p2name);
+//userList.push(p3name);
+//userList.push(p4name);
+colorList.push(p1color);
+colorList.push(p2color);
+//colorList.push(p3color);
+//colorList.push(p4color);
+
+
+var usersToPrint = [];
+var colorsToPrint = [];
+var arrayLength = userList.length;
+for (var i = 0; i < arrayLength; i++) {
+    if(!userList[i].match(myUsername)){
+        usersToPrint.push(userList[i]);
+        colorsToPrint.push(colorList[i]);
+    }
+}
+
+for(var i = 0; i<usersToPrint.length;i++){
+
+    if(i == 0){
+        var p2 = document.getElementById("player2");
+        p2.innerHTML = usersToPrint[i];
+        p2.className = "turnWabble";
+       // p2.disabled = false;
+    }else if(i==1){
+        var p3 = document.getElementById("player3");
+        p3.innerHTML = usersToPrint[i];
+        p3.style.background = "green";
+    }else if(i==2){
+        var p4 = document.getElementById("player4");
+        p4.innerHTML = usersToPrint[i];
+        p4.style.background = "blue";
+    }
+}
+
+
+
+connect();
+intitializeTurn();
+console.log("my username is: "+myUsername);
+console.log("my color is: "+myColor);
+
+
+
+
+
+function intitializeTurn(){
+
+    currUser = startingPlayer;
+
+    if(startingPlayer.match(myUsername)){
+        //enable all turn buttons
+        boardEnabled = true;
+        enableBuyAndUpgrade = false;
+        document.getElementById('rolldice').disabled = true;
+        document.getElementById('endTurn').disabled = true;
+
+        startTimer();
+        setAttributes();
+
+
+    }else{
+        //disable all turn buttons
+        boardEnabled = false;
+        enableBuyAndUpgrade = false;
+        document.getElementById('rolldice').disabled = true;
+        document.getElementById('endTurn').disabled = true;
+    }
+
+
+}
+
+function connect() {
+    //showJoinedUser("I just connected!");
+    var socket = new SockJS('/game-board-socket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        // setConnected(true);
+        console.log('Connected: ' + frame);
+
+
+        stompClient.subscribe('/topic/turninfo', function (pap) {
+            pap = JSON.parse((pap.body));
+            currUser = pap.username;
+
+            //console.log(currUser);
+            // console.log(user.body);
+
+            if(currUser.match(myUsername)){
+                //disable all turn buttons
+                if(pap.setup1){
+
+                }else if(pap.setup2){
+
+                    document.getElementById('endTurn').disabled = true;
+                }else{
+                    document.getElementById('rolldice').disabled = false;
+                    document.getElementById('endTurn').disabled = true;
+                }
+
+
+
+
+            }else{
+                //disable all turn buttons
+                document.getElementById('rolldice').disabled = true;
+                document.getElementById('endTurn').disabled = true;
+            }
+
+
+
+            //currUser
+
+        });
+
+
+
+        stompClient.subscribe('/topic/dice', function (dice) {
+            dice = JSON.parse((dice.body));
+
+            console.log(dice.red);
+            console.log(dice.yellow);
+            console.log(dice.event);
+
+            document.images["die1"].src = eval("die1Face" + dice.red + ".src");
+            document.images["die2"].src = eval("die2Face" + dice.yellow + ".src");
+            document.images["eventDie"].src = eval("eventFace" + dice.event + ".src");
+
+            //Increment barbarian count if event die is (1, 2, 3)
+            if(dice.event == 1 || dice.event == 2 || dice.event == 3) {
+                barbarianCount += 1;
+
+                //Barbarian attack
+                if(barbarianCount == 6) {
+                    barbarian = 0;
+                }
+            }
+
+            var diceTotal = dice.red + dice.yellow;
+            status.innerHTML = "You rolled " + diceTotal + ".";
+            console.log("You rolled " + diceTotal + ".");
+            if(diceTotal == 7){
+                status.innerHTML += " Robber!";
+            }
+        });
+
+        stompClient.subscribe('/topic/road', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("fill", toColor);
+            d3.select("#"+myId).attr("hasRoad","true");
+
+        });
+
+        stompClient.subscribe('/topic/settlement', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("fill", toColor);
+            d3.select("#"+myId).attr("hasSettlement","true")
+
+
+        });
+
+        stompClient.subscribe('/topic/city', function (piece) {
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+
+            d3.select("#"+myId).attr("stroke", "black").attr("stroke-width",5);
+            d3.select("#"+myId).attr("hasCity", "true");
+
+        });
+
+
+
+
+    });
+}
+
+/*Button clicks sent to backend!*/
+
+function sendEdge(Edge){
+    stompClient.send("/app/edge",{},JSON.stringify(Edge));
+}
+
+function sendHex(Hex){
+    stompClient.send("/app/hex",{},JSON.stringify(Hex));
+}
+
+function sendIntersection(Intersection){
+    stompClient.send("/app/intersection",{},JSON.stringify(Intersection));
+}
+
+function readySetNeighbours(){
+    stompClient.send("/app/setNeighbours",{},{});
+}
 
 
 //Roll Dice
@@ -126,38 +354,38 @@ function rollDice() {
     var d2 = Math.floor(Math.random() * 6) + 1;
     var d3 = Math.floor(Math.random() * 6) + 1;
 
-    document.images["die1"].src = eval("die1Face" + d1 + ".src");
-    document.images["die2"].src = eval("die2Face" + d2 + ".src");
-    document.images["eventDie"].src = eval("eventFace" + d3 + ".src");
+    stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
-    //Increment barbarian count if event die is (1, 2, 3)
-    if(d3 == 1 || d3 == 2 || d3 == 3) {
-        barbarianCount += 1;
+    boardEnabled = true;
+    enableBuyAndUpgrade = true;
+    document.getElementById('rolldice').disabled = true;
+    document.getElementById('endTurn').disabled = false;
 
-        //Barbarian attack
-        if(barbarianCount == 6) {
-            barbarian = 0;
-        }
-    }
 
-    var diceTotal = d1 + d2;
-    status.innerHTML = "You rolled " + diceTotal + ".";
-    if(diceTotal == 7){
-        status.innerHTML += " Robber!";
-    }
 }
 //Used to enable rollDice button when end turn button is pressed
-function enableBtn() {
-    document.getElementById('rolldice').disabled = false;
+function endTurn() {
+
+    stompClient.send("/app/endturn",{}, {});
+    boardEnabled = false;
+    enableBuyAndUpgrade = false;
+
 }
+
+
+
+
+
+
+
 
 //Activated to show attributes when player button is clicked
 function setAttributes() {
-    /*Place road, ship, settlement, city
-     pRoad = document.getElementById("pRoad");
-     pShip = document.getElementById("pShip");
-     pSettlement = document.getElementById("pSettlement");
-     pCity = document.getElementById("pCity");*/
+    //Place road, ship, settlement, city
+    pRoad = document.getElementById("pRoad");
+    pShip = document.getElementById("pShip");
+    pSettlement = document.getElementById("pSettlement");
+    pCity = document.getElementById("pCity");
 
     //Attribute id getters
     road = document.getElementById("road");
@@ -168,13 +396,13 @@ function setAttributes() {
     victoryPt = document.getElementById("victoryPt");
     gold = document.getElementById("gold");
     barbarian = document.getElementById("barbarian");
-    road.innerHTML = "Roads " + nRoad;
-    ship.innerHTML = "Ships " + nShip;
-    city.innerHTML = "Cities " + nCity;
-    wall.innerHTML = "Walls " + nWall;
-    settlement.innerHTML = "Settlements " + nSettlement;
-    victoryPt.innerHTML = "Victory Points " + nVictoryPt;
-    gold.innerHTML = "Golds " + nGold;
+    road.innerHTML = "Roads: " + nRoad;
+    ship.innerHTML = "Ships: " + nShip;
+    city.innerHTML = "Cities: " + nCity;
+    wall.innerHTML = "Walls: " + nWall;
+    settlement.innerHTML = "Settlements: " + nSettlement;
+    victoryPt.innerHTML = "Victory Points: " + nVictoryPt;
+    gold.innerHTML = "Golds: " + nGold;
 
     //Knights
     knight1 = document.getElementById("knight1");
@@ -184,7 +412,7 @@ function setAttributes() {
     knight1.innerHTML = "Rank 1: " + nKnight1;
     knight2.innerHTML = "Rank 2: " + nKnight2;
     knight3.innerHTML = "Rank 3: " + nKnight3;
-    totalKnight.innerHTML = "Knights " + nTotalKnight;
+    totalKnight.innerHTML = "Knights: " + nTotalKnight;
 
     //Resource Cards
     brick = document.getElementById("brick");
@@ -198,7 +426,7 @@ function setAttributes() {
     ore.innerHTML = nOre;
     sheep.innerHTML = nSheep;
     wheat.innerHTML = nWheat;
-    resourceCard.innerHTML = "Resource Cards " + nResourceCard;
+    resourceCard.innerHTML = "Resource Cards: " + nResourceCard;
 
     //Commodity Cards
     coin = document.getElementById("coin");
@@ -208,7 +436,7 @@ function setAttributes() {
     coin.innerHTML = nCoin;
     cloth.innerHTML = nCloth;
     book.innerHTML = nBook;
-    commodityCard.innerHTML = "Commodity Cards " + nCommodityCard;
+    commodityCard.innerHTML = "Commodity Cards: " + nCommodityCard;
 
     //Maritime Trade
     gBrick = document.getElementById("tradeBrick");
@@ -232,28 +460,37 @@ function setAttributes() {
 }
 
 //Build road
-function buildRoad() {
+function buildRoad(id) {
     if (nRoad < 15 && nBrick > 0 && nWood > 0 ) {
         nBrick--;
         nWood--;
         nRoad++;
         road = document.getElementById("road");
         road.innerHTML = "Roads " + nRoad;
+        stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
 
         //Set no resource message to true
     }
 }
-/*Place road
- function placeRoad() {
- nRoad++;
- pRoad = document.getElementById("pRoad");
- pRoad.innerHTML = "Roads " + nRoad;
- }*/
+//Place road
+function placeRoad(id) {
+    if(!road1Placed){
+        road1Placed = true;
+        enablePlaceRoad1 = false;
+    }else if(!road2Placed){
+        road2Placed = true;
+        enablePlaceRoad2 = false;
+    }
+    nRoad++;
+    pRoad = document.getElementById("pRoad");
+    pRoad.innerHTML = "Roads " + nRoad;
+    stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor}));
+}
 
 //Build ship
-function buildShip() {
+function buildShip(id) {
     if (nShip < 15 && nSheep > 0 && nWood > 0) {
         nSheep--;
         nWood--;
@@ -266,15 +503,15 @@ function buildShip() {
     }
 }
 
-/*Place ship
- function placeShip() {
- nShip++;
- pShip = document.getElementById("pShip");
- pShip.innerHTML = "Ship" + nShip;
- }*/
+//Place ship
+function placeShip(id) {
+    nShip++;
+    pShip = document.getElementById("pShip");
+    pShip.innerHTML = "Ship" + nShip;
+}
 
 //Build settlement
-function buildSettlement() {
+function buildSettlement(id) {
     if (nSettlement < 5 && nWood > 0 && nBrick > 0 && nSheep > 0 && nWheat > 0) {
         nWood--;
         nBrick--;
@@ -283,39 +520,50 @@ function buildSettlement() {
         nSettlement++;
         settlement = document.getElementById("settlement");
         settlement.innerHTML = "Settlements " + nSettlement;
+        stompClient.send("/app/placesettlement",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
         //Set no resource message to true
     }
 }
 
-/*Place settlement
- function placeSettlement() {
- nSettlement++;
- pSettlement = document.getElementById("pSettlement");
- pSettlement.innerHTML = "Settlements " + nSettlement;
- }*/
+//Place settlement
+function placeSettlement(id) {
+
+    settlementPlaced = true;
+    enablePlaceRoad1 = true;
+    nSettlement++;
+    pSettlement = document.getElementById("pSettlement");
+    pSettlement.innerHTML = "Settlements " + nSettlement;
+    stompClient.send("/app/setupsettlement",{}, JSON.stringify({"id":id, "color":myColor}));
+}
 
 //Build city
-function buildCity() {
+function buildCity(id) {
     if (nCity < 4 && nOre > 2 && nWheat > 1) {
         nOre -= 3;
         nWheat -= 2;
         nCity++;
         city = document.getElementById("city");
         city.innerHTML = "Cities " + nCity;
+        stompClient.send("/app/placecity",{}, JSON.stringify({"id":id, "color":myColor}));
     }
     else {
         //Set no resource message to true
     }
 }
 
-/*Place city
- function placeCity() {
- nCity++;
- pCity = document.getElementById("pCity");
- pCity.innerHTML = "Cities " + nCity;
- }*/
+//Place city
+function placeCity(id) {
+    cityPlaced = true;
+    nCity++;
+    pCity = document.getElementById("pCity");
+    pCity.innerHTML = "Cities " + nCity;
+    stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor}));
+
+
+
+}
 
 
 //Build wall
@@ -676,9 +924,13 @@ function getWheat() {
 
 function trade() {
     var tResult = document.getElementById("tResult");
+    gWood.innerHTML = "Give/Get";
+    gBrick.innerHTML = "Give/Get";
+    gOre.innerHTML = "Give/Get";
+    gWheat.innerHTML = "Give/Get";
+    gSheep.innerHTML = "Give/Get";
 
     if(woodClick == 1){
-        gWood.innerHTML = "Give/Get";
         woodClick = 0;
         if (nWood > 3){
             nWood -= 4;
@@ -691,7 +943,6 @@ function trade() {
         }
     }
     else if(brickClick == 1){
-        gBrick.innerHTML = "Give/Get";
         brickClick = 0;
         if (nBrick > 3){
             nBrick -= 4;
@@ -701,10 +952,10 @@ function trade() {
         }
         else{
             tResult.innerHTML = "Trade failed";
+
         }
     }
     else if(oreClick == 1){
-        gOre.innerHTML = "Give/Get";
         oreClick = 0;
         if (nOre > 3){
             nOre -= 4;
@@ -717,7 +968,6 @@ function trade() {
         }
     }
     else if(wheatClick == 1){
-        gWheat.innerHTML = "Give/Get";
         wheatClick = 0;
         if (nWheat > 3){
             nWheat -= 4;
@@ -730,7 +980,6 @@ function trade() {
         }
     }
     else if(sheepClick == 1){
-        gSheep.innerHTML = "Give/Get";
         sheepClick = 0;
         if (nSheep > 3){
             nSheep -= 4;
@@ -791,16 +1040,14 @@ function HexBlueprint(axial_x, axial_y, axial_z, size, resource)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
 
-    for(var i = 0; i<=5; i++) // HOLY SHIT
+    for(var i = 0; i<=5; i++)
     {
         this.points += this.get_Hex_corner(i).i + "," + this.get_Hex_corner(i).l + " ";
     }
-
-
 }
 
 HexBlueprint.prototype.get_Hex_corner = function(vertex)
@@ -811,6 +1058,7 @@ HexBlueprint.prototype.get_Hex_corner = function(vertex)
     var b = this.centre.y + (this.size - 16) * Math.sin(angle_rad);
 
     return {i: a, l: b};
+
 }
 
 function EdgeBlueprint(axial_x, axial_y, axial_z, size)
@@ -831,11 +1079,11 @@ function EdgeBlueprint(axial_x, axial_y, axial_z, size)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
 
-    for(var i = 0; i<=3; i++) // HOLY SHIT
+    for(var i = 0; i<=3; i++)
     {
         this.points += this.get_Edge_corner(i).i + "," + this.get_Edge_corner(i).l + " ";
     }
@@ -858,7 +1106,6 @@ EdgeBlueprint.prototype.get_Edge_corner = function(vertex)
 
 function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
 {
-    //SIDE IS ALWAYS LEFT!! VAR SIDE STORES UP OR DOWN
     this.axial_x = axial_x;
     this.axial_y = axial_y;
     this.axial_z = axial_z;
@@ -874,10 +1121,10 @@ function SideEdgeBlueprint(axial_x, axial_y, axial_z, size, side)
     var t = 600 + (this.axial_x-this.axial_y)*width/2;
     var h = 350 + this.axial_z*(0.75)*height;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
 
     this.points = "";
-    for(var i = 0; i<=3; i++) // HOLY SHIT
+    for(var i = 0; i<=3; i++)
     {
         this.points += this.get_SideEdge_corner(i,side).i + "," + this.get_SideEdge_corner(i,side).l + " ";
     }
@@ -915,6 +1162,8 @@ function IntersectionBlueprint(axial_x, axial_y, axial_z,count)
     this.axial_z = axial_z;
     this.radius = 8;
 
+
+
     var height = 120;
     var width = Math.sqrt(3)/2*height;
 
@@ -926,7 +1175,7 @@ function IntersectionBlueprint(axial_x, axial_y, axial_z,count)
     else
         hoffset=57;
 
-    this.centre = {x:  t, y:  h}; // CONVERT POINTS INTO VERTICES NEED!!!!!
+    this.centre = {x:  t, y:  h};
     angle = this.get_Intersection_corner(count);
     t +=60* Math.cos(angle);
     h +=hoffset* Math.sin(angle);
@@ -942,7 +1191,11 @@ IntersectionBlueprint.prototype.get_Intersection_corner = function(vertex)
     return angle_rad;
 }
 
-
+function startTimer() {
+    var x = document.getElementById("noResource");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+}
 
 
 // a js object that describes the hexagons that make up the board.
@@ -1284,9 +1537,47 @@ var intersectionAttrs = boardIntersections
     .attr("r", function (d) { return d.radius; })
     .attr("id",function (d) { return d.id; })
     .attr("fill","black")
-    .attr("stroke","black")
-    .on("click", function (d) { d3.select(this).attr("fill", color)
-        .attr("stroke","black");});
+    .attr("stroke","white")
+    .attr("hasSettlement", "false")
+    .attr("hasCity", "false")
+    .on("click", function (d) {
+
+
+        if(currUser.match(myUsername)){
+            if(boardEnabled){
+
+                if(!settlementPlaced){
+                    if(d3.select(this).attr("hasSettlement").match("false")) {
+                        placeSettlement(d.id);
+                        d3.select(this).attr("hasSettlement", "true");
+                    }
+
+                }else if(!cityPlaced){
+                    if(d3.select(this).attr("hasCity").match("false")) {
+                        placeCity(d.id);
+                        d3.select(this).attr("hasCity", "true");
+                    }
+
+                }else if(enableBuyAndUpgrade){
+
+                    if(d3.select(this).attr("hasSettlement").match("false")){
+
+                        buildSettlement(d.id);
+
+                    }else if(d3.select(this).attr("hasCity").match("false")){
+
+                        buildCity(d.id);
+
+                    }
+                }
+            }
+
+
+
+        }
+
+
+    });
 
 // append the board edges to the DOM
 var edges = holder.selectAll("edges")
@@ -1294,13 +1585,36 @@ var edges = holder.selectAll("edges")
     .enter()
     .append("polygon");
 
-var edgeAttrs = edges
+var edgeAttrs = edges.attr("class", "hex " + "woood")
     .attr("points", function (d) { return d.points; })
     .attr("stroke", function (d) { return d.stroke; })
     .attr("id", function(d) { return d.id; })
     .attr("stroke-width", function (d) { return d.stroke_width; })
     .attr("fill", function (d) {return d.fill;})
-    .on("click", function (d) { d3.select(this).attr("fill", color);});
+    .attr("hasRoad", "false")
+    .on("click", function (d) {
+
+        if(currUser.match(myUsername)){
+            if(boardEnabled){
+                if(enablePlaceRoad1){
+                    if(!road1Placed){
+                        placeRoad(d.id);
+                    }
+
+                }else if(enablePlaceRoad2){
+                    if(!road2Placed){
+                        placeRoad(d.id);
+                    }
+                }else if(enableBuyAndUpgrade){
+                    if(d3.select(this).attr("hasRoad").match("false")){
+                        buildRoad(d.id);
+                    }
+                }
+            }
+        }
+
+
+    });
 
 // append the board production numbers
 var hexProdCircs = holder.selectAll("prodCircs")
