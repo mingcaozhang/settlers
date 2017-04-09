@@ -143,6 +143,33 @@ public class GameController {
         return pNew;
     }
 
+    @MessageMapping("/placeknight")
+    @SendTo("/topic/knight")
+    public ViewPiece placeKnight(ViewPiece pNew, Principal caller){
+        Player checkee = getPlayerFromString(caller.getName());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkBuyKnight(checkee) && gameManager.checkKnightPlaceEligibility(checker, pNew.getColor());
+        if (isValid){
+            gameManager.payKnight(checkee);
+            gameManager.placeKnight(checkee, checker);
+        }
+        pNew.setValid(isValid);
+        return pNew;
+    }
+
+    @MessageMapping("/upgradeknight")
+    @SendTo("/topic/knight")
+    public ViewPiece upgradeKnight(ViewPiece pNew, Principal caller){
+        Player checkee = getPlayerFromString(caller.getName());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkBuyKnight(checkee) && gameManager.checkUpgradeKnightEligibility(checker, pNew.getColor());
+        if (isValid){
+            gameManager.payKnight(checkee);
+            gameManager.upgradeKnight(checkee, checker);
+        }
+        pNew.setValid(isValid);
+        return pNew;
+    }
     // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")
@@ -359,9 +386,7 @@ public class GameController {
                 default:
                      hHex = new SeaHex(pHex.getId());
             }
-
         }
-
     }
 
     @MessageMapping("/intersection")
@@ -377,6 +402,5 @@ public class GameController {
     {
         gameManager.getGame().getBoard().setAllNeighbours();
         //gameManager.saveGame();
-
-    }
+   }
 }
