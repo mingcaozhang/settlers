@@ -20,6 +20,8 @@ import java.util.Map;
 @Controller
 public class GameController {
 
+    private static GameManager gameManager = GameManager.instance();
+
     private static ArrayList<String> currPlayerList = new ArrayList<String>(); // Get a list of players too?
     private static Game aGame;
     private static Map<String, Player> aPlayers ; // here
@@ -50,7 +52,7 @@ public class GameController {
 
         for(int i = 0 ; i < currPlayerList.size(); i++){
             if (currPlayerList.get(i).matches(name)){
-                String color = GameManager.instance().getGame().getPlayers().get(i).getColor();
+                String color = gameManager.instance().getGame().getPlayers().get(i).getColor();
                 model.addAttribute("myColor", color);
             }
         }
@@ -60,16 +62,16 @@ public class GameController {
         }
 
         for(int i = 0 ; i < currPlayerList.size(); i++){
-            model.addAttribute("player"+(i+1)+"_c", GameManager.getGame().getPlayers().get(i).getColor());
+            model.addAttribute("player"+(i+1)+"_c", gameManager.getGame().getPlayers().get(i).getColor());
         }
-        aGame = GameManager.getGame();
+        aGame = gameManager.getGame();
 
         return "game";
     }
 
     private Player getPlayerFromString(String pPlayerString){
         Player returnedPlayer = null;
-        for (Player player : GameManager.getGame().getPlayers()){
+        for (Player player : gameManager.getGame().getPlayers()){
             if (player.getUsername().equals(pPlayerString)){
                 returnedPlayer = player;
             }
@@ -81,12 +83,12 @@ public class GameController {
     @SendTo("/topic/settlement")
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
         Player checkee = getPlayerFromString(caller.getName());
-        Intersection checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        boolean isValid = GameManager.checkBuySettlement(checkee) && GameManager.checkSettlementPlaceEligibility(checker,pNew.getColor());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkBuySettlement(checkee) && gameManager.checkSettlementPlaceEligibility(checker,pNew.getColor());
         if(isValid)
         {
-            GameManager.paySettlement(checkee);
-            GameManager.placeSettlement(checkee, checker);
+            gameManager.paySettlement(checkee);
+            gameManager.placeSettlement(checkee, checker);
         }
         pNew.setValid(isValid);
         return pNew;
@@ -96,12 +98,12 @@ public class GameController {
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
         Player checkee = getPlayerFromString(caller.getName());
-        Intersection checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        boolean isValid = GameManager.checkBuyCity(checkee) && GameManager.checkCityPlaceEligibility(checker,pNew.getColor());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkBuyCity(checkee) && gameManager.checkCityPlaceEligibility(checker,pNew.getColor());
         if(isValid)
         {
-            GameManager.payCity(checkee);
-            GameManager.placeCity(checkee, checker);
+            gameManager.payCity(checkee);
+            gameManager.placeCity(checkee, checker);
         }
         pNew.setValid(isValid);
         return pNew;
@@ -111,12 +113,12 @@ public class GameController {
     @SendTo("/topic/road")
     public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
         Player checkee = getPlayerFromString(caller.getName());
-        Edge checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        boolean isValid = GameManager.checkBuyRoad(checkee) && GameManager.checkRoadEligibility(checker,pNew.getColor());
+        Edge checker = gameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        boolean isValid = gameManager.checkBuyRoad(checkee) && gameManager.checkRoadEligibility(checker,pNew.getColor());
         if(isValid)
         {
-            GameManager.payRoad(checkee);
-            GameManager.placeRoad(checkee, checker);
+            gameManager.payRoad(checkee);
+            gameManager.placeRoad(checkee, checker);
         }
         pNew.setValid(isValid);
         return pNew;
@@ -126,27 +128,54 @@ public class GameController {
     @SendTo("/topic/ship")
     public ViewPiece placeShip(ViewPiece pNew, Principal caller){
         Player checkee = getPlayerFromString(caller.getName());
-        Edge checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        boolean isValid = GameManager.checkBuyShip(checkee) && GameManager.checkShipEligibility(checker,pNew.getColor());
+        Edge checker = gameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        boolean isValid = gameManager.checkBuyShip(checkee) && gameManager.checkShipEligibility(checker,pNew.getColor());
         if(isValid)
         {
-            GameManager.payShip(checkee);
-            GameManager.placeShip(checkee, checker);
+            gameManager.payShip(checkee);
+            gameManager.placeShip(checkee, checker);
         }
         pNew.setValid(isValid);
         return pNew;
     }
 
+    @MessageMapping("/placeknight")
+    @SendTo("/topic/knight")
+    public ViewPiece placeKnight(ViewPiece pNew, Principal caller){
+        Player checkee = getPlayerFromString(caller.getName());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkBuyKnight(checkee) && gameManager.checkKnightPlaceEligibility(checker, pNew.getColor());
+        if (isValid){
+            gameManager.payKnight(checkee);
+            gameManager.placeKnight(checkee, checker);
+        }
+        pNew.setValid(isValid);
+        return pNew;
+    }
+
+    @MessageMapping("/upgradeknight")
+    @SendTo("/topic/knight")
+    public ViewPiece upgradeKnight(ViewPiece pNew, Principal caller){
+        Player checkee = getPlayerFromString(caller.getName());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkBuyKnight(checkee) && gameManager.checkUpgradeKnightEligibility(checker, pNew.getColor());
+        if (isValid){
+            gameManager.payKnight(checkee);
+            gameManager.upgradeKnight(checkee, checker);
+        }
+        pNew.setValid(isValid);
+        return pNew;
+    }
     // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")
     @SendTo("/topic/settlement")
     public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
         Player checkee = getPlayerFromString(caller.getName());
-        Intersection checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        boolean isValid = GameManager.checkIntersectionSetupEligibility(checker);
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkIntersectionSetupEligibility(checker);
         if(isValid) {
-            GameManager.placeSettlement(checkee, checker);
+            gameManager.placeSettlement(checkee, checker);
         }
         pNew.setValid(isValid);
         return pNew;
@@ -156,10 +185,10 @@ public class GameController {
     @SendTo("/topic/city")
     public ViewPiece setupCity(ViewPiece pNew, Principal caller){
         Player checkee = getPlayerFromString(caller.getName());
-        Intersection checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        boolean isValid = GameManager.checkIntersectionSetupEligibility(checker);
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkIntersectionSetupEligibility(checker);
         if(isValid) {
-            GameManager.placeCity(checkee, checker);
+            gameManager.placeCity(checkee, checker);
         }
         pNew.setValid(isValid);
         return pNew;
@@ -169,10 +198,10 @@ public class GameController {
     @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller) {
         Player checkee = getPlayerFromString(caller.getName());
-        Edge checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        boolean isValid = GameManager.checkBuyRoad(checkee) && GameManager.checkRoadEligibility(checker, pNew.getColor());
+        Edge checker = gameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        boolean isValid = gameManager.checkBuyRoad(checkee) && gameManager.checkRoadEligibility(checker, pNew.getColor());
         if (isValid){
-            GameManager.placeRoad(checkee, checker);
+            gameManager.placeRoad(checkee, checker);
         }
         pNew.setValid(isValid);
         return pNew;
@@ -180,14 +209,14 @@ public class GameController {
 
     @SendTo("/topic/playerIncrement")
     public void setupPayout(){
-        GameManager.setupPayout();
+        gameManager.setupPayout();
         showPlayerIncrement();
     }
 
     @MessageMapping("/rolldice")
     @SendTo("/topic/dice")
     public DiceRoll showDice(DiceRoll pDice){
-        GameManager.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());
+        gameManager.rollDice(pDice.getYellow(), pDice.getRed(), pDice.getEvent());
         return pDice;
     }
 
@@ -201,7 +230,7 @@ public class GameController {
 
     private void setPlayerIncrement(PlayerIncrement pIncrement){
         for (String pUsername : currPlayerList){
-            for (Player player : GameManager.getGame().getPlayers()) {
+            for (Player player : gameManager.getGame().getPlayers()) {
                 if (pUsername.equals(player.getUsername())) {
                     int index = currPlayerList.indexOf(player.getUsername());
                     switch (index) {
@@ -297,7 +326,7 @@ public class GameController {
     //    System.out.println(aEdge.getX());
     //    System.out.println(aEdge.getY());
     //    System.out.println(aEdge.getPrefix());
-        GameManager.getGame().getBoard().getEdges().put(aEdge.getId(),aEdge);
+        gameManager.getGame().getBoard().getEdges().put(aEdge.getId(),aEdge);
 
     }
 
@@ -350,7 +379,7 @@ public class GameController {
                     aHex = new SeaHex(pHex.getId());
             }
 */
-            GameManager.getGame().getBoard().getHexes().put(aLandHex.getId(), aLandHex);
+            gameManager.getGame().getBoard().getHexes().put(aLandHex.getId(), aLandHex);
       //  }
 
     }
@@ -360,12 +389,12 @@ public class GameController {
 
        // System.out.println("Intersection");
         Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
-        GameManager.getGame().getBoard().getIntersections().put(aIntersection.getId(),aIntersection);
+        gameManager.getGame().getBoard().getIntersections().put(aIntersection.getId(),aIntersection);
     }
 
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception
     {
-        GameManager.getGame().getBoard().setAllNeighbours();
+        gameManager.getGame().getBoard().setAllNeighbours();
     }
 }

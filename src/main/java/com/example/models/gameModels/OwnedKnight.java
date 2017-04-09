@@ -30,4 +30,19 @@ public class OwnedKnight {
     public int getStrength(){
         return aUnit.strength();
     }
+
+    public Unit.Knight getUnit(){
+        return aUnit;
+    }
+
+    public Unit.Knight getUpgrade(){
+        return Unit.Knight.values()[aUnit.ordinal() + 1];
+    }
+
+    public boolean canUpgrade(){
+        if (aUnit.ordinal() == Unit.Knight.values().length - 1){
+            return false;
+        }
+        return true;
+    }
 }

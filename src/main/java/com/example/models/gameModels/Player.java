@@ -433,7 +433,7 @@ public class Player {
         assert (aKnights.get(pKnight) < Unit.Knight.maxKnights());
         aKnights.put(pKnight, aKnights.get(pKnight) + 1);
     }
-    private boolean canGetKnight(Unit.Knight pKnight) {
+    public boolean canGetKnight(Unit.Knight pKnight) {
         return (aKnights.get(pKnight) > 0);
     }
     public OwnedKnight removeKnight(Unit.Knight pKnight) {
