@@ -196,19 +196,19 @@ public class GameManager {
     FUNCTIONS TO PAY FOR UNITS
      */
 
-    private void paySettlement(Player pPlayer){
+    public void paySettlement(Player pPlayer){
         pPlayer.removeResource(StealableCard.Resource.SHEEP, 1);
         pPlayer.removeResource(StealableCard.Resource.WHEAT, 1);
         pPlayer.removeResource(StealableCard.Resource.BRICK, 1);
         pPlayer.removeResource(StealableCard.Resource.WOOD, 1);
     }
 
-    private void payCity(Player pPlayer){
+    public void payCity(Player pPlayer){
         pPlayer.removeResource(StealableCard.Resource.WHEAT, 2);
         pPlayer.removeResource(StealableCard.Resource.ORE, 3);
     }
 
-    private void payRoad(Player pPlayer){
+    public void payRoad(Player pPlayer){
         pPlayer.removeResource(StealableCard.Resource.BRICK, 1);
         pPlayer.removeResource(StealableCard.Resource.WOOD, 1);
     }
@@ -257,14 +257,14 @@ public class GameManager {
         return true;
     }
 
-    private boolean checkBuyCity(Player pPlayer){
+    public boolean checkBuyCity(Player pPlayer){
         if (pPlayer.getResourceCards().get(StealableCard.Resource.ORE) < 3 || pPlayer.getResourceCards().get(StealableCard.Resource.WHEAT) < 2){
             return false;
         }
         return true;
     }
 
-    private boolean checkBuyRoad(Player pPlayer){
+    public boolean checkBuyRoad(Player pPlayer){
         if (pPlayer.getResourceCards().get(StealableCard.Resource.WOOD) == 0 || pPlayer.getResourceCards().get(StealableCard.Resource.BRICK) == 0){
             return false;
         }
@@ -325,7 +325,7 @@ public class GameManager {
     FUNCTIONS TO CHECK IF BUILDINGS CAN BE SETUP
      */
 
-    public static boolean checkIntersectionSetupEligibility(Intersection pIntersection){
+    public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
         if(pIntersection.getOccupancyFlag())
             return false;
 
@@ -351,7 +351,7 @@ public class GameManager {
     FUNCTIONS TO CHECK IF TRANSPORTS CAN BE PLACED/SETUP
      */
 
-    public static boolean checkRoadEligibility(Edge pEdge, String pColor){
+    public boolean checkRoadEligibility(Edge pEdge, String pColor){
         if(pEdge.getOccupancyFlag())
             return false;
 

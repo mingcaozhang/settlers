@@ -33,31 +33,7 @@ public class Game {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Game)) return false;
 
-        Game game = (Game) o;
-
-        if (aVPsToWin != game.aVPsToWin) return false;
-        if (aBarbarianPosition != game.aBarbarianPosition) return false;
-        if (aGoldBank != game.aGoldBank) return false;
-        if (aArmyStrength != game.aArmyStrength) return false;
-        if (aBarbarianStrength != game.aBarbarianStrength) return false;
-        if (aTurnCounter != game.aTurnCounter) return false;
-        if (gameid != null ? !gameid.equals(game.gameid) : game.gameid != null) return false;
-        if (aPlayers != null ? !aPlayers.equals(game.aPlayers) : game.aPlayers != null) return false;
-        if (aBoard != null ? !aBoard.equals(game.aBoard) : game.aBoard != null) return false;
-        if (aResourceCards != null ? !aResourceCards.equals(game.aResourceCards) : game.aResourceCards != null)
-            return false;
-        if (aCommodityCards != null ? !aCommodityCards.equals(game.aCommodityCards) : game.aCommodityCards != null)
-            return false;
-        if (aPhase != game.aPhase) return false;
-        if (aRedDice != game.aRedDice) return false;
-        if (aYellowDice != game.aYellowDice) return false;
-        return aEventDice == game.aEventDice;
-    }
 
     @Override
     public int hashCode() {
