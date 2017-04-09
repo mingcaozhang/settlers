@@ -290,6 +290,15 @@ public class GameManager {
 
         List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
         List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
+        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
+        boolean water = true;
+        for(Hex aHex:hNeighbours) {
+            if(aHex.getTerrainType() != TerrainType.Sea)
+                water =false;
+        }
+        if(water){  // settlement is surrounded by water
+            return false;
+        }
 
         for(Intersection aIntersection:iNeighbours) {
             if(aIntersection.getBuilding() != null)

@@ -2,15 +2,14 @@ package com.example.controllers.network;
 
 import com.example.models.gameModels.*;
 import com.example.viewobjects.*;
-//import com.google.gson.Gson;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.json.*;
+import com.google.gson.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -298,56 +297,59 @@ public class GameController {
     }
 
     @MessageMapping("/hex")
-    public void getHex(ViewHex pHex) throws Exception{
+    public void getHex(String bigJson) throws Exception{
 
-
-        Hex aHex;
-        LandHex aLandHex = new LandHex(pHex.getId(),6,TerrainType.Fields);
-        //System.out.println(seaHex.getId());
-       // System.out.println("Hexagon");
-      /*  JSONArray aArray = new JSONArray(bigJson);
+        JSONArray aArray = new JSONArray(bigJson);
         Gson gson = new Gson();
 
         for(int i=0;i<aArray.length();i++) {
-
-         //   System.out.println(i+" out of "+aArray.length());
             JSONObject jsonHex = aArray.getJSONObject(i);
-         //   System.out.println(jsonHex);
 
             ViewHex pHex = gson.fromJson(jsonHex.toString(), ViewHex.class);
-          //  System.out.println(pHex.getId());
-
 
             switch (pHex.getTerrainType()) {
                 case "wood":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Forest);
+                    LandHex aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Forest);
+                    GameManager.getGame().getBoard().getHexes().put(aHex.getId(), aHex);
+                    GameManager.getGame().getBoard().getLandHexes().get(aHex.getProductionNumber()).add(aHex);
                     break;
                 case "ore":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Mountains);
+                    LandHex bHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Mountains);
+                    GameManager.getGame().getBoard().getHexes().put(bHex.getId(), bHex);
+                    GameManager.getGame().getBoard().getLandHexes().get(bHex.getProductionNumber()).add(bHex);
                     break;
                 case "brick":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Hills);
+                    LandHex cHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Hills);
+                    GameManager.getGame().getBoard().getHexes().put(cHex.getId(), cHex);
+                    GameManager.getGame().getBoard().getLandHexes().get(cHex.getProductionNumber()).add(cHex);
                     break;
                 case "sheep":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Pasture);
+                    LandHex dHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Pasture);
+                    GameManager.getGame().getBoard().getHexes().put(dHex.getId(), dHex);
+                    GameManager.getGame().getBoard().getLandHexes().get(dHex.getProductionNumber()).add(dHex);
                     break;
                 case "gold":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.GoldMine);
+                    LandHex eHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.GoldMine);
+                    GameManager.getGame().getBoard().getHexes().put(eHex.getId(), eHex);
+                    GameManager.getGame().getBoard().getLandHexes().get(eHex.getProductionNumber()).add(eHex);
                     break;
                 case "wheat":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Fields);
+                    LandHex fHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Fields);
+                    GameManager.getGame().getBoard().getHexes().put(fHex.getId(), fHex);
+                    GameManager.getGame().getBoard().getLandHexes().get(fHex.getProductionNumber()).add(fHex);
                     break;
                 case "desert":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Desert);
+                    LandHex gHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Desert);
+                    GameManager.getGame().getBoard().getHexes().put(gHex.getId(), gHex);
+                    GameManager.getGame().getBoard().getLandHexes().get(gHex.getProductionNumber()).add(gHex);
                     break;
                 case "sea":
-                    aHex = new SeaHex(pHex.getId());
+                    SeaHex hHex = new SeaHex(pHex.getId());
                 default:
-                    aHex = new SeaHex(pHex.getId());
+                     hHex = new SeaHex(pHex.getId());
             }
-*/
-            GameManager.getGame().getBoard().getHexes().put(aLandHex.getId(), aLandHex);
-      //  }
+
+        }
 
     }
 

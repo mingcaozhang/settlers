@@ -1234,7 +1234,7 @@ function init() {
 
 // a js object that describes the hexagons that make up the board.
     jsonPolygons = [];
-    /*
+
     jsonPolygons = [{
         "x": 340.19237886466846,
         "y": 620,
@@ -1892,7 +1892,7 @@ function init() {
             "radius": 14,
             "number": 2
         }, {"x_coord": 963.7306695894642, "y_coord": 260, "x_axial": 4, "y_axial": -3, "radius": 14, "number": 12}];
-*/
+
 
     var jsonEdges = [];
     var jsonIntersections = [];
@@ -1926,7 +1926,7 @@ function init() {
 
 
                 // MAKE HEX
-
+            /*
                  var hex = new HexBlueprint(x, y, x+y, hxradius, '#00b377');
                  var Random = Math.floor(Math.random() * 12) +1;
                 var polyValues = {"x": hex.centre.x, "y": hex.centre.y,
@@ -1935,7 +1935,7 @@ function init() {
                  if(startingPlayer.match(myUsername)) {
                  sendHex(polyValues);
                  }
-
+            */
             /*    if (startingPlayer.match(myUsername)) {
                     sendHex(jsonPolygons);
             }*/
@@ -2372,7 +2372,7 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
 
 // append the board production numbers
 var hexProdCircs = holder.selectAll("prodCircs")
- //   .data(jsonNumCircles)
+    .data(jsonNumCircles)
     .enter()
     .append("circle");
 
