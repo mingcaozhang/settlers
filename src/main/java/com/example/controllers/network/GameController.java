@@ -67,88 +67,73 @@ public class GameController {
         return "game";
     }
 
+    private Player getPlayerFromString(String pPlayerString){
+        Player returnedPlayer = null;
+        for (Player player : GameManager.getGame().getPlayers()){
+            if (player.getUsername().equals(pPlayerString)){
+                returnedPlayer = player;
+            }
+        }
+        return returnedPlayer;
+    }
 
     @MessageMapping("/placesettlement")
     @SendTo("/topic/settlement")
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
-        Player checkee;
-        boolean isValid;
+        Player checkee = getPlayerFromString(caller.getName());
         Intersection checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        for (Player player : GameManager.getGame().getPlayers()) {
-            if (player.getUsername().equals(caller.getName())) {
-                checkee = player;
-                isValid = GameManager.checkBuySettlement(checkee) && GameManager.checkSettlementPlaceEligibility(checker,pNew.getColor());
-                if(isValid)
-                {
-                    GameManager.paySettlement(checkee);
-                    GameManager.placeSettlement(checkee, checker);
-                }
-                pNew.setValid(isValid);
-            }
+        boolean isValid = GameManager.checkBuySettlement(checkee) && GameManager.checkSettlementPlaceEligibility(checker,pNew.getColor());
+        if(isValid)
+        {
+            GameManager.paySettlement(checkee);
+            GameManager.placeSettlement(checkee, checker);
         }
+        pNew.setValid(isValid);
         return pNew;
     }
 
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
-        Player checkee;
-        boolean isValid;
+        Player checkee = getPlayerFromString(caller.getName());
         Intersection checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        for (Player player : GameManager.getGame().getPlayers()) {
-            if (player.getUsername().equals(caller.getName())) {
-                checkee = player;
-                isValid = GameManager.checkBuyCity(checkee) && GameManager.checkCityPlaceEligibility(checker,pNew.getColor());
-                if(isValid)
-                {
-                    GameManager.payCity(checkee);
-                    GameManager.placeCity(checkee, checker);
-                }
-                pNew.setValid(isValid);
-            }
+        boolean isValid = GameManager.checkBuyCity(checkee) && GameManager.checkCityPlaceEligibility(checker,pNew.getColor());
+        if(isValid)
+        {
+            GameManager.payCity(checkee);
+            GameManager.placeCity(checkee, checker);
         }
+        pNew.setValid(isValid);
         return pNew;
     }
 
     @MessageMapping("/placeroad")
     @SendTo("/topic/road")
     public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
-        Player checkee;
-        boolean isValid;
+        Player checkee = getPlayerFromString(caller.getName());
         Edge checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        for (Player player : GameManager.getGame().getPlayers()) {
-            if (player.getUsername().equals(caller.getName())) {
-                checkee = player;
-                isValid = GameManager.checkBuyRoad(checkee) && GameManager.checkRoadEligibility(checker,pNew.getColor());
-                if(isValid)
-                {
-                    GameManager.payRoad(checkee);
-                    GameManager.placeRoad(checkee, checker);
-                }
-                pNew.setValid(isValid);
-            }
+        boolean isValid = GameManager.checkBuyRoad(checkee) && GameManager.checkRoadEligibility(checker,pNew.getColor());
+        if(isValid)
+        {
+            GameManager.payRoad(checkee);
+            GameManager.placeRoad(checkee, checker);
         }
+        pNew.setValid(isValid);
         return pNew;
     }
 
     @MessageMapping("/placeship")
     @SendTo("/topic/ship")
     public ViewPiece placeShip(ViewPiece pNew, Principal caller){
-        Player checkee;
-        boolean isValid;
+        Player checkee = getPlayerFromString(caller.getName());
         Edge checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        for (Player player : GameManager.getGame().getPlayers()) {
-            if (player.getUsername().equals(caller.getName())) {
-                checkee = player;
-                isValid = GameManager.checkBuyShip(checkee) && GameManager.checkShipEligibility(checker,pNew.getColor());
-                if(isValid)
-                {
-                    GameManager.payShip(checkee);
-                    GameManager.placeShip(checkee, checker);
-                }
-                pNew.setValid(isValid);
-            }
+        boolean isValid = GameManager.checkBuyShip(checkee) && GameManager.checkShipEligibility(checker,pNew.getColor());
+        if(isValid)
+        {
+            GameManager.payShip(checkee);
+            GameManager.placeShip(checkee, checker);
         }
+        pNew.setValid(isValid);
         return pNew;
     }
 
@@ -157,57 +142,39 @@ public class GameController {
     @MessageMapping("/setupsettlement")
     @SendTo("/topic/settlement")
     public ViewPiece setupSettlement(ViewPiece pNew, Principal caller){
-        Player checkee;
-        boolean isValid;
+        Player checkee = getPlayerFromString(caller.getName());
         Intersection checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        for (Player player : GameManager.getGame().getPlayers()) {
-            if (player.getUsername().equals(caller.getName())) {
-                checkee = player;
-                isValid = GameManager.checkIntersectionSetupEligibility(checker);
-                if(isValid) {
-                    GameManager.placeSettlement(checkee, checker);
-                }
-                pNew.setValid(isValid);
-            }
+        boolean isValid = GameManager.checkIntersectionSetupEligibility(checker);
+        if(isValid) {
+            GameManager.placeSettlement(checkee, checker);
         }
+        pNew.setValid(isValid);
         return pNew;
     }
 
     @MessageMapping("/setupcity")
     @SendTo("/topic/city")
     public ViewPiece setupCity(ViewPiece pNew, Principal caller){
-        Player checkee;
-        boolean isValid;
+        Player checkee = getPlayerFromString(caller.getName());
         Intersection checker = GameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        for (Player player : GameManager.getGame().getPlayers()) {
-            if (player.getUsername().equals(caller.getName())) {
-                checkee = player;
-                isValid = GameManager.checkIntersectionSetupEligibility(checker);
-                if(isValid) {
-                    GameManager.placeCity(checkee, checker);
-                }
-                pNew.setValid(isValid);
-            }
+        boolean isValid = GameManager.checkIntersectionSetupEligibility(checker);
+        if(isValid) {
+            GameManager.placeCity(checkee, checker);
         }
+        pNew.setValid(isValid);
         return pNew;
     }
 
     @MessageMapping("/setuproad")
     @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller) {
-        Player checkee;
-        boolean isValid;
+        Player checkee = getPlayerFromString(caller.getName());
         Edge checker = GameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        for (Player player : GameManager.getGame().getPlayers()) {
-            if (player.getUsername().equals(caller.getName())) {
-                checkee = player;
-                isValid = GameManager.checkBuyRoad(checkee) && GameManager.checkRoadEligibility(checker, pNew.getColor());
-                if (isValid) {
-                    GameManager.placeRoad(checkee, checker);
-                }
-                pNew.setValid(isValid);
-            }
+        boolean isValid = GameManager.checkBuyRoad(checkee) && GameManager.checkRoadEligibility(checker, pNew.getColor());
+        if (isValid){
+            GameManager.placeRoad(checkee, checker);
         }
+        pNew.setValid(isValid);
         return pNew;
     }
 
