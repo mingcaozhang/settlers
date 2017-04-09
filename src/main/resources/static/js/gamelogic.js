@@ -1750,9 +1750,7 @@ function init() {
 
     }
     if(startingPlayer.match(myUsername)) {
-        // BILLY CAMPOLI
         sendHex(jsonPolygons);
-
     }
 
 
