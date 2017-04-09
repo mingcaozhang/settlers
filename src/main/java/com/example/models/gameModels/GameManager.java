@@ -1,9 +1,11 @@
 package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
-import com.example.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GameManager {
     private static GameManager gameManager = new GameManager();
@@ -283,6 +285,30 @@ public class GameManager {
     /*
     FUNCTIONS TO CHECK IF BUILDINGS CAN BE PLACED
      */
+
+    public boolean checkKnightPlaceEligibility(Intersection pIntersection, String pColor){
+        if(pIntersection.getOccupancyFlag())
+            return false;
+
+        List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
+        List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
+        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
+        boolean water = true;
+        for(Hex aHex:hNeighbours) {
+            if(aHex.getTerrainType() != TerrainType.Sea)
+                water =false;
+        }
+        if(water){  // settlement is surrounded by water
+            return false;
+        }
+        for(Edge aEdge:eNeighbours){
+            if(aEdge.getOccupancyFlag()){
+                if(aEdge.getTransport().getOwner().getColor()==pColor)
+                    return true;
+            }
+        }
+        return false;
+    }
 
     public static boolean checkSettlementPlaceEligibility(Intersection pIntersection, String pColor){
         if(pIntersection.getOccupancyFlag())

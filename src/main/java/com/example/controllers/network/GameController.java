@@ -151,6 +151,16 @@ public class GameController {
         return pNew;
     }
 
+/*    @MessageMapping("/placeknight")
+    @SendTo("/topic/knight")
+    public ViewPiece placeKnight(ViewPiece pNew, Principal caller){
+
+        // TODO
+
+    }
+*/
+
+
     // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")
@@ -209,6 +219,7 @@ public class GameController {
         }
         return pNew;
     }
+
 
     //TODO @MessageMapping(" ")
     @SendTo("/topic/playerIncrement")
@@ -318,19 +329,27 @@ public class GameController {
 
 
     @MessageMapping("/edge")
-    public void getEdge(ViewEdge pEdge) throws Exception{
+    @SendTo("/topic/geo")
+    public String getEdge(String edgeString) throws Exception{
 
-        Edge aEdge = new Edge(pEdge.getId());
-    //    System.out.println(aEdge.getId());
-    //    System.out.println(aEdge.getX());
-    //    System.out.println(aEdge.getY());
-    //    System.out.println(aEdge.getPrefix());
-        GameManager.getGame().getBoard().getEdges().put(aEdge.getId(),aEdge);
+        System.out.println("   Adding Edges to Hash");
+        JSONArray aArray = new JSONArray(edgeString);
+        Gson gson = new Gson();
 
+        for(int i=0;i<aArray.length();i++) {
+            JSONObject jsonHex = aArray.getJSONObject(i);
+
+            ViewEdge pEdge = gson.fromJson(jsonHex.toString(), ViewEdge.class);
+            Edge aEdge = new Edge(pEdge.getId());
+            GameManager.getGame().getBoard().getEdges().put(aEdge.getId(), aEdge);
+        }
+        return "edge";
     }
 
     @MessageMapping("/hex")
-    public void getHex(String bigJson) throws Exception{
+    @SendTo("/topic/geo")
+    public String getHex(String bigJson) throws Exception{
+        System.out.println("   Adding Hexes to Hash");
 
         JSONArray aArray = new JSONArray(bigJson);
         Gson gson = new Gson();
@@ -383,16 +402,28 @@ public class GameController {
             }
 
         }
-
+        return "hex";
     }
 
     @MessageMapping("/intersection")
-    public void getIntersection(ViewIntersection pIntersection) throws Exception{
+    @SendTo("/topic/geo")
+    public String getIntersection(String intersectionString) throws Exception{
+        System.out.println("   Adding Intersections to Hash");
 
-       // System.out.println("Intersection");
-        Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
-        GameManager.getGame().getBoard().getIntersections().put(aIntersection.getId(),aIntersection);
+
+        JSONArray aArray = new JSONArray(intersectionString);
+        Gson gson = new Gson();
+
+        for(int i=0;i<aArray.length();i++) {
+            JSONObject jsonHex = aArray.getJSONObject(i);
+
+            ViewIntersection pIntersection = gson.fromJson(jsonHex.toString(), ViewIntersection.class);
+            Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
+            GameManager.getGame().getBoard().getIntersections().put(aIntersection.getId(), aIntersection);
+        }
+        return "intersection";
     }
+
 
     @MessageMapping("/setNeighbours")
     public void setNeighbours() throws Exception

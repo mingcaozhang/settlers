@@ -51,6 +51,7 @@ public class Board {
 
 
     public void setAllNeighbours(){
+        System.out.println("Friendly Neighbourhood SPODERMAN");
         for (String aKey : aHexes.keySet()){
             System.out.println(aHexes.get(aKey).getId());
             System.out.println(aHexes.get(aKey).getId());
