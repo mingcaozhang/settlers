@@ -372,12 +372,111 @@ function endTurn() {
 
 }
 
+//Radio click on/off
+var clickBuyRoad = false;
+var clickBuySettlement = false;
+var clickUpgradeCity = false;
+var clickActivateKnight = false;
+var clickBuyKnight = false;
+var clickUpdateStrong = false;
+var clickUpdateMighty = false;
+var clickMoveShip = false;
 
+function buyRoad(){
+    clickBuyRoad = true;
 
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
 
+function buySettlement(){
+    clickBuySettlement = true;
 
+    clickBuyRoad = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
 
+function upgradeCity(){
+    clickUpgradeCity = true;
 
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function activateKnight(){
+    clickActivateKnight = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function buyKnight(){
+    clickBuyKnight = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function updateStrong(){
+    clickUpdateStrong = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function updateMighty(){
+    clickUpdateMighty = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickMoveShip = false;
+}
+
+function moveShip (){
+    clickMoveShip = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateMighty = false;
+    clickUpdateStrong = false;
+}
 
 //Activated to show attributes when player button is clicked
 function setAttributes() {
@@ -1191,10 +1290,11 @@ IntersectionBlueprint.prototype.get_Intersection_corner = function(vertex)
     return angle_rad;
 }
 
-function startTimer() {
+function startTimer()
+{
     var x = document.getElementById("noResource");
     x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 7000);
 }
 
 

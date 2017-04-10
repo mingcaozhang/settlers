@@ -89,43 +89,56 @@
             <tr>
                 <td>
                     <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
-                        <input type="radio" name="optradio">Buy Road</input>
+                        <input type="radio" name="optradio" id="bRoad" onclick="buyRoad()">Buy Road</input>
                     </label>
                 </td>
             </tr>
             <tr>
                 <td>
                     <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
-                        <input type="radio" name="optradio">Buy Settlement</input>
+                        <input type="radio" name="optradio" id="bSettlement" onclick="buySettlement()">Buy Settlement</input>
                     </label>
                 </td>
             </tr>
             <tr>
                 <td>
                     <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
-                        <input type="radio" name="optradio">Upgrade to City</input>
+                        <input type="radio" name="optradio" id="uCity" onclick="upgradeCity()">Upgrade to City</input>
                     </label>
                 </td>
             </tr>
             <tr>
                 <td>
                     <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
-                        <input type="radio" name="optradio">Buy Knight (basic)</input>
-                    </label>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
-                        <input type="radio" name="optradio">Upgrade Knight (strong)</input>
+                        <input type="radio" name="optradio" id="mShip" onclick="moveShip()">Move Ship</input>
                     </label>
                 </td>
             </tr>
             <tr>
                 <td>
                     <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
-                        <input type="radio" name="optradio">Upgrade Knight (mighty)</input>
+                        <input type="radio" name="optradio" id="aKnight" onclick="activateKnight()">Activate Knight</input>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
+                        <input type="radio" name="optradio" id="bKnight" onclick="buyKnight()">Buy Knight (basic)</input>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
+                        <input type="radio" name="optradio" id="uKnightStrong" onclick="updateStrong()">Upgrade Knight (strong)</input>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="radio" style="margin-bottom: 0px; margin-top: 0px;">
+                        <input type="radio" name="optradio" id="uKnightMighty" onclick="updateMighty()">Upgrade Knight (mighty)</input>
                     </label>
                 </td>
             </tr>
