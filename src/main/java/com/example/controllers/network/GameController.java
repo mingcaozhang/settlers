@@ -160,6 +160,20 @@ public class GameController {
         pNew.setValid(isValid);
         return pNew;
     }
+
+    @MessageMapping("/activateknight")
+    @SendTo("/topic/knight")
+    public ViewPiece activateKnight(ViewPiece pNew, Principal caller){
+        Player checkee = gameManager.getPlayerFromString(caller.getName());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkActivateEligibility(checker, pNew.getColor());
+        if (isValid){
+            gameManager.payActivation(checkee);
+            gameManager.activateKnight(checker);
+        }
+        pNew.setValid(isValid);
+        return pNew;
+    }
     // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")
@@ -295,7 +309,19 @@ public class GameController {
         pTrade.setValid(isValid);
         return pTrade;
     }
-    
+
+    @MessageMapping("/maritimetrade")
+    @SendTo("/topic/maritimetrade")
+    public ViewMaritimeTrade maritimeTrade(ViewMaritimeTrade pTrade, Principal caller){
+        MaritimeTrade aMaritimeTrade = pTrade.toMaritimeTrade();
+        boolean isValid = gameManager.checkMaritimeTradeEligibility(aMaritimeTrade);
+        if (isValid){
+            aMaritimeTrade.execute();
+        }
+        pTrade.setValid(isValid);
+        return pTrade;
+    }
+
     @MessageMapping("/endturn")
     @SendTo("/topic/turninfo")
     public PlayerAndPhase endTurn(Principal user){
