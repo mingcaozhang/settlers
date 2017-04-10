@@ -65,11 +65,11 @@ var nVictoryPt = 0;
 var nGold = 0;
 var barbarianCount = 0;
 
-//Place road, ship, settlement, city
-var pRoad;
-var pShip;
-var pSettlement;
-var pCity;
+/*Place road, ship, settlement, city
+ var pRoad;
+ var pShip;
+ var pSettlement;
+ var pCity;*/
 
 //Attributes for id
 var road;
@@ -141,6 +141,48 @@ var currUser;
 
 var currPlayer = document.getElementById("currPlayer");
 
+var colorList = [];
+var userList = [];
+userList.push(p1name);
+userList.push(p2name);
+//userList.push(p3name);
+//userList.push(p4name);
+colorList.push(p1color);
+colorList.push(p2color);
+//colorList.push(p3color);
+//colorList.push(p4color);
+
+
+var usersToPrint = [];
+var colorsToPrint = [];
+var arrayLength = userList.length;
+for (var i = 0; i < arrayLength; i++) {
+    if(!userList[i].match(myUsername)){
+        usersToPrint.push(userList[i]);
+        colorsToPrint.push(colorList[i]);
+    }
+}
+
+for(var i = 0; i<usersToPrint.length;i++){
+
+    if(i == 0){
+        var p2 = document.getElementById("player2");
+        p2.innerHTML = usersToPrint[i];
+        p2.className = "turnWabble";
+       // p2.disabled = false;
+    }else if(i==1){
+        var p3 = document.getElementById("player3");
+        p3.innerHTML = usersToPrint[i];
+        p3.style.background = "green";
+    }else if(i==2){
+        var p4 = document.getElementById("player4");
+        p4.innerHTML = usersToPrint[i];
+        p4.style.background = "blue";
+    }
+}
+
+
+
 connect();
 initializeTurn();
 
@@ -156,6 +198,8 @@ function initializeTurn(){
     currUser = startingPlayer;
     console.log("Player Starting is: "+startingPlayer);
 
+    setAttributes();
+
     if(startingPlayer.match(myUsername)){
         //enable all turn buttons
         //boardEnabled = true;
@@ -163,6 +207,8 @@ function initializeTurn(){
         enableBuyAndUpgrade = false;
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
+
+
 
 
     }else{
@@ -506,6 +552,112 @@ function endTurn() {
 
 }
 
+//Radio click on/off
+var clickBuyRoad = false;
+var clickBuySettlement = false;
+var clickUpgradeCity = false;
+var clickActivateKnight = false;
+var clickBuyKnight = false;
+var clickUpdateStrong = false;
+var clickUpdateMighty = false;
+var clickMoveShip = false;
+
+function buyRoad(){
+    clickBuyRoad = true;
+
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function buySettlement(){
+    clickBuySettlement = true;
+
+    clickBuyRoad = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function upgradeCity(){
+    clickUpgradeCity = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function activateKnight(){
+    clickActivateKnight = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function buyKnight(){
+    clickBuyKnight = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickUpdateStrong = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function updateStrong(){
+    clickUpdateStrong = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateMighty = false;
+    clickMoveShip = false;
+}
+
+function updateMighty(){
+    clickUpdateMighty = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateStrong = false;
+    clickMoveShip = false;
+}
+
+function moveShip (){
+    clickMoveShip = true;
+
+    clickBuyRoad = false;
+    clickBuySettlement = false;
+    clickUpgradeCity = false;
+    clickActivateKnight = false;
+    clickBuyKnight = false;
+    clickUpdateMighty = false;
+    clickUpdateStrong = false;
+}
+
 
 function disableMyButtons(){
 
@@ -519,10 +671,10 @@ function disableMyButtons(){
 //Activated to show attributes when player button is clicked
 function setAttributes() {
     //Place road, ship, settlement, city
-     pRoad = document.getElementById("pRoad");
-     pShip = document.getElementById("pShip");
-     pSettlement = document.getElementById("pSettlement");
-     pCity = document.getElementById("pCity");
+   // pRoad = document.getElementById("pRoad");
+   // pShip = document.getElementById("pShip");
+   // pSettlement = document.getElementById("pSettlement");
+    //pCity = document.getElementById("pCity");
 
     //Attribute id getters
     road = document.getElementById("road");
@@ -533,13 +685,13 @@ function setAttributes() {
     victoryPt = document.getElementById("victoryPt");
     gold = document.getElementById("gold");
     barbarian = document.getElementById("barbarian");
-    road.innerHTML = "Roads " + nRoad;
-    ship.innerHTML = "Ships " + nShip;
-    city.innerHTML = "Cities " + nCity;
-    wall.innerHTML = "Walls " + nWall;
-    settlement.innerHTML = "Settlements " + nSettlement;
-    victoryPt.innerHTML = "Victory Points " + nVictoryPt;
-    gold.innerHTML = "Golds " + nGold;
+    road.innerHTML = "Roads: " + nRoad;
+    ship.innerHTML = "Ships: " + nShip;
+    city.innerHTML = "Cities: " + nCity;
+    wall.innerHTML = "Walls: " + nWall;
+    settlement.innerHTML = "Settlements: " + nSettlement;
+    victoryPt.innerHTML = "Victory Points: " + nVictoryPt;
+    gold.innerHTML = "Golds: " + nGold;
 
     //Knights
     knight1 = document.getElementById("knight1");
@@ -549,7 +701,7 @@ function setAttributes() {
     knight1.innerHTML = "Rank 1: " + nKnight1;
     knight2.innerHTML = "Rank 2: " + nKnight2;
     knight3.innerHTML = "Rank 3: " + nKnight3;
-    totalKnight.innerHTML = "Knights " + nTotalKnight;
+    totalKnight.innerHTML = "Knights: " + nTotalKnight;
 
     //Resource Cards
     brick = document.getElementById("brick");
@@ -563,7 +715,7 @@ function setAttributes() {
     ore.innerHTML = nOre;
     sheep.innerHTML = nSheep;
     wheat.innerHTML = nWheat;
-    resourceCard.innerHTML = "Resource Cards " + nResourceCard;
+    resourceCard.innerHTML = "Resource Cards: " + nResourceCard;
 
     //Commodity Cards
     coin = document.getElementById("coin");
@@ -573,7 +725,7 @@ function setAttributes() {
     coin.innerHTML = nCoin;
     cloth.innerHTML = nCloth;
     book.innerHTML = nBook;
-    commodityCard.innerHTML = "Commodity Cards " + nCommodityCard;
+    commodityCard.innerHTML = "Commodity Cards: " + nCommodityCard;
 
     //Maritime Trade
     gBrick = document.getElementById("tradeBrick");
@@ -589,11 +741,11 @@ function setAttributes() {
     gWheat.innerHTML = "Give/Get";
     maritimeTrade.innerHTML = "Maritime Trade";
 
-    //Place road, ship, settlement, city
+    /*Place road, ship, settlement, city
      pRoad.innerHTML = "Place Roads " + nRoad;
      pShip.innerHTML = "Place Ship " + nShip;
      pSettlement.innerHTML = "Place Settlements " + nSettlement;
-     pCity.innerHTML = "Place Cities " + nCity;
+     pCity.innerHTML = "Place Cities " + nCity;*/
 }
 
 //Build road
@@ -1123,6 +1275,8 @@ function get() {
         return nBrick++;
     }
 }
+
+
 /////////////////////////// COPY PASTED BOARDMAP BELOW //////////////////////////////////
 
 
@@ -1294,6 +1448,13 @@ IntersectionBlueprint.prototype.get_Intersection_corner = function(vertex)
 }
 
 setTimeout(init,1000);
+
+function startTimer()
+{
+    var x = document.getElementById("noResource");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 7000);
+}
 
 function init() {
 
