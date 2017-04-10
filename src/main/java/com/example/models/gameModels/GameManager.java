@@ -196,6 +196,8 @@ public class GameManager {
     public void payKnight(Player pPlayer){
         pPlayer.removeResource(StealableCard.Resource.SHEEP, 1);
         pPlayer.removeResource(StealableCard.Resource.ORE, 1);
+    }
+
     public void placeKnight(Player pPlayer, Intersection pIntersection){
         OwnedKnight knight = pPlayer.removeKnight(Unit.Knight.BASIC);
         pIntersection.setKnight(knight);

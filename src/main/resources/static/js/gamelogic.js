@@ -302,6 +302,7 @@ function connect() {
             }else{
                 if(currUser.match(myUsername)){
                     //place alert invalid road here
+                    //TODO: ALERT HERE
 
                 }
 
@@ -336,7 +337,7 @@ function connect() {
             nWood = players[me+'Wood'] ;
             nOre = players[me+'Ore'];
             nSheep = players[me+'Sheep'];
-            //wheat = players[me+'Wheat'];
+            nWheat = players[me+'Wheat'];
             nCoin = players[me+'Coin'];
             nCloth = players[me+'Cloth'];
             nBook = players[me+'Paper'];
@@ -376,6 +377,7 @@ function connect() {
             }else{
                 if(currUser.match(myUsername)){
                     //illegal settlement error
+                    //TODO: ALERT HERE
                 }
 
             }
@@ -407,6 +409,7 @@ function connect() {
             }else{
                 if(currUser.match(myUsername)){
                     console.log("invalid city location");
+                    //TODO: ALERT HERE
                 }
 
 
@@ -416,10 +419,34 @@ function connect() {
         });
 
 
+        stompClient.subscribe('/topic/trade', function (trade) {
+            trade = JSON.parse((trade.body));
+
+
+            var valid = trade.valid;
+            var p1 = trade.aRequester;
+            var p2 = trade.aRequestee;
+
+            if(valid){
+                if(currUser.match(myUsername)) {
+                    getResources();
+                }
+            }else{
+                if(p1.match(myUsername) || p2.match(myUsername)){
+                    //TODO: ALERT HERE
+
+                }
+
+            }
+
+        });
+
+
 
 
     });
 }
+
 
 
 function sendEdge(Edge){
@@ -438,6 +465,7 @@ function readySetNeighbours(){
     stompClient.send("/app/setNeighbours",{},{});
 }
 
+
 function getResources(){
     stompClient.send("/app/getResources",{},{});
 
@@ -447,6 +475,9 @@ function setupDone(){
     stompClient.send("/app/setupDone",{},{});
 }
 
+function requestTrade(trade){
+    stompClient.send("/app/trade",{},JSON.stringify(trade))
+}
 
 //Roll Dice
 function rollDice() {

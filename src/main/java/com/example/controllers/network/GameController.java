@@ -288,6 +288,7 @@ public class GameController {
         }
     }
 
+
     @MessageMapping("/endturn")
     @SendTo("/topic/turninfo")
     public PlayerAndPhase endTurn(Principal user){
