@@ -167,16 +167,6 @@ public class Player {
         this.aTransports = aTransports;
     }
 
-
-
-    public String getColor() {
-        return aColor;
-    }
-
-    public String getUsername() {
-        return aUsername;
-    }
-
     public String getaColor() {
         return aColor;
     }
@@ -331,43 +321,6 @@ public class Player {
 
     public void setExec(ExecuteCard exec) {
         this.exec = exec;
-    }
-
-    public int getGold() {
-        return aGold;
-    }
-
-    public int getIndex() {
-        return aIndex;
-    }
-
-    public boolean hasMerchant() {
-        return aMerchant;
-    }
-
-    public boolean hasLongestTradeRoute() {
-        return aLongestTradeRoute;
-    }
-
-    public boolean hasAqueduct() {
-        return aAqueduct;
-    }
-
-    public boolean hasFortress() {
-        return aFortress;
-    }
-
-    public boolean hasTradingHouse() {
-        return aTradingHouse;
-    }
-
-
-    public Map<StealableCard.Resource, Integer> getResourceCards(){
-        return aResourceCards;
-    }
-
-    public Map<StealableCard.Commodity, Integer> getCommodityCards(){
-        return aCommodityCards;
     }
 
     //add and remove gold
