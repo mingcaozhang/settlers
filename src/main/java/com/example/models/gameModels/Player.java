@@ -167,16 +167,6 @@ public class Player {
         this.aTransports = aTransports;
     }
 
-
-
-    public String getColor() {
-        return aColor;
-    }
-
-    public String getUsername() {
-        return aUsername;
-    }
-
     public String getaColor() {
         return aColor;
     }
@@ -333,43 +323,6 @@ public class Player {
         this.exec = exec;
     }
 
-    public int getGold() {
-        return aGold;
-    }
-
-    public int getIndex() {
-        return aIndex;
-    }
-
-    public boolean hasMerchant() {
-        return aMerchant;
-    }
-
-    public boolean hasLongestTradeRoute() {
-        return aLongestTradeRoute;
-    }
-
-    public boolean hasAqueduct() {
-        return aAqueduct;
-    }
-
-    public boolean hasFortress() {
-        return aFortress;
-    }
-
-    public boolean hasTradingHouse() {
-        return aTradingHouse;
-    }
-
-
-    public Map<StealableCard.Resource, Integer> getResourceCards(){
-        return aResourceCards;
-    }
-
-    public Map<StealableCard.Commodity, Integer> getCommodityCards(){
-        return aCommodityCards;
-    }
-
     //add and remove gold
     public void addGold() {
         aGold += 2;
@@ -482,7 +435,7 @@ public class Player {
         assert (aKnights.get(pKnight) < Unit.Knight.maxKnights());
         aKnights.put(pKnight, aKnights.get(pKnight) + 1);
     }
-    private boolean canGetKnight(Unit.Knight pKnight) {
+    public boolean canGetKnight(Unit.Knight pKnight) {
         return (aKnights.get(pKnight) > 0);
     }
     public OwnedKnight removeKnight(Unit.Knight pKnight) {
