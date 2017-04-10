@@ -185,7 +185,7 @@ function connect() {
        // setConnected(true);
         console.log('Connected: ' + frame);
 
-        stompClient.subscribe("/topic/geo", callback);
+        //stompClient.subscribe('/topic/geo', callback);
 
         stompClient.subscribe('/topic/turninfo', function (pap) {
             pap = JSON.parse((pap.body));
@@ -275,7 +275,7 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
-            var valid = piece.valid;
+            var valid = piece.isValid;
 
             if(valid){
                 d3.select("#"+myId).attr("fill", toColor);
@@ -352,7 +352,7 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
-            var valid = piece.valid;
+            var valid = piece.isValid;
 
             if(valid){
                 if(currUser.match(myUsername)){
@@ -388,7 +388,7 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
-            var valid  = piece.valid;
+            var valid  = piece.isValid;
 
             if(valid){
                 if(currUser.match(myUsername)){
@@ -425,16 +425,21 @@ function connect() {
 }
 
 
-function sendEdge(Edge){
-    stompClient.send("/app/edge",{},JSON.stringify(Edge));
+function sendEdge(){
+    stompClient.send("/app/edge",{},JSON.stringify(jsonEdges));
 }
 
-function sendHex(Hex){
-    stompClient.send("/app/hex",{},JSON.stringify(Hex));
+function sendBoard(Board){
+    stompClient.send("/app/geo",{},JSON.stringify(Board));
 }
 
-function sendIntersection(Intersection){
-    stompClient.send("/app/intersection",{},JSON.stringify(Intersection));
+
+function sendHex(){
+    stompClient.send("/app/hex",{},JSON.stringify(jsonPolygons));
+}
+
+function sendIntersection(){
+    stompClient.send("/app/intersection",{},JSON.stringify(jsonIntersections));
 }
 
 function readySetNeighbours(){
@@ -1503,10 +1508,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                  //  if(startingPlayer.match(myUsername)) {
                         jsonEdges.push(edgeValues);
                        // sendEdge(edgeValues);
-                    }
+                 //   }
                 }
 
                 //left side
@@ -1531,10 +1536,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                //    if(startingPlayer.match(myUsername)) {
                         jsonEdges.push(edgeValues);
                         // sendEdge(edgeValues);
-                    }
+                //    }
                 }
 
                 //bottom left
@@ -1558,10 +1563,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                 //   if(startingPlayer.match(myUsername)) {
                         jsonEdges.push(edgeValues);
                         // sendEdge(edgeValues);
-                    }
+                 //   }
                 }
 
                 //top right
@@ -1585,10 +1590,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                //    if(startingPlayer.match(myUsername)) {
                         jsonEdges.push(edgeValues);
                         // sendEdge(edgeValues);
-                    }
+                //    }
                 }
 
                 //right side
@@ -1612,10 +1617,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                 //   if(startingPlayer.match(myUsername)) {
                         jsonEdges.push(edgeValues);
                         // sendEdge(edgeValues);
-                    }
+                 //   }
                 }
 
                 //bottom right
@@ -1639,10 +1644,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                  //  if(startingPlayer.match(myUsername)) {
                         jsonEdges.push(edgeValues);
                         // sendEdge(edgeValues);
-                    }
+                 //   }
                 }
 
                 // INTERSECTION ---------------------------------------------
@@ -1666,10 +1671,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                 //   if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
                      //   sendIntersection(circleValues);
-                    }
+                 //   }
                 }
 
                 var Intersection = new IntersectionBlueprint(x, y, x + y, 4);
@@ -1688,10 +1693,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                //    if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
                         //   sendIntersection(circleValues);
-                    }
+                //    }
                 }
 
                 var Intersection = new IntersectionBlueprint(x, my, x + my, 4);
@@ -1710,10 +1715,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                 //   if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
                         //   sendIntersection(circleValues);
-                    }
+                 //   }
                 }
 
 
@@ -1733,10 +1738,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                //    if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
                         //   sendIntersection(circleValues);
-                    }
+                //    }
                 }
 
 
@@ -1756,10 +1761,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                //    if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
                         //   sendIntersection(circleValues);
-                    }
+                //    }
                 }
 
 
@@ -1779,18 +1784,26 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    if(startingPlayer.match(myUsername)) {
+                //    if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
                         //   sendIntersection(circleValues);
-                    }
+                //    }
                 }
             }
 
         }
 
     }
+
+    var allJSON = [];
+    allJSON.push(jsonPolygons);
+    allJSON.push(jsonEdges);
+    allJSON.push(jsonIntersections);
+
+  //  sendBoard(allJSON);
     if(startingPlayer.match(myUsername)) {
-        sendHex(jsonPolygons);
+        sendHex();
+        setTimeout(readySetNeighbours, 6000);
     }
 
 
@@ -1944,17 +1957,22 @@ var textLabels = text
 
 function callback(message) {
 
-    if(message=="hex")
+    console.log("hi");
+    console.log(message);
+    console.log("bye");
+
+    if(message.body.match("hex"))
     {
+        console.log("EDGES");
         sendEdge(jsonEdges);
     }
 
-    if(message=="edge")
+    if(message.body.match("edge"))
     {
         sendIntersection(jsonIntersections);
     }
 
-    if(message=="intersection")
+    if(message.body.match("intersection"))
     {
         readySetNeighbours();
     }

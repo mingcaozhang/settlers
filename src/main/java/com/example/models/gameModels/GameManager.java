@@ -1,10 +1,12 @@
 package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
-import com.example.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class GameManager {
@@ -350,25 +352,33 @@ public class GameManager {
      */
 
     public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
-        if(pIntersection.getOccupancyFlag())
+        if(pIntersection.getOccupancyFlag()) {
+            System.out.println("    occupied");
             return false;
-
+        }
         List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
         List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
         List<Hex> hNeighbours = pIntersection.getHexNeighbours();
         boolean water = true;
         for(Hex aHex:hNeighbours) {
+            System.out.println(aHex.getId());
             if(aHex.getTerrainType() != TerrainType.Sea)
                 water =false;
         }
         if(water){  // settlement is surrounded by water
+            System.out.println("    water");
+
             return false;
         }
         for(Intersection aIntersection:iNeighbours) {
-            if(aIntersection.getBuilding() != null)
-                return  false;
+            System.out.println(aIntersection.getId());
+            if(aIntersection.getBuilding() != null) {
+                System.out.println("    hasNeighbour");
+                return false;
+            }
         }
-        return false;
+        System.out.println("    true");
+        return true;
     }
 
     /*
@@ -376,34 +386,45 @@ public class GameManager {
      */
 
     public boolean checkRoadEligibility(Edge pEdge, String pColor){
-        if(pEdge.getOccupancyFlag())
+        if(pEdge.getOccupancyFlag()) {
+            System.out.println("    occupied");
             return false;
-
+        }
         List<Edge> Neighbours = pEdge.getEdgeNeighbours();
         List<Hex> hNeighbours = pEdge.getHexNeighbours();
         List<Intersection> iNeighbours = pEdge.getIntersectionNeighbours();
         boolean water = true;
         for(Hex aHex:hNeighbours){
+            System.out.println(aHex.getId());
             if(aHex.getTerrainType() != TerrainType.Sea)
                 water = false;
         }
         if(water) {
+            System.out.println("    water");
             return false;
         }
         for(Edge aEdge:Neighbours){
+            System.out.println(aEdge.getId());
             if(aEdge.getOccupancyFlag()) {
-                if (aEdge.getTransport().getUnit() == Unit.Transport.ROAD && aEdge.getTransport().getOwner().getColor() == pColor) {
+                if (aEdge.getTransport().getUnit() == Unit.Transport.ROAD && aEdge.getTransport().getOwner().getColor().equals(pColor)) {
+                    System.out.println("    road nearby");
                     return true;
                 }
             }
         }
         for(Intersection aIntersection:iNeighbours){
+            System.out.println(aIntersection.getId());
+            System.out.println(aIntersection.getOccupancyFlag());
             if(aIntersection.getOccupancyFlag()) {
-                if (aIntersection.getBuilding()!=null && aIntersection.getBuilding().getOwner().getColor() == pColor) {
+                System.out.println(pColor);
+                System.out.println(aIntersection.getBuilding().getOwner().getColor());
+                if (/*aIntersection.getBuilding()!=null &&*/ aIntersection.getBuilding().getOwner().getColor().equals(pColor)) {
+                    System.out.println("    settlement nearby");
                     return true;
                 }
             }
         }
+        System.out.println("    default");
         return false;
     }
 
@@ -423,14 +444,14 @@ public class GameManager {
         }
         for(Edge aEdge:Neighbours){
             if(aEdge.getOccupancyFlag()) {
-                if (aEdge.getTransport().getUnit() == Unit.Transport.SHIP && aEdge.getTransport().getOwner().getColor() == pColor) {
+                if (aEdge.getTransport().getUnit() == Unit.Transport.SHIP && aEdge.getTransport().getOwner().getColor().equals(pColor)) {
                     return true;
                 }
             }
         }
         for(Intersection aIntersection:iNeighbours){
             if(aIntersection.getOccupancyFlag()) {
-                if (aIntersection.getBuilding()!=null && aIntersection.getBuilding().getOwner().getColor() == pColor) {
+                if (aIntersection.getBuilding()!=null && aIntersection.getBuilding().getOwner().getColor().equals(pColor)) {
                     return true;
                 }
             }
