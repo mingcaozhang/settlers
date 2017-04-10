@@ -1297,6 +1297,15 @@ function startTimer()
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 7000);
 }
 
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft= "0";
+}
 
 // a js object that describes the hexagons that make up the board.
 jsonPolygons = [{"x":340.19237886466846,"y":620,"stroke":"black","stroke_width":"4","fill":"white","points":"378.2974966311838,642 340.19237886466846,664 302.08726109815314,642 302.08726109815314,598 340.19237886466846,576 378.2974966311838,598 ","id":"h_-4_1","terrain_type":"sea","number":0},
