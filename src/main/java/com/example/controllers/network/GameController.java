@@ -219,7 +219,7 @@ public class GameController {
         return pDice;
     }
 
-    //TODO @MessageMapping(" ")
+    @MessageMapping("/getResources")
     @SendTo("/topic/playerIncrement")
     public PlayerIncrement showPlayerIncrement(){
         PlayerIncrement increment = new PlayerIncrement();

@@ -53,8 +53,8 @@ public class GameManager {
 
     public void rollDice(int pYellow, int pRed, int pEvent){
         aGame.setPhase(Game.GamePhase.TurnFirstPhase);
-        aGame.setRedDice(Game.DiceNumber.values()[pRed]);
-        aGame.setYellowDice(Game.DiceNumber.values()[pYellow]);
+        aGame.setRedDice(Game.DiceNumber.values()[pRed - 1]);
+        aGame.setYellowDice(Game.DiceNumber.values()[pYellow - 1]);
         int eventIndex = pEvent;
         switch (eventIndex){
             case 1:

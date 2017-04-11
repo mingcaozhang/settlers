@@ -238,7 +238,7 @@ function connect() {
             pap = JSON.parse((pap.body));
 
             currUser = pap.username;
-            currPlayer.innerHTML = "Turn: " + currUser;
+           // currPlayer.innerHTML = "Turn: " + currUser;
 
 
             if(currUser.match(myUsername)){
@@ -449,8 +449,8 @@ function connect() {
                     }
 
                     nCity++;
-                    pCity = document.getElementById("pCity");
-                    pCity.innerHTML = "Cities " + nCity;
+                  //  pCity = document.getElementById("pCity");
+                  //  pCity.innerHTML = "Cities " + nCity;
                 }
                 d3.select("#"+myId).attr("fill", toColor).attr("r",12);
                 d3.select("#"+myId).attr("hasCity", "true");
@@ -823,7 +823,7 @@ function buildCity(id) {
 //Place city
 function placeCity(id) {
 
-    stompClient.send("/app/setupcity",{},{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
+    stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
 
 
 }
@@ -834,8 +834,8 @@ function buildWall() {
     if (nBrick > 1 && nWall < 3) {
         nBrick -= 2;
         nWall++;
-        wall = document.getElementById("wall");
-        wall.innerHTML = "Walls " + nWall;
+    //    wall = document.getElementById("wall");
+    //    wall.innerHTML = "Walls " + nWall;
     }
     else {
         //Set no resource message to true
@@ -849,8 +849,8 @@ function getKnight1() {
         nSheep--;
         nKnight1++;
         knight = false;
-        knight1 = document.getElementById("knight1");
-        knight1.innerHTML = "Rank 1: " + nKnight1;
+    //    knight1 = document.getElementById("knight1");
+    //    knight1.innerHTML = "Rank 1: " + nKnight1;
     }
     else {
         //Set no resource message to true
