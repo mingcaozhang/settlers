@@ -205,7 +205,7 @@ function initializeTurn(){
         //enable all turn buttons
         //boardEnabled = true;
         isSetup1 = true;
-        enableBuyAndUpgrade = false;
+        disableMyButtons();
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
 
@@ -214,7 +214,7 @@ function initializeTurn(){
         //disable all turn buttons
 
         //boardEnabled = false;
-        enableBuyAndUpgrade = false;
+        disableMyButtons();
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
     }
@@ -542,7 +542,7 @@ function rollDice() {
     stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
     //boardEnabled = true;
-    enableBuyAndUpgrade = true;
+    enableMyButtons();
     document.getElementById('rolldice').disabled = true;
     document.getElementById('endTurn').disabled = false;
 
@@ -552,8 +552,7 @@ function endTurn() {
 
     stompClient.send("/app/endturn",{}, {});
 
-    //boardEnabled = false;
-    enableBuyAndUpgrade = false;
+    disableMyButtons();
 
 }
 
@@ -666,10 +665,30 @@ function moveShip (){
 
 function disableMyButtons(){
 
-    //boardEnabled = false;
     enableBuyAndUpgrade = false;
     document.getElementById('rolldice').disabled = true;
     document.getElementById('endTurn').disabled = true;
+    document.getElementById('bRoad').disabled = true;
+    document.getElementById('bSettlement').disabled = true;
+    document.getElementById('uCity').disabled = true;
+    document.getElementById('aKnight').disabled = true;
+    document.getElementById('bKnight').disabled = true;
+    document.getElementById('uKnightStrong').disabled = true;
+    document.getElementById('uKnightMighty').disabled = true;
+
+}
+
+function enableMyButtons(){
+    enableBuyAndUpgrade = true;
+    document.getElementById('rolldice').disabled = false;
+    document.getElementById('endTurn').disabled = false;
+    document.getElementById('bRoad').disabled = false;
+    document.getElementById('bSettlement').disabled = false;
+    document.getElementById('uCity').disabled = false;
+    document.getElementById('aKnight').disabled = false;
+    document.getElementById('bKnight').disabled = false;
+    document.getElementById('uKnightStrong').disabled = false;
+    document.getElementById('uKnightMighty').disabled = false;
 
 }
 
@@ -2056,15 +2075,33 @@ var intersectionAttrs = boardIntersections
 
                 }else if(enableBuyAndUpgrade){
 
-                    if(d3.select(this).attr("hasSettlement").match("false")){
 
-                        buildSettlement(d.id);
+                    if(clickBuySettlement){
 
-                    }else if(d3.select(this).attr("hasCity").match("false")){
+                        if(d3.select(this).attr("hasSettlement").match("false")){
 
-                        buildCity(d.id);
+                            buildSettlement(d.id);
+
+                        }
+
+                    }else if(clickUpgradeCity){
+
+                        if(d3.select(this).attr("hasCity").match("false")){
+
+                            buildCity(d.id);
+
+                        }
+
+                    }else if(clickBuyKnight){
+
+                    }else if(clickActivateKnight){
+
+                    }else if(clickUpdateMighty){
+
+                    }else if(clickUpdateStrong){
 
                     }
+
                 }
             }
 
@@ -2102,9 +2139,13 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
                     }
 
                  if(enableBuyAndUpgrade){
-                    if(d3.select(this).attr("hasRoad").match("false")){
-                        buildRoad(d.id);
-                    }
+
+                        if(clickBuyRoad){
+                            if(d3.select(this).attr("hasRoad").match("false")){
+                                buildRoad(d.id);
+                            }
+                        }
+
                 }
 
         }
