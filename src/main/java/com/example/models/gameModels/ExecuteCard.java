@@ -11,8 +11,6 @@ public class ExecuteCard {
         return "ExecuteCard{}";
     }
 
-
-
     public void executeTradeCard(ProgressCard.Trade pCard, Player pPlayer){
         switch(pCard){
             case COMMERCIAL_HARBOR:

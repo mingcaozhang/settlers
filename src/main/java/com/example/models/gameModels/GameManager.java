@@ -1,5 +1,7 @@
 package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
+import com.example.repositories.UserRepository;
+import com.example.viewobjects.ViewProgressCard
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -486,6 +488,61 @@ public class GameManager {
             }
         }
         return returnedPlayer;
+    }
+
+    public boolean useTradeCardEligibility(ProgressCard.Trade pTradeCard, Player pPlayer){
+        return pPlayer.getaTradeCards().containsKey(pTradeCard) && pPlayer.getaTradeCards().get(pTradeCard) > 0;
+    }
+
+    public void useTradeCard(ProgressCard.Trade pTradeCard, Player pPlayer){
+        aGame.getExec().executeTradeCard(pTradeCard, pPlayer);
+        pPlayer.removeTradeCard(pTradeCard);
+    }
+
+    public boolean usePoliticsCardEligibility(ProgressCard.Politics pPoliticsCard, Player pPlayer){
+        return pPlayer.getaPoliticsCards().containsKey(pPoliticsCard) && pPlayer.getaPoliticsCards().get(pPoliticsCard) > 0;
+    }
+
+    public void usePoliticsCard(ProgressCard.Politics pPoliticsCard, Player pPlayer){
+        aGame.getExec().executePoliticsCard(pPoliticsCard, pPlayer);
+        pPlayer.removePoliticsCard(pPoliticsCard);
+    }
+
+    public boolean useScienceCardEligibility(ProgressCard.Science pScienceCard, Player pPlayer){
+        return pPlayer.getaScienceCards().containsKey(pScienceCard) && pPlayer.getaScienceCards().get(pScienceCard) > 0;
+    }
+
+    public void useScienceCard(ProgressCard.Science pScienceCard, Player pPlayer){
+        aGame.getExec().executeScienceCard(pScienceCard, pPlayer);
+        pPlayer.removeScienceCard(pScienceCard);
+    }
+
+    public ProgressCard.Politics toPoliticsProgressCard(ViewProgressCard pCard) {
+        ProgressCard.Politics aCardName = null;
+        for (ProgressCard.Politics cardname : ProgressCard.Politics.values()) {
+            if (pCard.getaName().matches(cardname.toString())) {
+                aCardName = cardname;
+            }
+        }
+        return aCardName;
+    }
+    public ProgressCard.Trade toTradeProgressCard(ViewProgressCard pCard) {
+        ProgressCard.Trade aCardName = null;
+        for (ProgressCard.Trade cardname : ProgressCard.Trade.values()) {
+            if (pCard.getaName().matches(cardname.toString())) {
+                aCardName = cardname;
+            }
+        }
+        return aCardName;
+    }
+    public ProgressCard.Science toScienceProgressCard(ViewProgressCard pCard) {
+        ProgressCard.Science aCardName = null;
+        for (ProgressCard.Science cardname : ProgressCard.Science.values()) {
+            if (pCard.getaName().matches(cardname.toString())) {
+                aCardName = cardname;
+            }
+        }
+        return aCardName;
     }
 }
 
