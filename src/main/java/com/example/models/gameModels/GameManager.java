@@ -1,10 +1,12 @@
 package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
-import com.example.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class GameManager {
@@ -240,28 +242,6 @@ public class GameManager {
     }
     //END FUNCTIONS FOR KNIGHTS                                        */
 
-    //FUNCTION COMMON TO SETTLEMENTS AND CITIES
-    public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
-        if(pIntersection.getOccupancyFlag())
-            return false;
-
-        List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
-        List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
-        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
-        boolean water = true;
-        for(Hex aHex:hNeighbours) {
-            if(aHex.getTerrainType() != TerrainType.Sea)
-                water =false;
-        }
-        if(water){  // settlement is surrounded by water
-            return false;
-        }
-        for(Intersection aIntersection:iNeighbours) {
-            if(aIntersection.getBuilding() != null)
-                return  false;
-        }
-        return false;
-    }
 
     //START FUNCTIONS FOR SETTLEMENTS
     public void paySettlement(Player pPlayer) {
@@ -287,6 +267,7 @@ public class GameManager {
     /*
     FUNCTIONS TO CHECK IF BUILDINGS CAN BE SETUP
      */
+    //FUNCTION COMMON TO SETTLEMENTS AND CITIES
 
     public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
         if(pIntersection.getOccupancyFlag()) {
