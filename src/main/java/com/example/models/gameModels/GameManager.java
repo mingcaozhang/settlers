@@ -1,10 +1,12 @@
 package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
-import com.example.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class GameManager {
@@ -211,9 +213,6 @@ public class GameManager {
         }
         return true;
     }
-    public boolean checkKnightPlaceEligibility(Intersection pIntersection, String pColor){
-        return true;
-    }
     public boolean checkUpgradeKnightEligibility(Intersection pIntersection, String pColor){
         OwnedKnight knight = pIntersection.getKnight();
         Player owner = knight.getOwner();
@@ -246,7 +245,7 @@ public class GameManager {
         }
         for(Edge aEdge:eNeighbours){
             if(aEdge.getOccupancyFlag()){
-                if(aEdge.getTransport().getOwner().getColor()==pColor)
+                if(aEdge.getTransport().getOwner().getaColor()==pColor)
                     return true;
             }
         }
@@ -394,7 +393,7 @@ public class GameManager {
         for(Edge aEdge:Neighbours){
             System.out.println(aEdge.getId());
             if(aEdge.getOccupancyFlag()) {
-                if (aEdge.getTransport().getUnit() == Unit.Transport.ROAD && aEdge.getTransport().getOwner().getColor().equals(pColor)) {
+                if (aEdge.getTransport().getUnit() == Unit.Transport.ROAD && aEdge.getTransport().getOwner().getaColor().equals(pColor)) {
                     System.out.println("    road nearby");
                     return true;
                 }
@@ -405,8 +404,8 @@ public class GameManager {
             System.out.println(aIntersection.getOccupancyFlag());
             if(aIntersection.getOccupancyFlag()) {
                 System.out.println(pColor);
-                System.out.println(aIntersection.getBuilding().getOwner().getColor());
-                if (/*aIntersection.getBuilding()!=null &&*/ aIntersection.getBuilding().getOwner().getColor().equals(pColor)) {
+                System.out.println(aIntersection.getBuilding().getOwner().getaColor());
+                if (/*aIntersection.getBuilding()!=null &&*/ aIntersection.getBuilding().getOwner().getaColor().equals(pColor)) {
                     System.out.println("    settlement nearby");
                     return true;
                 }

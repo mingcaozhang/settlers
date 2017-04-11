@@ -145,11 +145,11 @@ var colorList = [];
 var userList = [];
 userList.push(p1name);
 userList.push(p2name);
-//userList.push(p3name);
+userList.push(p3name);
 //userList.push(p4name);
 colorList.push(p1color);
 colorList.push(p2color);
-//colorList.push(p3color);
+colorList.push(p3color);
 //colorList.push(p4color);
 
 
@@ -162,22 +162,25 @@ for (var i = 0; i < arrayLength; i++) {
         colorsToPrint.push(colorList[i]);
     }
 }
+var p1 = document.getElementById("player1");
+p1.style.background = myColor;
 
 for(var i = 0; i<usersToPrint.length;i++){
 
     if(i == 0){
         var p2 = document.getElementById("player2");
         p2.innerHTML = usersToPrint[i];
-        p2.className = "turnWabble";
+        p2.style.background = colorsToPrint[i];
+        //p2.className = "turnWabble";
        // p2.disabled = false;
     }else if(i==1){
         var p3 = document.getElementById("player3");
         p3.innerHTML = usersToPrint[i];
-        p3.style.background = "green";
+        p3.style.background = colorsToPrint[i];
     }else if(i==2){
         var p4 = document.getElementById("player4");
         p4.innerHTML = usersToPrint[i];
-        p4.style.background = "blue";
+        p4.style.background = colorsToPring[i];
     }
 }
 
@@ -190,7 +193,7 @@ initializeTurn();
 
 function initializeTurn(){
 
-    currPlayer.innerHTML = "Turn: " + startingPlayer;
+    //currPlayer.innerHTML = "Turn: " + startingPlayer;
 
     console.log("my username is: "+myUsername);
     console.log("my color is: "+myColor);
@@ -413,7 +416,7 @@ function connect() {
                     }
                     nSettlement++;
                     pSettlement = document.getElementById("pSettlement");
-                    pSettlement.innerHTML = "Settlements " + nSettlement;
+                   // pSettlement.innerHTML = "Settlements " + nSettlement;
                 }
 
                 d3.select("#"+myId).attr("fill", toColor);

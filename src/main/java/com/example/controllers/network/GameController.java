@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.json.*;
-import com.google.gson.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -134,7 +132,7 @@ public class GameController {
         return pNew;
     }
 
-    @MessageMapping("/placeknight")
+    /*@MessageMapping("/placeknight")
     @SendTo("/topic/knight")
     public ViewPiece placeKnight(ViewPiece pNew, Principal caller){
         Player checkee = gameManager.getPlayerFromString(caller.getName());
@@ -144,9 +142,9 @@ public class GameController {
             gameManager.payKnight(checkee);
             gameManager.placeKnight(checkee, checker);
         }
-        pNew.setValid(isValid);
+        pNew.setIsValid(isValid);
         return pNew;
-    }
+    }*/
 
     @MessageMapping("/upgradeknight")
     @SendTo("/topic/knight")
@@ -158,7 +156,7 @@ public class GameController {
             gameManager.payKnight(checkee);
             gameManager.upgradeKnight(checkee, checker);
         }
-        pNew.setValid(isValid);
+        pNew.setIsValid(isValid);
         return pNew;
     }
     // SETUP IS FIRST 2 TURNS
@@ -197,7 +195,7 @@ public class GameController {
         System.out.println("----  "+pNew.getId());
         Player checkee = gameManager.getPlayerFromString(caller.getName());
         Edge checker = gameManager.getGame().getBoard().getEdges().get(pNew.getId());
-        boolean isValid = gameManager.checkBuyRoad(checkee) && gameManager.checkRoadEligibility(checker, pNew.getColor());
+        boolean isValid = gameManager.checkRoadEligibility(checker, pNew.getColor());
         if (isValid){
             System.out.println("VALID");
             gameManager.placeRoad(checkee, checker);
