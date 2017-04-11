@@ -48,8 +48,7 @@ public class Player {
     private Map<Unit.Knight, Integer> aKnights;
     @ElementCollection
     private Map<Unit.Transport, Integer> aTransports;
-    @Embedded
-    private ExecuteCard exec = new ExecuteCard();
+
 
     protected Player(){
         aUsername = null;
@@ -279,14 +278,6 @@ public class Player {
         this.aMaritimeTradeRates = aMaritimeTradeRates;
     }
 
-    public ExecuteCard getExec() {
-        return exec;
-    }
-
-    public void setExec(ExecuteCard exec) {
-        this.exec = exec;
-    }
-
     //add and remove gold
     public void addGold() {
         aGold += 2;
@@ -314,9 +305,8 @@ public class Player {
         aCommodityCards.put(pCommodity, aCommodityCards.get(pCommodity) - pAmount);
     }
 
-    //add and use trade progress cards
+    //add and remove trade progress cards
     public void addTradeCard(ProgressCard.Trade pTradeCard) {
-        assert (aProgressCardAmount < 4);
         if (aTradeCards.containsKey(pTradeCard)) {
             aTradeCards.put(pTradeCard, aTradeCards.get(pTradeCard) + 1);
         } else {
@@ -324,21 +314,13 @@ public class Player {
         }
         aProgressCardAmount++;
     }
-    public void useTradeCard(ProgressCard.Trade pTradeCard){
-        assert(aTradeCards.containsKey(pTradeCard) && aTradeCards.get(pTradeCard) > 0);
-        exec.executeTradeCard(pTradeCard, this);
-        if(aTradeCards.get(pTradeCard) == 1){
-            aTradeCards.remove(pTradeCard);
-        }
-        else{
-            aTradeCards.put(pTradeCard, aTradeCards.get(pTradeCard) - 1);
-        }
+    public void removeTradeCard(ProgressCard.Trade pTradeCard){
+        aTradeCards.put(pTradeCard, aTradeCards.get(pTradeCard) - 1);
         aProgressCardAmount--;
     }
 
-    //add and use politics progress cards
+    //add and remove politics progress cards
     public void addPoliticsCard(ProgressCard.Politics pPoliticsCard) {
-        assert (aProgressCardAmount < 4);
         if (aPoliticsCards.containsKey(pPoliticsCard)) {
             aPoliticsCards.put(pPoliticsCard, aPoliticsCards.get(pPoliticsCard) + 1);
         } else {
@@ -346,21 +328,13 @@ public class Player {
         }
         aProgressCardAmount++;
     }
-    public void usePoliticsCard(ProgressCard.Politics pPoliticsCard){
-        assert(aPoliticsCards.containsKey(pPoliticsCard) && aPoliticsCards.get(pPoliticsCard) > 0);
-        exec.executePoliticsCard(pPoliticsCard, this);
-        if(aPoliticsCards.get(pPoliticsCard) == 1){
-            aPoliticsCards.remove(pPoliticsCard);
-        }
-        else{
-            aPoliticsCards.put(pPoliticsCard, aPoliticsCards.get(pPoliticsCard) - 1);
-        }
+    public void removePoliticsCard(ProgressCard.Politics pPoliticsCard){
+        aPoliticsCards.put(pPoliticsCard, aPoliticsCards.get(pPoliticsCard) - 1);
         aProgressCardAmount--;
     }
-
-    //add and use trade science cards
+   
+    //add and remove trade science cards
     public void addScienceCard(ProgressCard.Science pScienceCard) {
-        assert (aProgressCardAmount < 4);
         if (aScienceCards.containsKey(pScienceCard)) {
             aScienceCards.put(pScienceCard, aScienceCards.get(pScienceCard) + 1);
         } else {
@@ -368,18 +342,10 @@ public class Player {
         }
         aProgressCardAmount++;
     }
-    public void useScienceCard(ProgressCard.Science pScienceCard){
-        assert(aScienceCards.containsKey(pScienceCard) && aScienceCards.get(pScienceCard) > 0);
-        exec.executeScienceCard(pScienceCard, this);
-        if(aScienceCards.get(pScienceCard) == 1){
-            aScienceCards.remove(pScienceCard);
-        }
-        else{
-            aScienceCards.put(pScienceCard, aScienceCards.get(pScienceCard) - 1);
-        }
+    public void removeScienceCard(ProgressCard.Science pScienceCard){
+        aScienceCards.put(pScienceCard, aScienceCards.get(pScienceCard) - 1);
         aProgressCardAmount--;
     }
-
     //add and remove buildings
     public void addBuilding(Unit.Building pBuilding) {
         assert (aBuildings.get(pBuilding) < Unit.Building.maxBuildings());
