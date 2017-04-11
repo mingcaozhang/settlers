@@ -338,8 +338,8 @@ function connect() {
                     }
 
                     nRoad++;
-                    pRoad = document.getElementById("pRoad");
-                    pRoad.innerHTML = "Roads " + nRoad;
+                   // pRoad = document.getElementById("pRoad");
+                   // pRoad.innerHTML = "Roads " + nRoad;
                 }
 
 
@@ -362,7 +362,7 @@ function connect() {
 
         stompClient.subscribe('/topic/playerIncrement', function (players) {
 
-            if (!setupDone){
+            if(!gotSetupResources){
                 gotSetupResources = true;
             }
             players = JSON.parse((players.body));
@@ -389,6 +389,12 @@ function connect() {
             nGold = players[me+'Gold'];
 
 
+        });
+
+
+        stompClient.subscribe('/topic/setupDone', function (confirm) {
+
+            getResources();
 
         });
 
@@ -409,7 +415,8 @@ function connect() {
 
                     }
                     nSettlement++;
-                    pSettlement = document.getElementById("pSettlement");
+                   //
+                    // pSettlement = document.getElementById("pSettlement");
                    // pSettlement.innerHTML = "Settlements " + nSettlement;
                 }
 

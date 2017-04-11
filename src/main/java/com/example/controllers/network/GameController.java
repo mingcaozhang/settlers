@@ -87,6 +87,8 @@ public class GameController {
         return pNew;
     }
 
+
+
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
@@ -206,10 +208,13 @@ public class GameController {
         return pNew;
     }
 
-    @SendTo("/topic/playerIncrement")
-    public void setupPayout(){
+    @MessageMapping("/setupDone")
+    @SendTo("/topic/setupDone")
+    public boolean setupPayout(){
         gameManager.setupPayout();
-        showPlayerIncrement();
+        return true;
+
+
     }
 
     @MessageMapping("/rolldice")

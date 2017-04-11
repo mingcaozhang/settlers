@@ -156,6 +156,7 @@ public class GameManager {
     }
 
     private void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
+        System.out.println("SDFSDFSDFSDFSDFSDFSDFSDFSHBDFJHNB LDKNFLVKJFLDK NLFKHB>KSKDJHFVKJDB >DFJNV>KJSBR>KHUJBS>KRJH");
         if (pTerrainType == TerrainType.GoldMine){
             pOwner.addGold();
         }
