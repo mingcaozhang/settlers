@@ -139,7 +139,7 @@ var enableBuyAndUpgrade = false;
 //var boardEnabled = false;
 var currUser;
 
-var currPlayer = document.getElementById("currPlayer");
+//var currPlayer = document.getElementById("currPlayer");
 
 var colorList = [];
 var userList = [];
@@ -238,7 +238,7 @@ function connect() {
             pap = JSON.parse((pap.body));
 
             currUser = pap.username;
-            currPlayer.innerHTML = "Turn: " + currUser;
+            //currPlayer.innerHTML = "Turn: " + currUser;
 
 
             if(currUser.match(myUsername)){
@@ -444,8 +444,8 @@ function connect() {
                     }
 
                     nCity++;
-                    pCity = document.getElementById("pCity");
-                    pCity.innerHTML = "Cities " + nCity;
+                   //pCity = document.getElementById("pCity");
+                    // pCity.innerHTML = "Cities " + nCity;
                 }
                 d3.select("#"+myId).attr("fill", toColor).attr("r",12);
                 d3.select("#"+myId).attr("hasCity", "true");
@@ -815,7 +815,7 @@ function buildCity(id) {
 //Place city
 function placeCity(id) {
 
-    stompClient.send("/app/setupcity",{},{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
+    stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
 
 
 }
