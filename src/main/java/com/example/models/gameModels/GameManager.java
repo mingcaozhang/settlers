@@ -131,8 +131,10 @@ public class GameManager {
     }
 
 
-    private void checkDice() {
+    public void checkDice() {
         int numberRolled = aGame.getRedDice().add(aGame.getYellowDice());
+        int commodityLevel = aGame.getRedDice().toInt();
+        Game.EventType commodityType = aGame.getEventDice();
         ArrayList<LandHex> tempLandHexes = aGame.getBoard().getLandHexes().get(numberRolled);
         for (LandHex hex : tempLandHexes) {
             List<Intersection> tempIntersections = hex.getIntersectionNeighbours();
@@ -141,6 +143,7 @@ public class GameManager {
                     Player owner = getPayee(intersection);
                     boolean isCity = checkIsCity(intersection);
                     payout(owner, hex.getTerrainType(), isCity);
+                    progressCardPayout(owner, commodityLevel, commodityType);
                 }
             }
         }
@@ -154,9 +157,7 @@ public class GameManager {
     private boolean checkIsCity(Intersection pIntersection){
         return (pIntersection.getBuilding() != null && pIntersection.getBuilding().isCity());
     }
-
-    private void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
-        System.out.println("SDFSDFSDFSDFSDFSDFSDFSDFSHBDFJHNB LDKNFLVKJFLDK NLFKHB>KSKDJHFVKJDB >DFJNV>KJSBR>KHUJBS>KRJH");
+    public void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
         if (pTerrainType == TerrainType.GoldMine){
             pOwner.addGold();
         }
@@ -166,18 +167,36 @@ public class GameManager {
         }
 
         if (isCity) {
-            StealableCard.Resource resource = pTerrainType.giveResource();
             if (pTerrainType == TerrainType.Hills || pTerrainType == TerrainType.Fields){
+                StealableCard.Resource resource = pTerrainType.giveResource();
                 pOwner.addResource(resource, 1);
             }
             else if (pTerrainType == TerrainType.GoldMine){
                 pOwner.addGold();
             }
             else{
-                //if (aGame.getEventDice().equals(pOwner.)) TODO -- CHECK PLAYERS COMMODITY UPGRADE LVL
                 StealableCard.Commodity commodity = pTerrainType.giveCommodity();
                 pOwner.addCommodity(commodity, 1);
             }
+        }
+    }
+
+    public void progressCardPayout(Player pOwner, int pLevel, Game.EventType pType){
+        switch (pType){
+            case Barbarian:
+                break;
+            case Politics:
+                if (pOwner.getaPoliticsLevel() >= pLevel){
+                    pOwner.addPoliticsCard(ProgressCard.Politics.getRandomPoliticsCard());
+                }
+            case Trade:
+                if (pOwner.getaTradeLevel() >= pLevel){
+                    pOwner.addTradeCard(ProgressCard.Trade.getRandomTradeCard());
+                }
+            case Science:
+                if (pOwner.getaScienceLevel() >= pLevel) {
+                    pOwner.addScienceCard(ProgressCard.Science.getRandomScienceCard());
+                }
         }
     }
 
@@ -263,16 +282,16 @@ public class GameManager {
         boolean water = true;
         for(Hex aHex:hNeighbours) {
             if(aHex.getTerrainType() != TerrainType.Sea)
-                water =false;
+                water = false;
         }
         if(water){  // settlement is surrounded by water
             return false;
         }
         for(Intersection aIntersection:iNeighbours) {
             if(aIntersection.getBuilding() != null)
-                return  false;
+                return false;
         }
-        return false;
+        return true;
     }
 
     //START FUNCTIONS FOR SETTLEMENTS
@@ -516,6 +535,93 @@ public class GameManager {
             }
         }
         return returnedPlayer;
+    }
+
+    public boolean useTradeCardEligibility(ProgressCard.Trade pTradeCard, Player pPlayer){
+        return pPlayer.getaTradeCards().containsKey(pTradeCard) && pPlayer.getaTradeCards().get(pTradeCard) > 0;
+    }
+
+    public void useTradeCard(ProgressCard.Trade pTradeCard, Player pPlayer){
+        aGame.getExec().executeTradeCard(pTradeCard, pPlayer);
+        pPlayer.removeTradeCard(pTradeCard);
+    }
+
+    public boolean usePoliticsCardEligibility(ProgressCard.Politics pPoliticsCard, Player pPlayer){
+        return pPlayer.getaPoliticsCards().containsKey(pPoliticsCard) && pPlayer.getaPoliticsCards().get(pPoliticsCard) > 0;
+    }
+
+    public void usePoliticsCard(ProgressCard.Politics pPoliticsCard, Player pPlayer){
+        aGame.getExec().executePoliticsCard(pPoliticsCard, pPlayer);
+        pPlayer.removePoliticsCard(pPoliticsCard);
+    }
+
+    public boolean useScienceCardEligibility(ProgressCard.Science pScienceCard, Player pPlayer){
+        return pPlayer.getaScienceCards().containsKey(pScienceCard) && pPlayer.getaScienceCards().get(pScienceCard) > 0;
+    }
+
+    public void useScienceCard(ProgressCard.Science pScienceCard, Player pPlayer){
+        aGame.getExec().executeScienceCard(pScienceCard, pPlayer);
+        pPlayer.removeScienceCard(pScienceCard);
+    }
+
+    public ProgressCard.Politics toPoliticsProgressCard(ViewProgressCard pCard) {
+        ProgressCard.Politics aCardName = null;
+        for (ProgressCard.Politics cardname : ProgressCard.Politics.values()) {
+            if (pCard.getaName().matches(cardname.toString())) {
+                aCardName = cardname;
+            }
+        }
+        return aCardName;
+    }
+    public ProgressCard.Trade toTradeProgressCard(ViewProgressCard pCard) {
+        ProgressCard.Trade aCardName = null;
+        for (ProgressCard.Trade cardname : ProgressCard.Trade.values()) {
+            if (pCard.getaName().matches(cardname.toString())) {
+                aCardName = cardname;
+            }
+        }
+        return aCardName;
+    }
+    public ProgressCard.Science toScienceProgressCard(ViewProgressCard pCard) {
+        ProgressCard.Science aCardName = null;
+        for (ProgressCard.Science cardname : ProgressCard.Science.values()) {
+            if (pCard.getaName().matches(cardname.toString())) {
+                aCardName = cardname;
+            }
+        }
+        return aCardName;
+    }
+
+    public void buyCityImprovement(Player pPlayer, StealableCard.Commodity pType){
+        switch (pType) {
+            case COIN:
+                pPlayer.upgradePolitics();
+            case CLOTH:
+                pPlayer.upgradeTrade();
+            case PAPER:
+                pPlayer.upgradeScience();
+        }
+    }
+
+    public boolean buyCityImprovementEligibility(Player pPlayer, StealableCard.Commodity pType){
+        switch (pType){
+            case COIN:
+                if (pPlayer.getaCommodityCards().get(StealableCard.Commodity.COIN) < pPlayer.getaPoliticsLevel() + 1 || !pPlayer.upgradePoliticsEligibility()){
+                    return false;
+                }
+                return true;
+            case CLOTH:
+                if (pPlayer.getaCommodityCards().get(StealableCard.Commodity.CLOTH) < pPlayer.getaTradeLevel() + 1 || !pPlayer.upgradeTradeEligibility()){
+                    return false;
+                }
+                return true;
+            case PAPER:
+                if (pPlayer.getaCommodityCards().get(StealableCard.Commodity.PAPER) < pPlayer.getaScienceLevel() + 1 || !pPlayer.upgradeScienceEligiblity()){
+                    return false;
+                }
+                return true;
+        }
+        return false;
     }
 }
 

@@ -161,6 +161,19 @@ public class GameController {
         pNew.setIsValid(isValid);
         return pNew;
     }
+    @MessageMapping("/activateknight")
+    @SendTo("/topic/knight")
+    public ViewPiece activateKnight(ViewPiece pNew, Principal caller){
+        Player checkee = gameManager.getPlayerFromString(caller.getName());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkActivateEligibility(checker, pNew.getColor());
+        if (isValid){
+            gameManager.payActivation(checkee);
+            gameManager.activateKnight(checker);
+        }
+        pNew.setIsValid(isValid);
+        return pNew;
+    }
     // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")
@@ -213,8 +226,6 @@ public class GameController {
     public boolean setupPayout(){
         gameManager.setupPayout();
         return true;
-
-
     }
 
     @MessageMapping("/rolldice")
@@ -231,6 +242,7 @@ public class GameController {
         setPlayerIncrement(increment);
         return increment;
     }
+
 
     private void setPlayerIncrement(PlayerIncrement pIncrement){
         for (String pUsername : currPlayerList){
@@ -288,6 +300,68 @@ public class GameController {
         }
     }
 
+    @MessageMapping("/getProgressCards")
+    @SendTo("/topic/playerProgressCards")
+    public PlayerProgressCard showPlayerProgressCards(){
+        PlayerProgressCard playerProgressCard = new PlayerProgressCard();
+        setPlayerProgressCard(playerProgressCard);
+        return playerProgressCard;
+    }
+
+
+    private void setPlayerProgressCard(PlayerProgressCard pPlayerProgressCard){
+        for (String pUsername : currPlayerList){
+            for (Player player : gameManager.getGame().getPlayers()) {
+                if (pUsername.equals(player.getaUsername())) {
+                    int index = currPlayerList.indexOf(player.getaUsername());
+                    switch (index) {
+                        case 1:
+                            ArrayList<String> aCards1 = getProgressCardsFromPlayer(player);
+                            pPlayerProgressCard.setp1(aCards1);
+                        case 2:
+                            ArrayList<String> aCards2 = getProgressCardsFromPlayer(player);
+                            pPlayerProgressCard.setp2(aCards2);
+                        case 3:
+                            ArrayList<String> aCards3 = getProgressCardsFromPlayer(player);
+                            pPlayerProgressCard.setp3(aCards3);
+                        case 4:
+                            ArrayList<String> aCards4 = getProgressCardsFromPlayer(player);
+                            pPlayerProgressCard.setp4(aCards4);
+                    }
+                }
+            }
+        }
+    }
+
+    private ArrayList<String> getProgressCardsFromPlayer(Player pPlayer){
+        ArrayList<String> aCards = new ArrayList<>();
+        for (ProgressCard.Politics politicsCard : pPlayer.getaPoliticsCards().keySet()){
+            int cardAmount = pPlayer.getaPoliticsCards().get(politicsCard);
+            if (cardAmount > 0){
+                for (int i = 0; i < cardAmount; i++){
+                    aCards.add(politicsCard.toString());
+                }
+            }
+        }
+        for (ProgressCard.Trade tradeCard : pPlayer.getaTradeCards().keySet()){
+            int cardAmount = pPlayer.getaTradeCards().get(tradeCard);
+            if (cardAmount > 0){
+                for (int i = 0; i < cardAmount; i++){
+                    aCards.add(tradeCard.toString());
+                }
+            }
+        }
+        for (ProgressCard.Science scienceCard : pPlayer.getaScienceCards().keySet()){
+            int cardAmount = pPlayer.getaScienceCards().get(scienceCard);
+            if (cardAmount > 0){
+                for (int i = 0; i < cardAmount; i++){
+                    aCards.add(scienceCard.toString());
+                }
+            }
+        }
+        return aCards;
+    }
+
     @MessageMapping("/traderequest")
     @SendTo("/topic/traderequest")
     public ViewPlayerTrade tradeRequest(ViewPlayerTrade pTrade, Principal caller){
@@ -306,7 +380,37 @@ public class GameController {
         return pTrade;
     }
 
-    @MessageMapping("/endturn")
+    @MessageMapping("/maritimetrade")
+    @SendTo("/topic/maritimetrade")
+    public ViewMaritimeTrade maritimeTrade(ViewMaritimeTrade pTrade, Principal caller){
+        MaritimeTrade aMaritimeTrade = pTrade.toMaritimeTrade();
+        boolean isValid = gameManager.checkMaritimeTradeEligibility(aMaritimeTrade);
+        if (isValid){
+            aMaritimeTrade.execute();
+        }
+        pTrade.setValid(isValid);
+        return pTrade;
+    }
+
+    @MessageMapping("/cityimprovement")
+    @SendTo("/topic/cityimprovement")
+    public ViewCityImprovement upgradeCity(ViewCityImprovement pView, Principal caller){
+        Player player = gameManager.getPlayerFromString(caller.getName());
+        StealableCard.Commodity aType = null;
+        for (StealableCard.Commodity c : StealableCard.Commodity.values()){
+            if (pView.getaType().equals(c.toString())){
+                aType = c;
+            }
+        }
+        boolean isValid = gameManager.buyCityImprovementEligibility(player ,aType);
+        if (isValid){
+            gameManager.buyCityImprovement(player, aType);
+        }
+        pView.setValid(isValid);
+        return pView;
+    }
+
+  @MessageMapping("/endturn")
     @SendTo("/topic/turninfo")
     public PlayerAndPhase endTurn(Principal user){
         if(turnCounter == (currPlayerList.size()-1)){
@@ -470,5 +574,33 @@ public class GameController {
         gameManager.getGame().getBoard().setAllNeighbours();
         //gameManager.saveGame();
 
+    @MessageMapping("/executeprogresscard")
+    @SendTo("/progresscard")
+    public ViewProgressCard executeCard(ViewProgressCard pView, Principal caller){
+        String pType = pView.getaType();
+        Player owner = gameManager.getPlayerFromString(caller.getName());
+        boolean isValid = false;
+        switch (pType){
+            case "Politics":
+                ProgressCard.Politics aPoliticsCard = gameManager.toPoliticsProgressCard(pView);
+                isValid = gameManager.usePoliticsCardEligibility(aPoliticsCard, owner);
+                if (isValid){
+                    gameManager.usePoliticsCard(aPoliticsCard, owner);
+                }
+            case "Trade":
+                ProgressCard.Trade aTradeCard = gameManager.toTradeProgressCard(pView);
+                isValid = gameManager.useTradeCardEligibility(aTradeCard, owner);
+                if (isValid){
+                    gameManager.useTradeCard(aTradeCard, owner);
+                }
+            case "Science":
+                ProgressCard.Science aScienceCard = gameManager.toScienceProgressCard(pView);
+                isValid = gameManager.useScienceCardEligibility(aScienceCard, owner);
+                if (isValid){
+                    gameManager.useScienceCard(aScienceCard, owner);
+                }
+        }
+        pView.setValid(isValid);
+        return pView;
     }
 }
