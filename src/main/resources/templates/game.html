@@ -25,12 +25,12 @@
 
     var p1name = /*[[${player1}]]*/ 'p1 name';
     var p2name = /*[[${player2}]]*/ 'p2 name';
-    //var p3name = /*[[${player3}]]*/ 'p3 name';
+    var p3name = /*[[${player3}]]*/ 'p3 name';
     // var p4name = /*[[${player4}]]*/ 'p4 name';
 
     var p1color = /*[[${player1_c}]]*/ 'p1 color';
     var p2color = /*[[${player2_c}]]*/ 'p2 color';
-    //var p3name = /*[[${player3_c}]]*/ 'p3 color';
+    var p3color = /*[[${player3_c}]]*/ 'p3 color';
     //var p4name = /*[[${player4_c}]]*/ 'p4 color';
 
     /*]]>*/
@@ -56,7 +56,7 @@
 <div class="container-fluid bg-5" style="padding-top: 7%; padding-bottom: 0%">
     <!--PLAYER 1-->
     <div class="col-sm-4 btn-group-vertical">
-        <button id="player" class="btn turnWabble" type="button" style="z-index: 9; width: 20%;"><!--/*@thymesVar id="username" type=""*/-->
+        <button id="player1" class="btn turnWabble" type="button" style="z-index: 9; width: 20%;"><!--/*@thymesVar id="username" type=""*/-->
         <span th:text="${username}"></span></button>
     </div>
 

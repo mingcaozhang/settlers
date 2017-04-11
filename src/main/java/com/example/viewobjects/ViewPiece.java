@@ -7,12 +7,12 @@ public class ViewPiece {
 
     private String id;
     private String color;
-    private boolean valid;
+    private boolean isValid;
 
-    ViewPiece(String pId, String pColor){
+    ViewPiece(String pId, String pColor,Boolean pIsValid){
         id = pId;
         color = pColor;
-        valid = true;
+        isValid = pIsValid;
     }
 
     ViewPiece(){}
@@ -33,7 +33,7 @@ public class ViewPiece {
         this.color = color;
     }
 
-    public void setValid(boolean valid){this.valid = valid;}
+    public void setIsValid(boolean valid){this.isValid = valid;}
 
-    public boolean getValid(){return this.valid;}
+    public boolean getIsValid(){return this.isValid;}
 }
