@@ -205,6 +205,12 @@ public class GameManager {
         Unit.Knight nextLevel = pIntersection.getKnight().getUpgrade();
         OwnedKnight knight = pPlayer.removeKnight(nextLevel);
     }
+    public void activateKnight(Intersection pIntersection){
+        pIntersection.getKnight().activate();
+    }
+    public void payActivation(Player pPlayer){
+        pPlayer.removeResource(StealableCard.Resource.WHEAT, 1);
+    }
     public boolean checkBuyKnight(Player pPlayer){
         if (pPlayer.getaResourceCards().get(StealableCard.Resource.ORE) == 0 || pPlayer.getaResourceCards().get(StealableCard.Resource.SHEEP) == 0){
             return false;
@@ -212,6 +218,7 @@ public class GameManager {
         return true;
     }
     public boolean checkKnightPlaceEligibility(Intersection pIntersection, String pColor){
+        //TODO GEORGE PLS SEND CODE
         return true;
     }
     public boolean checkUpgradeKnightEligibility(Intersection pIntersection, String pColor){
@@ -219,6 +226,14 @@ public class GameManager {
         Player owner = knight.getOwner();
         Unit.Knight nextLevel = knight.getUpgrade();
         if (owner.canGetKnight(nextLevel) && owner.getaColor().equals(pColor)){
+            return true;
+        }
+        return false;
+    }
+    public boolean checkActivateEligibility(Intersection pIntersection, String pColor){
+        OwnedKnight knight = pIntersection.getKnight();
+        Player owner = knight.getOwner();
+        if (owner.getaColor().equals(pColor) && !knight.getState()){
             return true;
         }
         return false;
@@ -448,12 +463,13 @@ public class GameManager {
         return true;
     }
 
-    public void playerTrade(PlayerTrade pTrade){
-        pTrade.execute();
-    }
-
-    public void maritimeTrade(Player pPlayer, StealableCard.Resource pResource, int pAmount){
-        new MaritimeTrade(pPlayer, pResource, pAmount);
+    public boolean checkMaritimeTradeEligibility(MaritimeTrade pTrade){
+        Player requester = pTrade.getaRequester();
+        Map<StealableCard.Resource, Integer> requesterResources = requester.getaResourceCards();
+        if (requesterResources.get(pTrade.getaOfferedResource()) < pTrade.getaRequestedAmount()*pTrade.getaTradeRate()){
+            return false;
+        }
+        return true;
     }
 
     public void endTurn(){
