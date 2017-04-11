@@ -5,10 +5,7 @@ import com.example.viewobjects.ViewProgressCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class GameManager {
@@ -55,8 +52,8 @@ public class GameManager {
 
     public void rollDice(int pYellow, int pRed, int pEvent){
         aGame.setPhase(Game.GamePhase.TurnFirstPhase);
-        aGame.setRedDice(Game.DiceNumber.values()[pRed - 1]);
-        aGame.setYellowDice(Game.DiceNumber.values()[pYellow - 1]);
+        aGame.setRedDice(Game.DiceNumber.values()[pRed]);
+        aGame.setYellowDice(Game.DiceNumber.values()[pYellow]);
         int eventIndex = pEvent;
         switch (eventIndex){
             case 1:
@@ -172,7 +169,7 @@ public class GameManager {
                 pOwner.addResource(resource, 1);
             }
             else if (pTerrainType == TerrainType.GoldMine){
-                pOwner.addGold();
+                pOwner.addGold(); 
             }
             else{
                 //if (aGame.getEventDice().equals(pOwner.)) TODO -- CHECK PLAYERS COMMODITY UPGRADE LVL
@@ -244,6 +241,28 @@ public class GameManager {
     }
     //END FUNCTIONS FOR KNIGHTS                                        */
 
+    //FUNCTION COMMON TO SETTLEMENTS AND CITIES
+    public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
+        if(pIntersection.getOccupancyFlag())
+            return false;
+
+        List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
+        List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
+        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
+        boolean water = true;
+        for(Hex aHex:hNeighbours) {
+            if(aHex.getTerrainType() != TerrainType.Sea)
+                water =false;
+        }
+        if(water){  // settlement is surrounded by water
+            return false;
+        }
+        for(Intersection aIntersection:iNeighbours) {
+            if(aIntersection.getBuilding() != null)
+                return  false;
+        }
+        return false;
+    }
 
     //START FUNCTIONS FOR SETTLEMENTS
     public void paySettlement(Player pPlayer) {
@@ -265,40 +284,35 @@ public class GameManager {
         }
         return true;
     }
-
-    /*
-    FUNCTIONS TO CHECK IF BUILDINGS CAN BE SETUP
-     */
-    //FUNCTION COMMON TO SETTLEMENTS AND CITIES
-
-    public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
-        if(pIntersection.getOccupancyFlag()) {
-            System.out.println("    occupied");
+    public boolean checkSettlementPlaceEligibility(Intersection pIntersection, String pColor){
+        System.out.println("HELLLLLOOOOOO YOUTUBE");
+        if(pIntersection.getOccupancyFlag())
             return false;
-        }
+
         List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
         List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
         List<Hex> hNeighbours = pIntersection.getHexNeighbours();
         boolean water = true;
         for(Hex aHex:hNeighbours) {
-            System.out.println(aHex.getId());
             if(aHex.getTerrainType() != TerrainType.Sea)
                 water =false;
         }
         if(water){  // settlement is surrounded by water
-            System.out.println("    water");
-
             return false;
         }
+
         for(Intersection aIntersection:iNeighbours) {
-            System.out.println(aIntersection.getId());
-            if(aIntersection.getBuilding() != null) {
-                System.out.println("    hasNeighbour");
-                return false;
+            if(aIntersection.getBuilding() != null)
+                return  false;
+        }
+
+        for(Edge aEdge:eNeighbours){
+            if(aEdge.getOccupancyFlag()){
+                if(aEdge.getTransport().getOwner().getaColor().equals(pColor))
+                    return true;
             }
         }
-        System.out.println("    true");
-        return true;
+        return false;
     }
     //END FUNCTIONS FOR SETTLEMENTS
 
@@ -345,45 +359,34 @@ public class GameManager {
         return true;
     }
     public boolean checkRoadEligibility(Edge pEdge, String pColor){
-        if(pEdge.getOccupancyFlag()) {
-            System.out.println("    occupied");
+        if(pEdge.getOccupancyFlag())
             return false;
-        }
+
         List<Edge> Neighbours = pEdge.getEdgeNeighbours();
         List<Hex> hNeighbours = pEdge.getHexNeighbours();
         List<Intersection> iNeighbours = pEdge.getIntersectionNeighbours();
         boolean water = true;
         for(Hex aHex:hNeighbours){
-            System.out.println(aHex.getId());
             if(aHex.getTerrainType() != TerrainType.Sea)
                 water = false;
         }
         if(water) {
-            System.out.println("    water");
             return false;
         }
         for(Edge aEdge:Neighbours){
-            System.out.println(aEdge.getId());
             if(aEdge.getOccupancyFlag()) {
-                if (aEdge.getTransport().getUnit() == Unit.Transport.ROAD && aEdge.getTransport().getOwner().getaColor().equals(pColor)) {
-                    System.out.println("    road nearby");
+                if (aEdge.getTransport().getUnit() == Unit.Transport.ROAD && aEdge.getTransport().getOwner().getaColor() .equals(pColor)) {
                     return true;
                 }
             }
         }
         for(Intersection aIntersection:iNeighbours){
-            System.out.println(aIntersection.getId());
-            System.out.println(aIntersection.getOccupancyFlag());
             if(aIntersection.getOccupancyFlag()) {
-                System.out.println(pColor);
-                System.out.println(aIntersection.getBuilding().getOwner().getaColor());
-                if (/*aIntersection.getBuilding()!=null &&*/ aIntersection.getBuilding().getOwner().getaColor().equals(pColor)) {
-                    System.out.println("    settlement nearby");
+                if (aIntersection.getBuilding()!=null && aIntersection.getBuilding().getOwner().getaColor() .equals(pColor)) {
                     return true;
                 }
             }
         }
-        System.out.println("    default");
         return false;
     }
     //END FUNCTIONS FOR ROADS
