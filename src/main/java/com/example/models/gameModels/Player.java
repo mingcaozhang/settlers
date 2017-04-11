@@ -31,7 +31,7 @@ public class Player {
     private boolean aTradingHouse;
 
     @ElementCollection
-    private HashMap<StealableCard.Resource, Integer> aMaritimeTradeRates = new HashMap<>();
+    private Map<StealableCard.Resource, Integer> aMaritimeTradeRates = new HashMap<>();
     @ElementCollection
     private Map<StealableCard.Resource, Integer> aResourceCards = new HashMap<>();
     @ElementCollection
@@ -45,9 +45,9 @@ public class Player {
     @ElementCollection
     private Map<Unit.Building, Integer> aBuildings = new HashMap<>();
     @ElementCollection
-    private Map<Unit.Knight, Integer> aKnights;
+    private Map<Unit.Knight, Integer> aKnights = new HashMap<>();
     @ElementCollection
-    private Map<Unit.Transport, Integer> aTransports;
+    private Map<Unit.Transport, Integer> aTransports = new HashMap<>();
 
 
     protected Player(){
@@ -270,7 +270,7 @@ public class Player {
         this.aTransports = aTransports;
     }
 
-    public HashMap<StealableCard.Resource, Integer> getaMaritimeTradeRates() {
+    public Map<StealableCard.Resource, Integer> getaMaritimeTradeRates() {
         return aMaritimeTradeRates;
     }
 
