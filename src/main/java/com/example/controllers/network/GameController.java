@@ -3,6 +3,7 @@ package com.example.controllers.network;
 import com.example.models.gameModels.*;
 import com.example.viewobjects.*;
 import com.google.gson.Gson;
+import com.sun.javaws.progress.Progress;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -491,6 +492,35 @@ public class GameController {
         //System.out.println("settingNeighbours");
         gameManager.getGame().getBoard().setAllNeighbours();
         //gameManager.saveGame();
+    }
 
+    @MessageMapping("/executeprogresscard")
+    @SendTo("/progresscard")
+    public ViewProgressCard executeCard(ViewProgressCard pProgressCard, Principal caller){
+        String pType = pProgressCard.getaType();
+        Player owner = gameManager.getPlayerFromString(caller.getName());
+        boolean isValid = false;
+        switch (pType){
+            case "Politics":
+                ProgressCard.Politics aPoliticsCard = gameManager.toPoliticsProgressCard(pProgressCard);
+                isValid = gameManager.usePoliticsCardEligibility(aPoliticsCard, owner);
+                if (isValid){
+                    gameManager.usePoliticsCard(aPoliticsCard, owner);
+                }
+            case "Trade":
+                ProgressCard.Trade aTradeCard = gameManager.toTradeProgressCard(pProgressCard);
+                isValid = gameManager.useTradeCardEligibility(aTradeCard, owner);
+                if (isValid){
+                    gameManager.useTradeCard(aTradeCard, owner);
+                }
+            case "Science":
+                ProgressCard.Science aScienceCard = gameManager.toScienceProgressCard(pProgressCard);
+                isValid = gameManager.useScienceCardEligibility(aScienceCard, owner);
+                if (isValid){
+                    gameManager.useScienceCard(aScienceCard, owner);
+                }
+        }
+        pProgressCard.setValid(isValid);
+        return pProgressCard;
     }
 }
