@@ -139,17 +139,17 @@ var enableBuyAndUpgrade = false;
 //var boardEnabled = false;
 var currUser;
 
-var currPlayer = document.getElementById("currPlayer");
+//var currPlayer = document.getElementById("currPlayer");
 
 var colorList = [];
 var userList = [];
 userList.push(p1name);
 userList.push(p2name);
-//userList.push(p3name);
+userList.push(p3name);
 //userList.push(p4name);
 colorList.push(p1color);
 colorList.push(p2color);
-//colorList.push(p3color);
+colorList.push(p3color);
 //colorList.push(p4color);
 
 
@@ -162,22 +162,25 @@ for (var i = 0; i < arrayLength; i++) {
         colorsToPrint.push(colorList[i]);
     }
 }
+var p1 = document.getElementById("player1");
+p1.style.background = myColor;
 
 for(var i = 0; i<usersToPrint.length;i++){
 
     if(i == 0){
         var p2 = document.getElementById("player2");
         p2.innerHTML = usersToPrint[i];
-        p2.className = "turnWabble";
-       // p2.disabled = false;
+        p2.style.background = colorsToPrint[i];
+        //p2.className = "turnWabble";
+
     }else if(i==1){
         var p3 = document.getElementById("player3");
         p3.innerHTML = usersToPrint[i];
-        p3.style.background = "green";
+        p3.style.background = colorsToPrint[i];
     }else if(i==2){
         var p4 = document.getElementById("player4");
         p4.innerHTML = usersToPrint[i];
-        p4.style.background = "blue";
+        p4.style.background = colorsToPrint[i];
     }
 }
 
@@ -186,14 +189,12 @@ for(var i = 0; i<usersToPrint.length;i++){
 connect();
 initializeTurn();
 
-
+console.log("my username is: "+myUsername);
+console.log("my color is: "+myColor);
 
 function initializeTurn(){
 
-    currPlayer.innerHTML = "Turn: " + startingPlayer;
 
-    console.log("my username is: "+myUsername);
-    console.log("my color is: "+myColor);
 
     currUser = startingPlayer;
     console.log("Player Starting is: "+startingPlayer);
@@ -204,18 +205,16 @@ function initializeTurn(){
         //enable all turn buttons
         //boardEnabled = true;
         isSetup1 = true;
-        enableBuyAndUpgrade = false;
+        disableMyButtons();
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
-
-
 
 
     }else{
         //disable all turn buttons
 
         //boardEnabled = false;
-        enableBuyAndUpgrade = false;
+        disableMyButtons();
         document.getElementById('rolldice').disabled = true;
         document.getElementById('endTurn').disabled = true;
     }
@@ -231,12 +230,13 @@ function connect() {
        // setConnected(true);
         console.log('Connected: ' + frame);
 
+        //stompClient.subscribe('/topic/geo', callback);
 
         stompClient.subscribe('/topic/turninfo', function (pap) {
             pap = JSON.parse((pap.body));
 
             currUser = pap.username;
-            currPlayer.innerHTML = "Turn: " + currUser;
+           // currPlayer.innerHTML = "Turn: " + currUser;
 
 
             if(currUser.match(myUsername)){
@@ -320,7 +320,7 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
-            var valid = piece.valid;
+            var valid = piece.isValid;
 
             if(valid){
                 d3.select("#"+myId).attr("fill", toColor);
@@ -334,13 +334,12 @@ function connect() {
                         road2Placed = true;
                         document.getElementById('endTurn').disabled = false;
                     }else{
-                        nBrick--;
-                        nWood--;
+                        getResources();
                     }
 
                     nRoad++;
-                    pRoad = document.getElementById("pRoad");
-                    pRoad.innerHTML = "Roads " + nRoad;
+                   // pRoad = document.getElementById("pRoad");
+                   // pRoad.innerHTML = "Roads " + nRoad;
                 }
 
 
@@ -363,7 +362,7 @@ function connect() {
 
         stompClient.subscribe('/topic/playerIncrement', function (players) {
 
-            if (!setupDone){
+            if(!gotSetupResources){
                 gotSetupResources = true;
             }
             players = JSON.parse((players.body));
@@ -390,6 +389,12 @@ function connect() {
             nGold = players[me+'Gold'];
 
 
+        });
+
+
+        stompClient.subscribe('/topic/setupDone', function (confirm) {
+
+            getResources();
 
         });
 
@@ -398,7 +403,7 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
-            var valid = piece.valid;
+            var valid = piece.isValid;
 
             if(valid){
                 if(currUser.match(myUsername)){
@@ -406,15 +411,13 @@ function connect() {
                         settlementPlaced = true;
                     }else{
                         //maybe replace with resources
-                        nWood--;
-                        nBrick--;
-                        nSheep--;
-                        nWheat--;
+                        getResources();
 
                     }
                     nSettlement++;
-                    pSettlement = document.getElementById("pSettlement");
-                    pSettlement.innerHTML = "Settlements " + nSettlement;
+                   //
+                    // pSettlement = document.getElementById("pSettlement");
+                   // pSettlement.innerHTML = "Settlements " + nSettlement;
                 }
 
                 d3.select("#"+myId).attr("fill", toColor);
@@ -435,20 +438,19 @@ function connect() {
 
             var myId = piece.id;
             var toColor = piece.color;
-            var valid  = piece.valid;
+            var valid  = piece.isValid;
 
             if(valid){
                 if(currUser.match(myUsername)){
                     if(!cityPlaced){
                         cityPlaced = true;
                     }else{
-                        nOre -= 3;
-                        nWheat -= 2;
+                        getResources();
                     }
 
                     nCity++;
-                    pCity = document.getElementById("pCity");
-                    pCity.innerHTML = "Cities " + nCity;
+                   //pCity = document.getElementById("pCity");
+                    // pCity.innerHTML = "Cities " + nCity;
                 }
                 d3.select("#"+myId).attr("fill", toColor).attr("r",12);
                 d3.select("#"+myId).attr("hasCity", "true");
@@ -494,23 +496,26 @@ function connect() {
 }
 
 
-
-function sendEdge(Edge){
-    stompClient.send("/app/edge",{},JSON.stringify(Edge));
+function sendEdge(){
+    stompClient.send("/app/edge",{},JSON.stringify(jsonEdges));
 }
 
-function sendHex(Hex){
-    stompClient.send("/app/hex",{},JSON.stringify(Hex));
+function sendBoard(Board){
+    stompClient.send("/app/geo",{},JSON.stringify(Board));
 }
 
-function sendIntersection(Intersection){
-    stompClient.send("/app/intersection",{},JSON.stringify(Intersection));
+
+function sendHex(){
+    stompClient.send("/app/hex",{},JSON.stringify(jsonPolygons));
+}
+
+function sendIntersection(){
+    stompClient.send("/app/intersection",{},JSON.stringify(jsonIntersections));
 }
 
 function readySetNeighbours(){
     stompClient.send("/app/setNeighbours",{},{});
 }
-
 
 function getResources(){
     stompClient.send("/app/getResources",{},{});
@@ -537,7 +542,7 @@ function rollDice() {
     stompClient.send("/app/rolldice",{},JSON.stringify({"red":d1, "yellow":d2, "event":d3}));
 
     //boardEnabled = true;
-    enableBuyAndUpgrade = true;
+    enableMyButtons();
     document.getElementById('rolldice').disabled = true;
     document.getElementById('endTurn').disabled = false;
 
@@ -547,8 +552,7 @@ function endTurn() {
 
     stompClient.send("/app/endturn",{}, {});
 
-    //boardEnabled = false;
-    enableBuyAndUpgrade = false;
+    disableMyButtons();
 
 }
 
@@ -661,10 +665,30 @@ function moveShip (){
 
 function disableMyButtons(){
 
-    //boardEnabled = false;
     enableBuyAndUpgrade = false;
     document.getElementById('rolldice').disabled = true;
     document.getElementById('endTurn').disabled = true;
+    document.getElementById('bRoad').disabled = true;
+    document.getElementById('bSettlement').disabled = true;
+    document.getElementById('uCity').disabled = true;
+    document.getElementById('aKnight').disabled = true;
+    document.getElementById('bKnight').disabled = true;
+    document.getElementById('uKnightStrong').disabled = true;
+    document.getElementById('uKnightMighty').disabled = true;
+
+}
+
+function enableMyButtons(){
+    enableBuyAndUpgrade = true;
+    document.getElementById('rolldice').disabled = false;
+    document.getElementById('endTurn').disabled = false;
+    document.getElementById('bRoad').disabled = false;
+    document.getElementById('bSettlement').disabled = false;
+    document.getElementById('uCity').disabled = false;
+    document.getElementById('aKnight').disabled = false;
+    document.getElementById('bKnight').disabled = false;
+    document.getElementById('uKnightStrong').disabled = false;
+    document.getElementById('uKnightMighty').disabled = false;
 
 }
 
@@ -818,7 +842,7 @@ function buildCity(id) {
 //Place city
 function placeCity(id) {
 
-    stompClient.send("/app/setupcity",{},{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
+    stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
 
 
 }
@@ -829,8 +853,8 @@ function buildWall() {
     if (nBrick > 1 && nWall < 3) {
         nBrick -= 2;
         nWall++;
-        wall = document.getElementById("wall");
-        wall.innerHTML = "Walls " + nWall;
+    //    wall = document.getElementById("wall");
+    //    wall.innerHTML = "Walls " + nWall;
     }
     else {
         //Set no resource message to true
@@ -844,8 +868,8 @@ function getKnight1() {
         nSheep--;
         nKnight1++;
         knight = false;
-        knight1 = document.getElementById("knight1");
-        knight1.innerHTML = "Rank 1: " + nKnight1;
+    //    knight1 = document.getElementById("knight1");
+    //    knight1.innerHTML = "Rank 1: " + nKnight1;
     }
     else {
         //Set no resource message to true
@@ -1456,16 +1480,19 @@ function startTimer()
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 7000);
 }
 
+var jsonEdges = [];
+var jsonIntersections = [];
+var jsonPolygons = [];
+
 function init() {
 
     var canvas = document.getElementById("svgcanvas");
     var q, r1, r2, r, b;
     var count = 0;
-    var jsonPolygons = [];
 
 
 // a js object that describes the hexagons that make up the board.
-    jsonPolygons = [{"x":340.19237886466846,"y":620,"stroke":"black","stroke_width":"4","fill":"white","points":"378.2974966311838,642 340.19237886466846,664 302.08726109815314,642 302.08726109815314,598 340.19237886466846,576 378.2974966311838,598 ","id":"h_-1_4","terrain_type":"sea","number":0},
+     jsonPolygons = [{"x":340.19237886466846,"y":620,"stroke":"black","stroke_width":"4","fill":"white","points":"378.2974966311838,642 340.19237886466846,664 302.08726109815314,642 302.08726109815314,598 340.19237886466846,576 378.2974966311838,598 ","id":"h_-1_4","terrain_type":"sea","number":0},
         {"x":288.23085463760214,"y":530,"stroke":"black","stroke_width":"4","fill":"white","points":"326.33597240411746,552 288.23085463760214,574 250.12573687108681,552 250.12573687108684,508 288.23085463760214,486 326.33597240411746,508 ","id":"h_-2_4","terrain_type":"sea","number":0},
         {"x":236.26933041053582,"y":440,"stroke":"black","stroke_width":"4","fill":"white","points":"274.37444817705114,462 236.26933041053582,484 198.1642126440205,462 198.16421264402052,418 236.26933041053582,396 274.37444817705114,418 ","id":"h_-3_4","terrain_type":"wood","number":3},
         {"x":184.3078061834695,"y":350,"stroke":"black","stroke_width":"4","fill":"white","points":"222.41292394998482,372 184.3078061834695,394 146.20268841695417,372 146.2026884169542,328 184.3078061834695,306 222.4129239499848,328 ","id":"h_-4_4","terrain_type":"gold","number":10},
@@ -1614,16 +1641,15 @@ function init() {
         }, {"x_coord": 963.7306695894642, "y_coord": 260, "x_axial": 4, "y_axial": -3, "radius": 14, "number": 12}];
 
 
-    var jsonEdges = [];
-    var jsonIntersections = [];
+
     var board_radius = 4;
     var hxradius = 60;
 
     var polyPoints = [];
 
-        if (startingPlayer.match(myUsername)) {
+     /*   if (startingPlayer.match(myUsername)) {
      sendHex(jsonPolygons);
-     }
+     } */
 
 
     for (q = -board_radius; q <= board_radius; q++) {
@@ -1689,10 +1715,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonEdges.push(edgeValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendEdge(edgeValues);
-                    }
+                  //  if(startingPlayer.match(myUsername)) {
+                        jsonEdges.push(edgeValues);
+                       // sendEdge(edgeValues);
+                 //   }
                 }
 
                 //left side
@@ -1717,10 +1743,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonEdges.push(edgeValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendEdge(edgeValues);
-                    }
+                //    if(startingPlayer.match(myUsername)) {
+                        jsonEdges.push(edgeValues);
+                        // sendEdge(edgeValues);
+                //    }
                 }
 
                 //bottom left
@@ -1744,10 +1770,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonEdges.push(edgeValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendEdge(edgeValues);
-                    }
+                 //   if(startingPlayer.match(myUsername)) {
+                        jsonEdges.push(edgeValues);
+                        // sendEdge(edgeValues);
+                 //   }
                 }
 
                 //top right
@@ -1771,10 +1797,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonEdges.push(edgeValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendEdge(edgeValues);
-                    }
+                //    if(startingPlayer.match(myUsername)) {
+                        jsonEdges.push(edgeValues);
+                        // sendEdge(edgeValues);
+                //    }
                 }
 
                 //right side
@@ -1798,10 +1824,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonEdges.push(edgeValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendEdge(edgeValues);
-                    }
+                 //   if(startingPlayer.match(myUsername)) {
+                        jsonEdges.push(edgeValues);
+                        // sendEdge(edgeValues);
+                 //   }
                 }
 
                 //bottom right
@@ -1825,10 +1851,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonEdges.push(edgeValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendEdge(edgeValues);
-                    }
+                  //  if(startingPlayer.match(myUsername)) {
+                        jsonEdges.push(edgeValues);
+                        // sendEdge(edgeValues);
+                 //   }
                 }
 
                 // INTERSECTION ---------------------------------------------
@@ -1852,10 +1878,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonIntersections.push(circleValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendIntersection(circleValues);
-                    }
+                 //   if(startingPlayer.match(myUsername)) {
+                        jsonIntersections.push(circleValues);
+                     //   sendIntersection(circleValues);
+                 //   }
                 }
 
                 var Intersection = new IntersectionBlueprint(x, y, x + y, 4);
@@ -1874,10 +1900,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonIntersections.push(circleValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendIntersection(circleValues);
-                    }
+                //    if(startingPlayer.match(myUsername)) {
+                        jsonIntersections.push(circleValues);
+                        //   sendIntersection(circleValues);
+                //    }
                 }
 
                 var Intersection = new IntersectionBlueprint(x, my, x + my, 4);
@@ -1896,10 +1922,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonIntersections.push(circleValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendIntersection(circleValues);
-                    }
+                 //   if(startingPlayer.match(myUsername)) {
+                        jsonIntersections.push(circleValues);
+                        //   sendIntersection(circleValues);
+                 //   }
                 }
 
 
@@ -1919,10 +1945,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonIntersections.push(circleValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendIntersection(circleValues);
-                    }
+                //    if(startingPlayer.match(myUsername)) {
+                        jsonIntersections.push(circleValues);
+                        //   sendIntersection(circleValues);
+                //    }
                 }
 
 
@@ -1942,10 +1968,10 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonIntersections.push(circleValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendIntersection(circleValues);
-                    }
+                //    if(startingPlayer.match(myUsername)) {
+                        jsonIntersections.push(circleValues);
+                        //   sendIntersection(circleValues);
+                //    }
                 }
 
 
@@ -1965,19 +1991,28 @@ function init() {
                     }
                 }
                 if (search == true) {
-                    jsonIntersections.push(circleValues);
-                    if(startingPlayer.match(myUsername)) {
-                        sendIntersection(circleValues);
-                    }
+                //    if(startingPlayer.match(myUsername)) {
+                        jsonIntersections.push(circleValues);
+                        //   sendIntersection(circleValues);
+                //    }
                 }
             }
 
         }
 
     }
+
+    var allJSON = [];
+    allJSON.push(jsonPolygons);
+    allJSON.push(jsonEdges);
+    allJSON.push(jsonIntersections);
+
+  //  sendBoard(allJSON);
     if(startingPlayer.match(myUsername)) {
-        readySetNeighbours();
+        sendHex();
+        setTimeout(readySetNeighbours, 6000);
     }
+
 
 //var color ='blue'; //OH MY LORD
 
@@ -2040,15 +2075,33 @@ var intersectionAttrs = boardIntersections
 
                 }else if(enableBuyAndUpgrade){
 
-                    if(d3.select(this).attr("hasSettlement").match("false")){
 
-                        buildSettlement(d.id);
+                    if(clickBuySettlement){
 
-                    }else if(d3.select(this).attr("hasCity").match("false")){
+                        if(d3.select(this).attr("hasSettlement").match("false")){
 
-                        buildCity(d.id);
+                            buildSettlement(d.id);
+
+                        }
+
+                    }else if(clickUpgradeCity){
+
+                        if(d3.select(this).attr("hasCity").match("false")){
+
+                            buildCity(d.id);
+
+                        }
+
+                    }else if(clickBuyKnight){
+
+                    }else if(clickActivateKnight){
+
+                    }else if(clickUpdateMighty){
+
+                    }else if(clickUpdateStrong){
 
                     }
+
                 }
             }
 
@@ -2074,7 +2127,7 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
     .attr("hasRoad", "false")
     .on("click", function (d) {
 
-        if(currUser.match(myUsername)){
+        if(currUser.match(myUsername)){  // what is this
 
                     if(!road1Placed && settlementPlaced && isSetup1){
                         placeRoad(d.id);
@@ -2086,9 +2139,13 @@ var edgeAttrs = edges.attr("class", "hex " + "woood")
                     }
 
                  if(enableBuyAndUpgrade){
-                    if(d3.select(this).attr("hasRoad").match("false")){
-                        buildRoad(d.id);
-                    }
+
+                        if(clickBuyRoad){
+                            if(d3.select(this).attr("hasRoad").match("false")){
+                                buildRoad(d.id);
+                            }
+                        }
+
                 }
 
         }
