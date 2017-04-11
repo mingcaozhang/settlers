@@ -221,10 +221,11 @@ public class GameController {
         return pNew;
     }
 
-    @SendTo("/topic/playerIncrement")
-    public void setupPayout(){
+    @MessageMapping("/setupDone")
+    @SendTo("/topic/setupDone")
+    public boolean setupPayout(){
         gameManager.setupPayout();
-        showPlayerIncrement();
+        return true;
     }
 
     @MessageMapping("/rolldice")
@@ -241,6 +242,7 @@ public class GameController {
         setPlayerIncrement(increment);
         return increment;
     }
+
 
     private void setPlayerIncrement(PlayerIncrement pIncrement){
         for (String pUsername : currPlayerList){
@@ -298,6 +300,68 @@ public class GameController {
         }
     }
 
+    @MessageMapping("/getProgressCards")
+    @SendTo("/topic/playerProgressCards")
+    public PlayerProgressCard showPlayerProgressCards(){
+        PlayerProgressCard playerProgressCard = new PlayerProgressCard();
+        setPlayerProgressCard(playerProgressCard);
+        return playerProgressCard;
+    }
+
+
+    private void setPlayerProgressCard(PlayerProgressCard pPlayerProgressCard){
+        for (String pUsername : currPlayerList){
+            for (Player player : gameManager.getGame().getPlayers()) {
+                if (pUsername.equals(player.getaUsername())) {
+                    int index = currPlayerList.indexOf(player.getaUsername());
+                    switch (index) {
+                        case 1:
+                            ArrayList<String> aCards1 = getProgressCardsFromPlayer(player);
+                            pPlayerProgressCard.setp1(aCards1);
+                        case 2:
+                            ArrayList<String> aCards2 = getProgressCardsFromPlayer(player);
+                            pPlayerProgressCard.setp2(aCards2);
+                        case 3:
+                            ArrayList<String> aCards3 = getProgressCardsFromPlayer(player);
+                            pPlayerProgressCard.setp3(aCards3);
+                        case 4:
+                            ArrayList<String> aCards4 = getProgressCardsFromPlayer(player);
+                            pPlayerProgressCard.setp4(aCards4);
+                    }
+                }
+            }
+        }
+    }
+
+    private ArrayList<String> getProgressCardsFromPlayer(Player pPlayer){
+        ArrayList<String> aCards = new ArrayList<>();
+        for (ProgressCard.Politics politicsCard : pPlayer.getaPoliticsCards().keySet()){
+            int cardAmount = pPlayer.getaPoliticsCards().get(politicsCard);
+            if (cardAmount > 0){
+                for (int i = 0; i < cardAmount; i++){
+                    aCards.add(politicsCard.toString());
+                }
+            }
+        }
+        for (ProgressCard.Trade tradeCard : pPlayer.getaTradeCards().keySet()){
+            int cardAmount = pPlayer.getaTradeCards().get(tradeCard);
+            if (cardAmount > 0){
+                for (int i = 0; i < cardAmount; i++){
+                    aCards.add(tradeCard.toString());
+                }
+            }
+        }
+        for (ProgressCard.Science scienceCard : pPlayer.getaScienceCards().keySet()){
+            int cardAmount = pPlayer.getaScienceCards().get(scienceCard);
+            if (cardAmount > 0){
+                for (int i = 0; i < cardAmount; i++){
+                    aCards.add(scienceCard.toString());
+                }
+            }
+        }
+        return aCards;
+    }
+
     @MessageMapping("/traderequest")
     @SendTo("/topic/traderequest")
     public ViewPlayerTrade tradeRequest(ViewPlayerTrade pTrade, Principal caller){
@@ -327,6 +391,24 @@ public class GameController {
         }
         pTrade.setValid(isValid);
         return pTrade;
+    }
+
+    @MessageMapping("/cityimprovement")
+    @SendTo("/topic/cityimprovement")
+    public ViewCityImprovement upgradeCity(ViewCityImprovement pView, Principal caller){
+        Player player = gameManager.getPlayerFromString(caller.getName());
+        StealableCard.Commodity aType = null;
+        for (StealableCard.Commodity c : StealableCard.Commodity.values()){
+            if (pView.getaType().equals(c.toString())){
+                aType = c;
+            }
+        }
+        boolean isValid = gameManager.buyCityImprovementEligibility(player ,aType);
+        if (isValid){
+            gameManager.buyCityImprovement(player, aType);
+        }
+        pView.setValid(isValid);
+        return pView;
     }
 
     @MessageMapping("/endturn")

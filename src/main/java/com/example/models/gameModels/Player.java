@@ -24,7 +24,12 @@ public class Player {
     private int aGold;
     private int aRouteLength;
     private int aProgressCardAmount;
+    private int aArmySize;
+    private int aPoliticsLevel;
+    private int aTradeLevel;
+    private int aScienceLevel;
     private boolean aMerchant;
+    private boolean aLargestArmy;
     private boolean aLongestTradeRoute;
     private boolean aAqueduct;
     private boolean aFortress;
@@ -45,9 +50,9 @@ public class Player {
     @ElementCollection
     private Map<Unit.Building, Integer> aBuildings = new HashMap<>();
     @ElementCollection
-    private Map<Unit.Knight, Integer> aKnights;
+    private Map<Unit.Knight, Integer> aKnights = new HashMap<>();
     @ElementCollection
-    private Map<Unit.Transport, Integer> aTransports;
+    private Map<Unit.Transport, Integer> aTransports = new HashMap<>();
 
 
     protected Player(){
@@ -63,8 +68,13 @@ public class Player {
         aVPs = 0;
         aGold = 0;
         aRouteLength = 0;
+        aArmySize = 0;
         aProgressCardAmount = 0;
+        aPoliticsLevel = 0;
+        aTradeLevel = 0;
+        aScienceLevel = 0;
         aMerchant = false;
+        aLargestArmy = false;
         aLongestTradeRoute = false;
         aAqueduct = false;
         aFortress = false;
@@ -120,6 +130,46 @@ public class Player {
 
     public void setaTransports(Map<Unit.Transport, Integer> aTransports) {
         this.aTransports = aTransports;
+    }
+
+    public int getaArmySize() {
+        return aArmySize;
+    }
+
+    public void setaArmySize(int aArmySize) {
+        this.aArmySize = aArmySize;
+    }
+
+    public int getaPoliticsLevel() {
+        return aPoliticsLevel;
+    }
+
+    public void setaPoliticsLevel(int aPoliticsLevel) {
+        this.aPoliticsLevel = aPoliticsLevel;
+    }
+
+    public int getaTradeLevel() {
+        return aTradeLevel;
+    }
+
+    public void setaTradeLevel(int aTradeLevel) {
+        this.aTradeLevel = aTradeLevel;
+    }
+
+    public int getaScienceLevel() {
+        return aScienceLevel;
+    }
+
+    public void setaScienceLevel(int aScienceLevel) {
+        this.aScienceLevel = aScienceLevel;
+    }
+
+    public boolean isaLargestArmy() {
+        return aLargestArmy;
+    }
+
+    public void setaLargestArmy(boolean aLargestArmy) {
+        this.aLargestArmy = aLargestArmy;
     }
 
     public String getaColor() {
@@ -276,6 +326,26 @@ public class Player {
 
     public void setaMaritimeTradeRates(HashMap<StealableCard.Resource, Integer> aMaritimeTradeRates) {
         this.aMaritimeTradeRates = aMaritimeTradeRates;
+    }
+
+    //increase commodity upgrade levels
+    public void upgradePolitics(){
+        aPoliticsLevel++;
+    }
+    public void upgradeTrade(){
+        aTradeLevel++;
+    }
+    public void upgradeScience(){
+        aScienceLevel++;
+    }
+    public boolean upgradePoliticsEligibility(){
+        return (aPoliticsLevel < 5);
+    }
+    public boolean upgradeTradeEligibility(){
+        return (aTradeLevel < 5);
+    }
+    public boolean upgradeScienceEligiblity(){
+        return (aScienceLevel < 5);
     }
 
     //add and remove gold
