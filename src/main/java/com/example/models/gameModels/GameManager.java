@@ -1,12 +1,10 @@
 package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
+import com.example.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class GameManager {
@@ -207,10 +205,20 @@ public class GameManager {
         Unit.Knight nextLevel = pIntersection.getKnight().getUpgrade();
         OwnedKnight knight = pPlayer.removeKnight(nextLevel);
     }
+    public void activateKnight(Intersection pIntersection){
+        pIntersection.getKnight().activate();
+    }
+    public void payActivation(Player pPlayer){
+        pPlayer.removeResource(StealableCard.Resource.WHEAT, 1);
+    }
     public boolean checkBuyKnight(Player pPlayer){
         if (pPlayer.getaResourceCards().get(StealableCard.Resource.ORE) == 0 || pPlayer.getaResourceCards().get(StealableCard.Resource.SHEEP) == 0){
             return false;
         }
+        return true;
+    }
+    public boolean checkKnightPlaceEligibility(Intersection pIntersection, String pColor){
+        //TODO GEORGE PLS SEND CODE
         return true;
     }
     public boolean checkUpgradeKnightEligibility(Intersection pIntersection, String pColor){
@@ -222,37 +230,18 @@ public class GameManager {
         }
         return false;
     }
-    //END FUNCTIONS FOR KNIGHTS                                        */
-
-    /*
-    FUNCTIONS TO CHECK IF BUILDINGS CAN BE PLACED
-     */
-
-    public boolean checkKnightPlaceEligibility(Intersection pIntersection, String pColor){
-        if(pIntersection.getOccupancyFlag())
-            return false;
-
-        List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
-        List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
-        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
-        boolean water = true;
-        for(Hex aHex:hNeighbours) {
-            if(aHex.getTerrainType() != TerrainType.Sea)
-                water =false;
-        }
-        if(water){  // settlement is surrounded by water
-            return false;
-        }
-        for(Edge aEdge:eNeighbours){
-            if(aEdge.getOccupancyFlag()){
-                if(aEdge.getTransport().getOwner().getaColor()==pColor)
-                    return true;
-            }
+    public boolean checkActivateEligibility(Intersection pIntersection, String pColor){
+        OwnedKnight knight = pIntersection.getKnight();
+        Player owner = knight.getOwner();
+        if (owner.getaColor().equals(pColor) && !knight.getState()){
+            return true;
         }
         return false;
     }
+    //END FUNCTIONS FOR KNIGHTS                                        */
 
-    public boolean checkSettlementPlaceEligibility(Intersection pIntersection, String pColor){
+    //FUNCTION COMMON TO SETTLEMENTS AND CITIES
+    public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
         if(pIntersection.getOccupancyFlag())
             return false;
 
@@ -490,12 +479,13 @@ public class GameManager {
         return true;
     }
 
-    public void playerTrade(PlayerTrade pTrade){
-        pTrade.execute();
-    }
-
-    public void maritimeTrade(Player pPlayer, StealableCard.Resource pResource, int pAmount){
-        new MaritimeTrade(pPlayer, pResource, pAmount);
+    public boolean checkMaritimeTradeEligibility(MaritimeTrade pTrade){
+        Player requester = pTrade.getaRequester();
+        Map<StealableCard.Resource, Integer> requesterResources = requester.getaResourceCards();
+        if (requesterResources.get(pTrade.getaOfferedResource()) < pTrade.getaRequestedAmount()*pTrade.getaTradeRate()){
+            return false;
+        }
+        return true;
     }
 
     public void endTurn(){
