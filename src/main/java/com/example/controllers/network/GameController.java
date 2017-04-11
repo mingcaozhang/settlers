@@ -3,7 +3,6 @@ package com.example.controllers.network;
 import com.example.models.gameModels.*;
 import com.example.viewobjects.*;
 import com.google.gson.Gson;
-import com.sun.javaws.progress.Progress;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +87,8 @@ public class GameController {
         return pNew;
     }
 
+
+
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
@@ -160,7 +161,6 @@ public class GameController {
         pNew.setIsValid(isValid);
         return pNew;
     }
-
     @MessageMapping("/activateknight")
     @SendTo("/topic/knight")
     public ViewPiece activateKnight(ViewPiece pNew, Principal caller){
@@ -380,7 +380,6 @@ public class GameController {
         return pTrade;
     }
 
-
     @MessageMapping("/maritimetrade")
     @SendTo("/topic/maritimetrade")
     public ViewMaritimeTrade maritimeTrade(ViewMaritimeTrade pTrade, Principal caller){
@@ -411,7 +410,7 @@ public class GameController {
         return pView;
     }
 
-    @MessageMapping("/endturn")
+  @MessageMapping("/endturn")
     @SendTo("/topic/turninfo")
     public PlayerAndPhase endTurn(Principal user){
         if(turnCounter == (currPlayerList.size()-1)){
@@ -574,7 +573,6 @@ public class GameController {
         //System.out.println("settingNeighbours");
         gameManager.getGame().getBoard().setAllNeighbours();
         //gameManager.saveGame();
-    }
 
     @MessageMapping("/executeprogresscard")
     @SendTo("/progresscard")

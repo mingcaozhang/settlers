@@ -5,12 +5,50 @@ import java.util.HashMap;
 public class PlayerTrade implements Trade{
     private Player aRequester;
     private Player aRequestee;
+
+    public void setaRequester(Player aRequester) {
+        this.aRequester = aRequester;
+    }
+
+    public void setaRequestee(Player aRequestee) {
+        this.aRequestee = aRequestee;
+    }
+
+    public void setaRequestedResources(HashMap<StealableCard.Resource, Integer> aRequestedResources) {
+        this.aRequestedResources = aRequestedResources;
+    }
+
+    public void setaOfferedResources(HashMap<StealableCard.Resource, Integer> aOfferedResources) {
+        this.aOfferedResources = aOfferedResources;
+    }
+
+    public void setaRequestedCommodities(HashMap<StealableCard.Commodity, Integer> aRequestedCommodities) {
+        this.aRequestedCommodities = aRequestedCommodities;
+    }
+
+    public void setaOfferedCommodities(HashMap<StealableCard.Commodity, Integer> aOfferedCommodities) {
+        this.aOfferedCommodities = aOfferedCommodities;
+    }
+
     private HashMap<StealableCard.Resource, Integer> aRequestedResources;
     private HashMap<StealableCard.Resource, Integer> aOfferedResources;
     private HashMap<StealableCard.Commodity, Integer> aRequestedCommodities;
     private HashMap<StealableCard.Commodity, Integer> aOfferedCommodities;
 
     public PlayerTrade(){
+    }
+
+    public PlayerTrade(Player pRequester, Player pRequestee,
+    HashMap<StealableCard.Resource, Integer> pRequestedResources,
+    HashMap<StealableCard.Resource, Integer> pOfferedResources,
+    HashMap<StealableCard.Commodity, Integer> pRequestedCommodities,
+    HashMap<StealableCard.Commodity, Integer> pOfferedCommodities) {
+        aRequester = pRequester;
+        aRequestee = pRequestee;
+        aRequestedResources = pRequestedResources;
+        aOfferedResources = pOfferedResources;
+        aRequestedCommodities = pRequestedCommodities;
+        aOfferedCommodities = pOfferedCommodities;
     }
 
     public void execute(){
@@ -49,29 +87,5 @@ public class PlayerTrade implements Trade{
 
     public HashMap<StealableCard.Commodity, Integer> getaOfferedCommodities() {
         return aOfferedCommodities;
-    }
-
-    public void setaRequester(Player aRequester) {
-        this.aRequester = aRequester;
-    }
-
-    public void setaRequestee(Player aRequestee) {
-        this.aRequestee = aRequestee;
-    }
-
-    public void setaRequestedResources(HashMap<StealableCard.Resource, Integer> aRequestedResources) {
-        this.aRequestedResources = aRequestedResources;
-    }
-
-    public void setaOfferedResources(HashMap<StealableCard.Resource, Integer> aOfferedResources) {
-        this.aOfferedResources = aOfferedResources;
-    }
-
-    public void setaRequestedCommodities(HashMap<StealableCard.Commodity, Integer> aRequestedCommodities) {
-        this.aRequestedCommodities = aRequestedCommodities;
-    }
-
-    public void setaOfferedCommodities(HashMap<StealableCard.Commodity, Integer> aOfferedCommodities) {
-        this.aOfferedCommodities = aOfferedCommodities;
     }
 }
