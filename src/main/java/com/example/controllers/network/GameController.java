@@ -411,5 +411,6 @@ public class GameController {
     {
         gameManager.getGame().getBoard().setAllNeighbours();
         //gameManager.saveGame();
+
    }
 }
