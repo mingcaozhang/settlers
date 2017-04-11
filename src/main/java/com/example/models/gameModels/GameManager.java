@@ -1,7 +1,7 @@
 package com.example.models.gameModels;
 import com.example.repositories.GameRepository;
 import com.example.repositories.UserRepository;
-import com.example.viewobjects.ViewProgressCard
+import com.example.viewobjects.ViewProgressCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
