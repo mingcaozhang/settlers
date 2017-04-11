@@ -3,7 +3,6 @@ package com.example.controllers.network;
 import com.example.models.gameModels.*;
 import com.example.viewobjects.*;
 import com.google.gson.Gson;
-import com.sun.javaws.progress.Progress;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.json.*;
-import com.google.gson.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -162,20 +159,6 @@ public class GameController {
         pNew.setIsValid(isValid);
         return pNew;
     }
-
-    @MessageMapping("/activateknight")
-    @SendTo("/topic/knight")
-    public ViewPiece activateKnight(ViewPiece pNew, Principal caller){
-        Player checkee = gameManager.getPlayerFromString(caller.getName());
-        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        boolean isValid = gameManager.checkActivateEligibility(checker, pNew.getColor());
-        if (isValid){
-            gameManager.payActivation(checkee);
-            gameManager.activateKnight(checker);
-        }
-        pNew.setIsValid(isValid);
-        return pNew;
-    }
     // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")
@@ -313,19 +296,6 @@ public class GameController {
         boolean isValid = gameManager.checkPlayerTradeEligibility(aPlayerTrade);
         if (isValid){
             aPlayerTrade.execute();
-        }
-        pTrade.setValid(isValid);
-        return pTrade;
-    }
-
-
-    @MessageMapping("/maritimetrade")
-    @SendTo("/topic/maritimetrade")
-    public ViewMaritimeTrade maritimeTrade(ViewMaritimeTrade pTrade, Principal caller){
-        MaritimeTrade aMaritimeTrade = pTrade.toMaritimeTrade();
-        boolean isValid = gameManager.checkMaritimeTradeEligibility(aMaritimeTrade);
-        if (isValid){
-            aMaritimeTrade.execute();
         }
         pTrade.setValid(isValid);
         return pTrade;
@@ -494,35 +464,6 @@ public class GameController {
         //System.out.println("settingNeighbours");
         gameManager.getGame().getBoard().setAllNeighbours();
         //gameManager.saveGame();
-    }
 
-    @MessageMapping("/executeprogresscard")
-    @SendTo("/progresscard")
-    public ViewProgressCard executeCard(ViewProgressCard pProgressCard, Principal caller){
-        String pType = pProgressCard.getaType();
-        Player owner = gameManager.getPlayerFromString(caller.getName());
-        boolean isValid = false;
-        switch (pType){
-            case "Politics":
-                ProgressCard.Politics aPoliticsCard = gameManager.toPoliticsProgressCard(pProgressCard);
-                isValid = gameManager.usePoliticsCardEligibility(aPoliticsCard, owner);
-                if (isValid){
-                    gameManager.usePoliticsCard(aPoliticsCard, owner);
-                }
-            case "Trade":
-                ProgressCard.Trade aTradeCard = gameManager.toTradeProgressCard(pProgressCard);
-                isValid = gameManager.useTradeCardEligibility(aTradeCard, owner);
-                if (isValid){
-                    gameManager.useTradeCard(aTradeCard, owner);
-                }
-            case "Science":
-                ProgressCard.Science aScienceCard = gameManager.toScienceProgressCard(pProgressCard);
-                isValid = gameManager.useScienceCardEligibility(aScienceCard, owner);
-                if (isValid){
-                    gameManager.useScienceCard(aScienceCard, owner);
-                }
-        }
-        pProgressCard.setValid(isValid);
-        return pProgressCard;
     }
 }

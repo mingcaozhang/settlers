@@ -5,9 +5,51 @@ import java.util.Map;
 
 @Entity
 public class Player {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gameid;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
+
+        Player player = (Player) o;
+
+        if (aIndex != player.aIndex) return false;
+        if (aVPs != player.aVPs) return false;
+        if (aGold != player.aGold) return false;
+        if (aRouteLength != player.aRouteLength) return false;
+        if (aProgressCardAmount != player.aProgressCardAmount) return false;
+        if (aMerchant != player.aMerchant) return false;
+        if (aLongestTradeRoute != player.aLongestTradeRoute) return false;
+        if (aAqueduct != player.aAqueduct) return false;
+        if (aFortress != player.aFortress) return false;
+        if (aTradingHouse != player.aTradingHouse) return false;
+        if (gameid != null ? !gameid.equals(player.gameid) : player.gameid != null) return false;
+        if (aColor != null ? !aColor.equals(player.aColor) : player.aColor != null) return false;
+        if (aUsername != null ? !aUsername.equals(player.aUsername) : player.aUsername != null) return false;
+        if (aResourceCards != null ? !aResourceCards.equals(player.aResourceCards) : player.aResourceCards != null)
+            return false;
+        if (aCommodityCards != null ? !aCommodityCards.equals(player.aCommodityCards) : player.aCommodityCards != null)
+            return false;
+        if (aTradeCards != null ? !aTradeCards.equals(player.aTradeCards) : player.aTradeCards != null) return false;
+        if (aPoliticsCards != null ? !aPoliticsCards.equals(player.aPoliticsCards) : player.aPoliticsCards != null)
+            return false;
+        if (aScienceCards != null ? !aScienceCards.equals(player.aScienceCards) : player.aScienceCards != null)
+            return false;
+        if (aBuildings != null ? !aBuildings.equals(player.aBuildings) : player.aBuildings != null) return false;
+        if (aKnights != null ? !aKnights.equals(player.aKnights) : player.aKnights != null) return false;
+        if (aTransports != null ? !aTransports.equals(player.aTransports) : player.aTransports != null) return false;
+        return exec != null ? exec.equals(player.exec) : player.exec == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = gameid.hashCode();
+        return result;
+    }
 
     @Override
     public String toString() {
@@ -29,9 +71,6 @@ public class Player {
     private boolean aAqueduct;
     private boolean aFortress;
     private boolean aTradingHouse;
-
-    @ElementCollection
-    private Map<StealableCard.Resource, Integer> aMaritimeTradeRates = new HashMap<>();
     @ElementCollection
     private Map<StealableCard.Resource, Integer> aResourceCards = new HashMap<>();
     @ElementCollection
@@ -45,17 +84,17 @@ public class Player {
     @ElementCollection
     private Map<Unit.Building, Integer> aBuildings = new HashMap<>();
     @ElementCollection
-    private Map<Unit.Knight, Integer> aKnights = new HashMap<>();
+    private Map<Unit.Knight, Integer> aKnights;
     @ElementCollection
-    private Map<Unit.Transport, Integer> aTransports = new HashMap<>();
-
+    private Map<Unit.Transport, Integer> aTransports;
+    @Embedded
+    private ExecuteCard exec = new ExecuteCard();
 
     protected Player(){
         aUsername = null;
         aColor = null;
         aIndex = 0;
     }
-
     public Player(String pUsername, String pColor, int pIndex) {
         aUsername = pUsername;
         aColor = pColor;
@@ -70,9 +109,15 @@ public class Player {
         aFortress = false;
         aTradingHouse = false;
 
-        for (StealableCard.Resource resource : StealableCard.Resource.values()) {
-            aMaritimeTradeRates.put(resource, 4);
-        }
+        aResourceCards = new HashMap<>();
+        aCommodityCards = new HashMap<>();
+        aTradeCards = new HashMap<>();
+        aPoliticsCards = new HashMap<>();
+        aScienceCards = new HashMap<>();
+        aBuildings = new HashMap<>();
+        aKnights = new HashMap<>();
+        aTransports = new HashMap<>();
+
         for (StealableCard.Resource resource : StealableCard.Resource.values()) {
             aResourceCards.put(resource, 0);
         }
@@ -270,12 +315,12 @@ public class Player {
         this.aTransports = aTransports;
     }
 
-    public Map<StealableCard.Resource, Integer> getaMaritimeTradeRates() {
-        return aMaritimeTradeRates;
+    public ExecuteCard getExec() {
+        return exec;
     }
 
-    public void setaMaritimeTradeRates(HashMap<StealableCard.Resource, Integer> aMaritimeTradeRates) {
-        this.aMaritimeTradeRates = aMaritimeTradeRates;
+    public void setExec(ExecuteCard exec) {
+        this.exec = exec;
     }
 
     //add and remove gold
@@ -305,8 +350,9 @@ public class Player {
         aCommodityCards.put(pCommodity, aCommodityCards.get(pCommodity) - pAmount);
     }
 
-    //add and remove trade progress cards
+    //add and use trade progress cards
     public void addTradeCard(ProgressCard.Trade pTradeCard) {
+        assert (aProgressCardAmount < 4);
         if (aTradeCards.containsKey(pTradeCard)) {
             aTradeCards.put(pTradeCard, aTradeCards.get(pTradeCard) + 1);
         } else {
@@ -314,13 +360,21 @@ public class Player {
         }
         aProgressCardAmount++;
     }
-    public void removeTradeCard(ProgressCard.Trade pTradeCard){
-        aTradeCards.put(pTradeCard, aTradeCards.get(pTradeCard) - 1);
+    public void useTradeCard(ProgressCard.Trade pTradeCard){
+        assert(aTradeCards.containsKey(pTradeCard) && aTradeCards.get(pTradeCard) > 0);
+        exec.executeTradeCard(pTradeCard, this);
+        if(aTradeCards.get(pTradeCard) == 1){
+            aTradeCards.remove(pTradeCard);
+        }
+        else{
+            aTradeCards.put(pTradeCard, aTradeCards.get(pTradeCard) - 1);
+        }
         aProgressCardAmount--;
     }
 
-    //add and remove politics progress cards
+    //add and use politics progress cards
     public void addPoliticsCard(ProgressCard.Politics pPoliticsCard) {
+        assert (aProgressCardAmount < 4);
         if (aPoliticsCards.containsKey(pPoliticsCard)) {
             aPoliticsCards.put(pPoliticsCard, aPoliticsCards.get(pPoliticsCard) + 1);
         } else {
@@ -328,13 +382,21 @@ public class Player {
         }
         aProgressCardAmount++;
     }
-    public void removePoliticsCard(ProgressCard.Politics pPoliticsCard){
-        aPoliticsCards.put(pPoliticsCard, aPoliticsCards.get(pPoliticsCard) - 1);
+    public void usePoliticsCard(ProgressCard.Politics pPoliticsCard){
+        assert(aPoliticsCards.containsKey(pPoliticsCard) && aPoliticsCards.get(pPoliticsCard) > 0);
+        exec.executePoliticsCard(pPoliticsCard, this);
+        if(aPoliticsCards.get(pPoliticsCard) == 1){
+            aPoliticsCards.remove(pPoliticsCard);
+        }
+        else{
+            aPoliticsCards.put(pPoliticsCard, aPoliticsCards.get(pPoliticsCard) - 1);
+        }
         aProgressCardAmount--;
     }
-   
-    //add and remove trade science cards
+
+    //add and use trade science cards
     public void addScienceCard(ProgressCard.Science pScienceCard) {
+        assert (aProgressCardAmount < 4);
         if (aScienceCards.containsKey(pScienceCard)) {
             aScienceCards.put(pScienceCard, aScienceCards.get(pScienceCard) + 1);
         } else {
@@ -342,10 +404,18 @@ public class Player {
         }
         aProgressCardAmount++;
     }
-    public void removeScienceCard(ProgressCard.Science pScienceCard){
-        aScienceCards.put(pScienceCard, aScienceCards.get(pScienceCard) - 1);
+    public void useScienceCard(ProgressCard.Science pScienceCard){
+        assert(aScienceCards.containsKey(pScienceCard) && aScienceCards.get(pScienceCard) > 0);
+        exec.executeScienceCard(pScienceCard, this);
+        if(aScienceCards.get(pScienceCard) == 1){
+            aScienceCards.remove(pScienceCard);
+        }
+        else{
+            aScienceCards.put(pScienceCard, aScienceCards.get(pScienceCard) - 1);
+        }
         aProgressCardAmount--;
     }
+
     //add and remove buildings
     public void addBuilding(Unit.Building pBuilding) {
         assert (aBuildings.get(pBuilding) < Unit.Building.maxBuildings());
