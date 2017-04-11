@@ -171,7 +171,7 @@ public class GameController {
             gameManager.payActivation(checkee);
             gameManager.activateKnight(checker);
         }
-        pNew.setValid(isValid);
+        pNew.setIsValid(isValid);
         return pNew;
     }
     // SETUP IS FIRST 2 TURNS
@@ -496,31 +496,31 @@ public class GameController {
 
     @MessageMapping("/executeprogresscard")
     @SendTo("/progresscard")
-    public ViewProgressCard executeCard(ViewProgressCard pProgressCard, Principal caller){
-        String pType = pProgressCard.getaType();
+    public ViewProgressCard executeCard(ViewProgressCard pView, Principal caller){
+        String pType = pView.getaType();
         Player owner = gameManager.getPlayerFromString(caller.getName());
         boolean isValid = false;
         switch (pType){
             case "Politics":
-                ProgressCard.Politics aPoliticsCard = gameManager.toPoliticsProgressCard(pProgressCard);
+                ProgressCard.Politics aPoliticsCard = gameManager.toPoliticsProgressCard(pView);
                 isValid = gameManager.usePoliticsCardEligibility(aPoliticsCard, owner);
                 if (isValid){
                     gameManager.usePoliticsCard(aPoliticsCard, owner);
                 }
             case "Trade":
-                ProgressCard.Trade aTradeCard = gameManager.toTradeProgressCard(pProgressCard);
+                ProgressCard.Trade aTradeCard = gameManager.toTradeProgressCard(pView);
                 isValid = gameManager.useTradeCardEligibility(aTradeCard, owner);
                 if (isValid){
                     gameManager.useTradeCard(aTradeCard, owner);
                 }
             case "Science":
-                ProgressCard.Science aScienceCard = gameManager.toScienceProgressCard(pProgressCard);
+                ProgressCard.Science aScienceCard = gameManager.toScienceProgressCard(pView);
                 isValid = gameManager.useScienceCardEligibility(aScienceCard, owner);
                 if (isValid){
                     gameManager.useScienceCard(aScienceCard, owner);
                 }
         }
-        pProgressCard.setValid(isValid);
-        return pProgressCard;
+        pView.setValid(isValid);
+        return pView;
     }
 }
