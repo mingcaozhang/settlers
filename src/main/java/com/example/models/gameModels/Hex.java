@@ -80,27 +80,27 @@ public abstract class Hex extends Geometry {
 
         if (pEdges.get(id1) != null) {
             EdgeNeighbours.add(pEdges.get(id1));
-            System.out.println("    Edge " + id1);
+        //    System.out.println("    Edge " + id1);
         }
         if (pEdges.get(id2) != null) {
             EdgeNeighbours.add(pEdges.get(id2));
-            System.out.println("    Edge " + id2);
+         //   System.out.println("    Edge " + id2);
         }
         if (pEdges.get(id3) != null) {
             EdgeNeighbours.add(pEdges.get(id3));
-            System.out.println("    Edge " + id3);
+        //    System.out.println("    Edge " + id3);
         }
         if (pEdges.get(id4) != null) {
             EdgeNeighbours.add(pEdges.get(id4));
-            System.out.println("    Edge " + id4);
+        //    System.out.println("    Edge " + id4);
         }
         if (pEdges.get(id5) != null) {
             EdgeNeighbours.add(pEdges.get(id5));
-            System.out.println("    Edge " + id5);
+         //   System.out.println("    Edge " + id5);
         }
         if (pEdges.get(id6) != null) {
             EdgeNeighbours.add(pEdges.get(id6));
-            System.out.println("    Edge " + id6);
+         //   System.out.println("    Edge " + id6);
         }
 
 
@@ -126,28 +126,28 @@ public abstract class Hex extends Geometry {
 
         if (pHexes.get(id1) != null) {
             HexNeighbours.add(pHexes.get(id1));
-            System.out.println("    Hex " + id1);
+        //    System.out.println("    Hex " + id1);
         }
         if (pHexes.get(id2) != null) {
-            System.out.println("    Hex " + id2);
+          //  System.out.println("    Hex " + id2);
             HexNeighbours.add(pHexes.get(id2));
         }
         if (pHexes.get(id3) != null) {
-            System.out.println("    Hex " + id3);
+        //    System.out.println("    Hex " + id3);
             HexNeighbours.add(pHexes.get(id3));
         }
 
 
         if (pHexes.get(id4) != null) {
-            System.out.println("    Hex " + id4);
+         //   System.out.println("    Hex " + id4);
             HexNeighbours.add(pHexes.get(id4));
         }
         if (pHexes.get(id5) != null) {
-            System.out.println("    Hex " + id5);
+         //   System.out.println("    Hex " + id5);
             HexNeighbours.add(pHexes.get(id5));
         }
         if (pHexes.get(id6) != null) {
-            System.out.println("    Hex " + id6);
+         //   System.out.println("    Hex " + id6);
             HexNeighbours.add(pHexes.get(id6));
         }
     }
@@ -171,30 +171,30 @@ public abstract class Hex extends Geometry {
 
         if (pIntersections.get(id1) != null) {
             IntersectionNeighbours.add(pIntersections.get(id1));
-            System.out.println("    Intersection "+id1);
+        //    System.out.println("    Intersection "+id1);
         }
         if (pIntersections.get(id2) != null){
             IntersectionNeighbours.add(pIntersections.get(id2));
-            System.out.println("    Intersection "+id2);
+        //    System.out.println("    Intersection "+id2);
 
         }
         if(pIntersections.get(id3)!=null){
             IntersectionNeighbours.add(pIntersections.get(id3));
-            System.out.println("    Intersection "+id3);
+        //    System.out.println("    Intersection "+id3);
 
         }
         if(pIntersections.get(id4)!=null){
             IntersectionNeighbours.add(pIntersections.get(id4));
-            System.out.println("    Intersection "+id4);
+        //    System.out.println("    Intersection "+id4);
         }
         if(pIntersections.get(id5)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id5));
-            System.out.println("    Intersection "+id5);
+        //    System.out.println("    Intersection "+id5);
 
         }
         if(pIntersections.get(id6)!=null) {
             IntersectionNeighbours.add(pIntersections.get(id6));
-            System.out.println("    Intersection "+id6);
+         //   System.out.println("    Intersection "+id6);
         }
     }
 
