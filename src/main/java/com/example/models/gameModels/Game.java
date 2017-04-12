@@ -61,7 +61,7 @@ public class Game {
     private DiceNumber aYellowDice;
     private EventType aEventDice;
     private int aTurnCounter;
-    private ExecuteCard exec = new ExecuteCard();
+    private String gameName;
 
     public Game(int pVPsToWin, List<Player> pPlayers, Board pBoard){
         this.gameid = gameid;
@@ -75,13 +75,12 @@ public class Game {
         aTurnCounter = 1;
     }
 
-    public ExecuteCard getExec() {
-        return exec;
+
+    public String getGameName(){
+        return getGameName();
     }
 
-    public void setExec(ExecuteCard exec) {
-        this.exec = exec;
-    }
+    public void setGameName(String pGameName){this.gameName = pGameName;}
 
     public void setPhase(GamePhase pPhase){
         aPhase = pPhase;

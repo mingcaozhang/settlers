@@ -36,7 +36,7 @@ public class Player {
     private boolean aTradingHouse;
 
     @ElementCollection
-    private HashMap<StealableCard.Resource, Integer> aMaritimeTradeRates = new HashMap<>();
+    private Map<StealableCard.Resource, Integer> aMaritimeTradeRates = new HashMap<>();
     @ElementCollection
     private Map<StealableCard.Resource, Integer> aResourceCards = new HashMap<>();
     @ElementCollection
@@ -320,7 +320,7 @@ public class Player {
         this.aTransports = aTransports;
     }
 
-    public HashMap<StealableCard.Resource, Integer> getaMaritimeTradeRates() {
+    public Map<StealableCard.Resource, Integer> getaMaritimeTradeRates() {
         return aMaritimeTradeRates;
     }
 
@@ -402,7 +402,7 @@ public class Player {
         aPoliticsCards.put(pPoliticsCard, aPoliticsCards.get(pPoliticsCard) - 1);
         aProgressCardAmount--;
     }
-   
+
     //add and remove trade science cards
     public void addScienceCard(ProgressCard.Science pScienceCard) {
         if (aScienceCards.containsKey(pScienceCard)) {
