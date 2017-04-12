@@ -72,7 +72,7 @@ public class Game {
         aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
-        aTurnCounter = 1;
+        aTurnCounter = 0;
     }
 
     public ExecuteCard getExec() {
@@ -162,4 +162,8 @@ public class Game {
     }
 
     public long getId(){return gameid;}
+
+    public int getaVPsToWin() {
+        return aVPsToWin;
+    }
 }

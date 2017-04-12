@@ -73,7 +73,7 @@ public class Intersection extends Geometry {
         aOccupant = pOccupant;
         isOccupied = true;
     }
-    public OwnedBuilding removeOccupant()
+    public OwnedBuilding removeBuilding()
     {
         OwnedBuilding tempUnit = aOccupant;
         aOccupant = null;
