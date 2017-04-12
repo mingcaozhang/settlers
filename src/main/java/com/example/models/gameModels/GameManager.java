@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class GameManager {
@@ -18,7 +21,7 @@ public class GameManager {
 
     @Autowired
     private GameController gameController;
-    
+
     @Autowired
     private  GameRepository gameRepository;
 
@@ -48,7 +51,7 @@ public class GameManager {
     }
 
     public void saveGame(){
-        System.out.println(aGame);
+        //System.out.println(aGame);
         gameRepository.save(aGame);
     }
 
@@ -59,8 +62,8 @@ public class GameManager {
 
     public void rollDice(int pYellow, int pRed, int pEvent){
         aGame.setPhase(Game.GamePhase.TurnFirstPhase);
-        aGame.setRedDice(Game.DiceNumber.values()[pRed]);
-        aGame.setYellowDice(Game.DiceNumber.values()[pYellow]);
+        aGame.setRedDice(Game.DiceNumber.values()[pRed - 1]);
+        aGame.setYellowDice(Game.DiceNumber.values()[pYellow - 1]);
         int eventIndex = pEvent;
         switch (eventIndex){
             case 1:
@@ -299,22 +302,27 @@ public class GameManager {
     public void payout(Player pOwner, TerrainType pTerrainType, boolean isCity){
         if (pTerrainType == TerrainType.GoldMine){
             pOwner.addGold();
+            System.out.println(pOwner.getaUsername() + " got gold");
         }
         else {
             StealableCard.Resource resource = pTerrainType.giveResource();
+            System.out.println(pOwner.getaUsername() + " got " + resource.toString());
             pOwner.addResource(resource, 1);
         }
 
         if (isCity) {
             if (pTerrainType == TerrainType.Hills || pTerrainType == TerrainType.Fields){
                 StealableCard.Resource resource = pTerrainType.giveResource();
+                System.out.println(pOwner.getaUsername() + " got " + resource.toString());
                 pOwner.addResource(resource, 1);
             }
             else if (pTerrainType == TerrainType.GoldMine){
                 pOwner.addGold();
+                System.out.println(pOwner.getaUsername() + " got gold");
             }
             else{
                 StealableCard.Commodity commodity = pTerrainType.giveCommodity();
+                System.out.println(pOwner.getaUsername() + " got " + commodity.toString());
                 pOwner.addCommodity(commodity, 1);
             }
         }
@@ -346,7 +354,15 @@ public class GameManager {
                 Intersection cityLocation = intersection.getValue();
                 for(Hex hex : cityLocation.getHexNeighbours()){
                     TerrainType pTerrainType = hex.getTerrainType();
+                    if (pTerrainType == TerrainType.Sea || pTerrainType == TerrainType.Desert){
+                        continue;
+                    }
+                    if (pTerrainType == TerrainType.GoldMine){
+                        owner.addGold();
+                        continue;
+                    }
                     StealableCard.Resource resource = pTerrainType.giveResource();
+                    System.out.println(owner.getaUsername() + " got " + resource.toString());
                     owner.addResource(resource, 1);
                 }
             }
@@ -357,6 +373,7 @@ public class GameManager {
     public void payKnight(Player pPlayer) {
         pPlayer.removeResource(StealableCard.Resource.SHEEP, 1);
         pPlayer.removeResource(StealableCard.Resource.ORE, 1);
+        System.out.println(pPlayer + "paid 1 sheep and 1 ore");
     }
     public void placeKnight(Player pPlayer, Intersection pIntersection){
         OwnedKnight knight = pPlayer.removeKnight(Unit.Knight.BASIC);
@@ -366,26 +383,10 @@ public class GameManager {
         Unit.Knight nextLevel = pIntersection.getKnight().getUpgrade();
         OwnedKnight knight = pPlayer.removeKnight(nextLevel);
     }
-    public void activateKnight(Intersection pIntersection){
-        pIntersection.getKnight().activate();
-    }
-    public void payActivation(Player pPlayer){
-        pPlayer.removeResource(StealableCard.Resource.WHEAT, 1);
-    }
     public boolean checkBuyKnight(Player pPlayer){
         if (pPlayer.getaResourceCards().get(StealableCard.Resource.ORE) == 0 || pPlayer.getaResourceCards().get(StealableCard.Resource.SHEEP) == 0){
             return false;
         }
-        return true;
-    }
-    public boolean checkBuyActivation(Player pPlayer){
-        if (pPlayer.getaResourceCards().get(StealableCard.Resource.WHEAT) == 0){
-            return false;
-        }
-        return true;
-    }
-    public boolean checkKnightPlaceEligibility(Intersection pIntersection, String pColor){
-        //TODO GEORGE PLS SEND CODE
         return true;
     }
     public boolean checkUpgradeKnightEligibility(Intersection pIntersection, String pColor){
@@ -397,6 +398,13 @@ public class GameManager {
         }
         return false;
     }
+    public void activateKnight(Intersection pIntersection){
+        pIntersection.getKnight().activate();
+    }
+    public void payActivation(Player pPlayer){
+        pPlayer.removeResource(StealableCard.Resource.WHEAT, 1);
+    }
+
     public boolean checkActivateEligibility(Intersection pIntersection, String pColor){
         OwnedKnight knight = pIntersection.getKnight();
         Player owner = knight.getOwner();
@@ -405,29 +413,78 @@ public class GameManager {
         }
         return false;
     }
+
+    public boolean checkBuyActivation(Player pPlayer){
+        if (pPlayer.getaResourceCards().get(StealableCard.Resource.WHEAT) == 0){
+            return false;
+        }
+        return true;
+    }
+
     //END FUNCTIONS FOR KNIGHTS                                        */
 
-    //FUNCTION COMMON TO SETTLEMENTS AND CITIES
-    public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
-        if(pIntersection.getOccupancyFlag())
-            return false;
+    /*
+    FUNCTIONS TO CHECK IF BUILDINGS CAN BE PLACED
+     */
 
+    public boolean checkKnightPlaceEligibility(Intersection pIntersection, String pColor){
+        if(pIntersection.getOccupancyFlag()) {
+            System.out.println("Occupied");
+            return false;
+        }
         List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
         List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
         List<Hex> hNeighbours = pIntersection.getHexNeighbours();
         boolean water = true;
         for(Hex aHex:hNeighbours) {
             if(aHex.getTerrainType() != TerrainType.Sea)
-                water = false;
+                water =false;
+        }
+        if(water){  // settlement is surrounded by water
+            System.out.println("Water");
+            return false;
+        }
+        for(Edge aEdge:eNeighbours){
+            if(aEdge.getOccupancyFlag()){
+                if(aEdge.getTransport().getOwner().getaColor().equals(pColor))
+                    System.out.println("Good");
+                return true;
+            }
+        }
+        System.out.println("Default");
+        return false;
+    }
+
+    public boolean checkSettlementPlaceEligibility(Intersection pIntersection, String pColor){
+        if(pIntersection.getOccupancyFlag()) {
+            System.out.println("Occupied");
+            return false;
+        }
+        List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
+        List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
+        List<Hex> hNeighbours = pIntersection.getHexNeighbours();
+        boolean water = true;
+        for(Hex aHex:hNeighbours) {
+            if(aHex.getTerrainType() != TerrainType.Sea)
+                water =false;
         }
         if(water){  // settlement is surrounded by water
             return false;
         }
         for(Intersection aIntersection:iNeighbours) {
             if(aIntersection.getBuilding() != null)
-                return false;
+                return  false;
         }
-        return true;
+
+        for(Edge aEdge:eNeighbours) {
+            if(aEdge.getOccupancyFlag()){
+                if(aEdge.getTransport().getOwner().getaColor().equals(pColor))
+                    return true;
+            }
+
+        }
+
+        return false;
     }
 
     //START FUNCTIONS FOR SETTLEMENTS
@@ -436,6 +493,7 @@ public class GameManager {
         pPlayer.removeResource(StealableCard.Resource.WHEAT, 1);
         pPlayer.removeResource(StealableCard.Resource.BRICK, 1);
         pPlayer.removeResource(StealableCard.Resource.WOOD, 1);
+        System.out.println(pPlayer + "paid 1 wood, 1 sheep, 1 wheat and 1 brick");
     }
     public void placeSettlement(Player pPlayer, Intersection pIntersection){
         OwnedBuilding settlement = pPlayer.removeBuilding(Unit.Building.SETTLEMENT);
@@ -450,10 +508,16 @@ public class GameManager {
         }
         return true;
     }
-    public boolean checkSettlementPlaceEligibility(Intersection pIntersection, String pColor){
-        if(pIntersection.getOccupancyFlag())
-            return false;
 
+    /*
+    FUNCTIONS TO CHECK IF BUILDINGS CAN BE SETUP
+     */
+
+    public boolean checkIntersectionSetupEligibility(Intersection pIntersection){
+        if(pIntersection.getOccupancyFlag()) {
+            //System.out.println("    occupied");
+            return false;
+        }
         List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
         List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
         List<Hex> hNeighbours = pIntersection.getHexNeighbours();
@@ -465,19 +529,15 @@ public class GameManager {
         if(water){  // settlement is surrounded by water
             return false;
         }
-
         for(Intersection aIntersection:iNeighbours) {
-            if(aIntersection.getBuilding() != null)
-                return  false;
-        }
-
-        for(Edge aEdge:eNeighbours){
-            if(aEdge.getOccupancyFlag()){
-                if(aEdge.getTransport().getOwner().getaColor().equals(pColor))
-                    return true;
+            //System.out.println(aIntersection.getId());
+            if(aIntersection.getBuilding() != null) {
+                //System.out.println("    hasNeighbour");
+                return false;
             }
         }
-        return false;
+        //System.out.println("    true");
+        return true;
     }
     //END FUNCTIONS FOR SETTLEMENTS
 
@@ -485,6 +545,7 @@ public class GameManager {
     public void payCity(Player pPlayer){
         pPlayer.removeResource(StealableCard.Resource.WHEAT, 2);
         pPlayer.removeResource(StealableCard.Resource.ORE, 3);
+        System.out.println(pPlayer + "paid 3 ore and 2 wheat");
     }
     public void placeCity(Player pPlayer, Intersection pIntersection){
         OwnedBuilding city = pPlayer.removeBuilding(Unit.Building.CITY);
@@ -512,6 +573,7 @@ public class GameManager {
     public void payRoad(Player pPlayer){
         pPlayer.removeResource(StealableCard.Resource.BRICK, 1);
         pPlayer.removeResource(StealableCard.Resource.WOOD, 1);
+        System.out.println(pPlayer + "paid 1 wood and 1 brick");
     }
     public void placeRoad(Player pPlayer, Edge pEdge){
         OwnedTransport road = pPlayer.removeTransport(Unit.Transport.ROAD);
@@ -524,9 +586,10 @@ public class GameManager {
         return true;
     }
     public boolean checkRoadEligibility(Edge pEdge, String pColor){
-        if(pEdge.getOccupancyFlag())
+        if(pEdge.getOccupancyFlag()) {
+            //System.out.println("    occupied");
             return false;
-
+        }
         List<Edge> Neighbours = pEdge.getEdgeNeighbours();
         List<Hex> hNeighbours = pEdge.getHexNeighbours();
         List<Intersection> iNeighbours = pEdge.getIntersectionNeighbours();
@@ -593,6 +656,7 @@ public class GameManager {
     public void payShip(Player pPlayer){
         pPlayer.removeResource(StealableCard.Resource.SHEEP, 1);
         pPlayer.removeResource(StealableCard.Resource.WOOD, 1);
+        System.out.println(pPlayer + "paid 1 wood and 1 sheep");
     }
     public boolean checkBuyShip(Player pPlayer){
         if (pPlayer.getaResourceCards().get(StealableCard.Resource.WOOD) == 0 || pPlayer.getaResourceCards().get(StealableCard.Resource.SHEEP) == 0){

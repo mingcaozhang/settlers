@@ -424,7 +424,7 @@ public class Player {
         aPoliticsCards.put(pPoliticsCard, aPoliticsCards.get(pPoliticsCard) - 1);
         aProgressCardAmount--;
     }
-   
+
     //add and remove trade science cards
     public void addScienceCard(ProgressCard.Science pScienceCard) {
         if (aScienceCards.containsKey(pScienceCard)) {
