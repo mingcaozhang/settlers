@@ -61,8 +61,7 @@ public class Game {
     private DiceNumber aYellowDice;
     private EventType aEventDice;
     private int aTurnCounter;
-
-
+    private String gameName;
 
     public Game(int pVPsToWin, List<Player> pPlayers, Board pBoard){
         this.gameid = gameid;
@@ -75,6 +74,13 @@ public class Game {
         aBarbarianStrength = 0;
         aTurnCounter = 1;
     }
+
+
+    public String getGameName(){
+        return getGameName();
+    }
+
+    public void setGameName(String pGameName){this.gameName = pGameName;}
 
     public void setPhase(GamePhase pPhase){
         aPhase = pPhase;

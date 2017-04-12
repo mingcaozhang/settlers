@@ -139,11 +139,15 @@ public class GameController {
         return pNew;
     }
 
-    /*@MessageMapping("/placeknight")
+    @MessageMapping("/placeknight")
     @SendTo("/topic/knight")
     public ViewPiece placeKnight(ViewPiece pNew, Principal caller){
+        System.out.println(" Place Knight");
         Player checkee = gameManager.getPlayerFromString(caller.getName());
         Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        System.out.println("Buy knight : "+gameManager.checkBuyKnight(checkee));
+        System.out.println("Place knight : "+gameManager.checkKnightPlaceEligibility(checker, pNew.getColor()));
+
         boolean isValid = gameManager.checkBuyKnight(checkee) && gameManager.checkKnightPlaceEligibility(checker, pNew.getColor());
         if (isValid){
             gameManager.payKnight(checkee);
@@ -151,13 +155,15 @@ public class GameController {
         }
         pNew.setIsValid(isValid);
         return pNew;
-    }*/
+    }
 
     @MessageMapping("/upgradeknight")
-    @SendTo("/topic/knight")
+    @SendTo("/topic/upgradeknight")
     public ViewPiece upgradeKnight(ViewPiece pNew, Principal caller){
         Player checkee = gameManager.getPlayerFromString(caller.getName());
         Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        System.out.println("Buy knight : "+gameManager.checkBuyKnight(checkee));
+        System.out.println("Place knight : "+gameManager.checkUpgradeKnightEligibility(checker, pNew.getColor()));
         boolean isValid = gameManager.checkBuyKnight(checkee) && gameManager.checkUpgradeKnightEligibility(checker, pNew.getColor());
         if (isValid){
             gameManager.payKnight(checkee);
@@ -166,6 +172,24 @@ public class GameController {
         pNew.setIsValid(isValid);
         return pNew;
     }
+
+    @MessageMapping("/activateknight")
+    @SendTo("/topic/activateknight")
+    public ViewPiece activateKnight(ViewPiece pNew, Principal caller){
+        System.out.println("activate knight");
+        Player checkee = gameManager.getPlayerFromString(caller.getName());
+        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        boolean isValid = gameManager.checkActivateEligibility(checker, pNew.getColor()) && gameManager.checkBuyActivation(checkee);
+        System.out.println("Activate Pay : "+ gameManager.checkBuyActivation(checkee));
+        System.out.println("Activate Eligible : "+ gameManager.checkActivateEligibility(checker, pNew.getColor()));
+        if (isValid){
+            gameManager.payActivation(checkee);
+            gameManager.activateKnight(checker);
+        }
+        pNew.setIsValid(isValid);
+        return pNew;
+    }
+
     // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")

@@ -63,10 +63,6 @@ public class OwnedKnight {
         return aUnit.strength();
     }
 
-    public Unit.Knight getUnit(){
-        return aUnit;
-    }
-
     public Unit.Knight getUpgrade(){
         return Unit.Knight.values()[aUnit.ordinal() + 1];
     }
@@ -76,5 +72,13 @@ public class OwnedKnight {
             return false;
         }
         return true;
+    }
+
+    public void activate(){
+        aActiveState = true;
+    }
+
+    public void deactivate(){
+        aActiveState = false;
     }
 }

@@ -230,8 +230,6 @@ function connect() {
        // setConnected(true);
         console.log('Connected: ' + frame);
 
-        //stompClient.subscribe('/topic/geo', callback);
-
         stompClient.subscribe('/topic/turninfo', function (pap) {
             pap = JSON.parse((pap.body));
 
@@ -352,12 +350,7 @@ function connect() {
 
             }
 
-
-
-
-
         });
-
 
         stompClient.subscribe('/topic/playerIncrement', function (players) {
 
@@ -467,6 +460,44 @@ function connect() {
 
         });
 
+        stompClient.subscribe('/topic/knight', function(piece){
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+            var valid = piece.isValid;
+            if(valid) {
+                d3.select("#"+myId).attr("fill", "grey").attr("r",12); // TODO
+                getResources();
+            }
+
+        });
+
+        stompClient.subscribe('/topic/upgradeknight', function(piece){
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+            var valid = piece.isValid;
+            if(valid) {
+                d3.select("#"+myId).attr("fill", toColor).attr("r",25); // TODO
+                getResources();
+            }
+
+        });
+
+        stompClient.subscribe('/topic/activateknight', function(piece){
+            piece = JSON.parse((piece.body));
+
+            var myId = piece.id;
+            var toColor = piece.color;
+            var valid = piece.isValid;
+            if(valid) {
+                d3.select("#"+myId).attr("fill", "black").attr("r",25); // TODO
+                getResources();
+            }
+
+        });
 
         stompClient.subscribe('/topic/trade', function (trade) {
             trade = JSON.parse((trade.body));
@@ -605,7 +636,7 @@ function upgradeCity(){
 
 function activateKnight(){
     clickActivateKnight = true;
-
+    console.log("Clicked log, should be true");
     clickBuyRoad = false;
     clickBuySettlement = false;
     clickUpgradeCity = false;
@@ -855,6 +886,15 @@ function placeCity(id) {
 function buildKnight(id) {
     stompClient.send("/app/placeknight",{},JSON.stringify({"id":id, "color":myColor, "isValid":false}))
 }
+//upgrade knight
+function upgradeKnight(id) {
+    stompClient.send("/app/upgradeknight",{},JSON.stringify({"id":id, "color":myColor, "isValid":false}))
+}
+
+function buyActivateKnight(id){
+    stompClient.send("/app/activateknight",{},JSON.stringify({"id":id, "color":myColor, "isValid":false}))
+}
+
 
 
 //Build wall
@@ -916,12 +956,13 @@ function getKnight3() {
         //Set no resource message to true
     }
 }
+/*
 //Activate Knight
 function activateKnight() {
     if (nWheat > 0) {
         knight = true;
     }
-}
+}*/
 
 //----------------------Maritime Trade------------------------
 function setPreResult() {
@@ -1821,13 +1862,14 @@ function init() {
                             buildCity(d.id);
 
                     }else if(clickBuyKnight){
-
+                            buildKnight(d.id);
                     }else if(clickActivateKnight){
-
+                            console.log("ACTIVATED");
+                            buyActivateKnight(d.id);
                     }else if(clickUpdateMighty){
 
                     }else if(clickUpdateStrong){
-
+                            upgradeKnight(d.id);
                     }
 
                 }

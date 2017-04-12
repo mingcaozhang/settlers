@@ -140,7 +140,7 @@ public class GameManager {
             List<Intersection> tempIntersections = hex.getIntersectionNeighbours();
             for (Intersection intersection : tempIntersections) {
                 //System.out.println(intersection.getOccupancyFlag());
-                if (intersection.getOccupancyFlag()) {
+                if (intersection.getOccupancyFlag() && intersection.getBuilding() != null) {
                     //System.out.println("I'm PAYIN OUT!!!!");
                     Player owner = getPayee(intersection);
                     boolean isCity = checkIsCity(intersection);
@@ -199,9 +199,14 @@ public class GameManager {
                     if (pTerrainType == TerrainType.Sea || pTerrainType == TerrainType.Desert){
                         continue;
                     }
+                    if (pTerrainType == TerrainType.GoldMine){
+                        owner.addGold();
+                        continue;
+                    }
                     StealableCard.Resource resource = pTerrainType.giveResource();
                     System.out.println(owner.getaUsername() + " got " + resource.toString());
                     owner.addResource(resource, 1);
+
                 }
             }
         }
@@ -236,6 +241,29 @@ public class GameManager {
         }
         return false;
     }
+    public void activateKnight(Intersection pIntersection){
+        pIntersection.getKnight().activate();
+    }
+    public void payActivation(Player pPlayer){
+        pPlayer.removeResource(StealableCard.Resource.WHEAT, 1);
+    }
+
+    public boolean checkActivateEligibility(Intersection pIntersection, String pColor){
+        OwnedKnight knight = pIntersection.getKnight();
+        Player owner = knight.getOwner();
+        if (owner.getaColor().equals(pColor) && !knight.getState()){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkBuyActivation(Player pPlayer){
+        if (pPlayer.getaResourceCards().get(StealableCard.Resource.WHEAT) == 0){
+            return false;
+        }
+        return true;
+    }
+
     //END FUNCTIONS FOR KNIGHTS                                        */
 
     /*
@@ -243,9 +271,10 @@ public class GameManager {
      */
 
     public boolean checkKnightPlaceEligibility(Intersection pIntersection, String pColor){
-        if(pIntersection.getOccupancyFlag())
+        if(pIntersection.getOccupancyFlag()) {
+            System.out.println("Occupied");
             return false;
-
+        }
         List<Intersection> iNeighbours = pIntersection.getIntersectionNeighbours();
         List<Edge> eNeighbours = pIntersection.getEdgeNeighbours();
         List<Hex> hNeighbours = pIntersection.getHexNeighbours();
@@ -255,14 +284,17 @@ public class GameManager {
                 water =false;
         }
         if(water){  // settlement is surrounded by water
+            System.out.println("Water");
             return false;
         }
         for(Edge aEdge:eNeighbours){
             if(aEdge.getOccupancyFlag()){
-                if(aEdge.getTransport().getOwner().getaColor()==pColor)
-                    return true;
+                if(aEdge.getTransport().getOwner().getaColor().equals(pColor))
+                    System.out.println("Good");
+                return true;
             }
         }
+        System.out.println("Default");
         return false;
     }
 

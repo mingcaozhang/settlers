@@ -17,6 +17,7 @@ public enum TerrainType {
                                 return StealableCard.Resource.WHEAT;
                         case Hills:
                                 return StealableCard.Resource.BRICK;
+
                 }
                 return null;
         }
