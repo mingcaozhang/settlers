@@ -33,8 +33,6 @@ public class Game {
                 '}';
     }
 
-
-
     @Override
     public int hashCode() {
         int result = gameid.hashCode();
@@ -53,6 +51,7 @@ public class Game {
     @OneToOne(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private Board aBoard;
 
+    private String GameName;
     private GamePhase aPhase;
     private int aBarbarianPosition;
     private int aArmyStrength;
@@ -61,7 +60,7 @@ public class Game {
     private DiceNumber aYellowDice;
     private EventType aEventDice;
     private int aTurnCounter;
-    private String gameName;
+    private ExecuteCard exec = new ExecuteCard();
 
     public Game(int pVPsToWin, List<Player> pPlayers, Board pBoard){
         this.gameid = gameid;
@@ -72,15 +71,24 @@ public class Game {
         aPhase = GamePhase.SetupRoundOne;
         aArmyStrength = 0;
         aBarbarianStrength = 0;
-        aTurnCounter = 0;
+        aTurnCounter = 1;
     }
 
-
-    public String getGameName(){
-        return getGameName();
+    public ExecuteCard getExec() {
+        return exec;
     }
 
-    public void setGameName(String pGameName){this.gameName = pGameName;}
+    public void setExec(ExecuteCard exec) {
+        this.exec = exec;
+    }
+
+    public String getGameName() {
+        return GameName;
+    }
+
+    public void setGameName(String gameName) {
+        GameName = gameName;
+    }
 
     public void setPhase(GamePhase pPhase){
         aPhase = pPhase;
