@@ -77,6 +77,8 @@ public class GameController {
     public ViewPiece placeSettlement(ViewPiece pNew, Principal caller){
         Player checkee = gameManager.getPlayerFromString(caller.getName());
         Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
+        System.out.println("Can buy: "+gameManager.checkBuySettlement(checkee));
+        System.out.println("Can place: "+gameManager.checkSettlementPlaceEligibility(checker,pNew.getColor()));
         boolean isValid = gameManager.checkBuySettlement(checkee) && gameManager.checkSettlementPlaceEligibility(checker,pNew.getColor());
         if(isValid)
         {
@@ -107,8 +109,11 @@ public class GameController {
     @MessageMapping("/placeroad")
     @SendTo("/topic/road")
     public ViewPiece placeRoad(ViewPiece pNew, Principal caller){
+        System.out.println("    Buying road");
         Player checkee = gameManager.getPlayerFromString(caller.getName());
         Edge checker = gameManager.getGame().getBoard().getEdges().get(pNew.getId());
+        System.out.println("Can buy: "+gameManager.checkBuyRoad(checkee));
+        System.out.println("Can place: "+gameManager.checkRoadEligibility(checker,pNew.getColor()));
         boolean isValid = gameManager.checkBuyRoad(checkee) && gameManager.checkRoadEligibility(checker,pNew.getColor());
         if(isValid)
         {
@@ -194,17 +199,27 @@ public class GameController {
     @MessageMapping("/setuproad")
     @SendTo("/topic/road")
     public ViewPiece setupRoad(ViewPiece pNew, Principal caller) {
-        System.out.println("----  "+pNew.getId());
+        //System.out.println("----  "+pNew.getId());
         Player checkee = gameManager.getPlayerFromString(caller.getName());
         Edge checker = gameManager.getGame().getBoard().getEdges().get(pNew.getId());
         boolean isValid = gameManager.checkRoadEligibility(checker, pNew.getColor());
+        if (checkee.getaBuildings().get(Unit.Building.CITY) == 3){
+            boolean isCity = false;
+            for (Intersection neighbour : checker.getIntersectionNeighbours()){
+                if (neighbour.getBuilding()!= null && neighbour.getBuilding().isCity()){
+                    isCity = true;
+                    break;
+                }
+            }
+            isValid = isValid && isCity;
+        }
         if (isValid){
-            System.out.println("VALID");
+            //System.out.println("VALID");
             gameManager.placeRoad(checkee, checker);
         }
-        System.out.println("5");
+        //System.out.println("5");
         pNew.setIsValid(isValid);
-        System.out.println("returning");
+        //System.out.println("returning");
         return pNew;
     }
 

@@ -317,7 +317,6 @@ function connect() {
         stompClient.subscribe('/topic/road', function (piece) {
             piece = JSON.parse((piece.body));
 
-
             var myId = piece.id;
             var toColor = piece.color;
             var valid = piece.isValid;
@@ -370,9 +369,9 @@ function connect() {
 
             if (myUsername.match(p1name)){
                 me = me+'1';
-            }else if (myUsername.match(p1name)){
-                me = me+'2';
             }else if (myUsername.match(p2name)){
+                me = me+'2';
+            }else if (myUsername.match(p3name)){
                 me = me+'3';
             }else{
                 me = me+'4';
@@ -781,7 +780,7 @@ function setAttributes() {
 function buildRoad(id) {
     if (nRoad < 15 && nBrick > 0 && nWood > 0 ) {
 
-        stompClient.send("/app/setuproad",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
+        stompClient.send("/app/placeroad",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
     }
     else {
 
@@ -850,6 +849,11 @@ function placeCity(id) {
     stompClient.send("/app/setupcity",{}, JSON.stringify({"id":id, "color":myColor, "isValid":false}));
 
 
+}
+
+//Buy/Build knight
+function buildKnight(id) {
+    stompClient.send("/app/placeknight",{},JSON.stringify({"id":id, "color":myColor, "isValid":false}))
 }
 
 
@@ -1885,6 +1889,7 @@ function init() {
                 if (search == true) {
                  //   if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
+                    //console.log(circleValues);
                      //   sendIntersection(circleValues);
                  //   }
                 }
@@ -1907,6 +1912,7 @@ function init() {
                 if (search == true) {
                 //    if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
+                    //console.log(circleValues);
                         //   sendIntersection(circleValues);
                 //    }
                 }
@@ -1929,6 +1935,7 @@ function init() {
                 if (search == true) {
                  //   if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
+                    //console.log(circleValues);
                         //   sendIntersection(circleValues);
                  //   }
                 }
@@ -1952,6 +1959,7 @@ function init() {
                 if (search == true) {
                 //    if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
+                    //console.log(circleValues);
                         //   sendIntersection(circleValues);
                 //    }
                 }
@@ -1975,6 +1983,7 @@ function init() {
                 if (search == true) {
                 //    if(startingPlayer.match(myUsername)) {
                         jsonIntersections.push(circleValues);
+                    //console.log(circleValues);
                         //   sendIntersection(circleValues);
                 //    }
                 }
@@ -1997,6 +2006,7 @@ function init() {
                 }
                 if (search == true) {
                 //    if(startingPlayer.match(myUsername)) {
+                    //console.log(circleValues);
                         jsonIntersections.push(circleValues);
                         //   sendIntersection(circleValues);
                 //    }
@@ -2011,8 +2021,10 @@ function init() {
     allJSON.push(jsonPolygons);
     allJSON.push(jsonEdges);
     allJSON.push(jsonIntersections);
+    //console.log(JSON.stringify(jsonIntersections));
+   // console.log(allJSON);
 
-  //  sendBoard(allJSON);
+    //  sendBoard(allJSON);
     if(startingPlayer.match(myUsername)) {
         sendHex();
     }
@@ -2098,7 +2110,11 @@ var intersectionAttrs = boardIntersections
 
                     }else if(clickBuyKnight){
 
+                        buildKnight(d.id);
+
                     }else if(clickActivateKnight){
+
+                        activateKnight(d.id);
 
                     }else if(clickUpdateMighty){
 
