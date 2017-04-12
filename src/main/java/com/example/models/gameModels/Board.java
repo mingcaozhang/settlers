@@ -1,8 +1,6 @@
 package com.example.models.gameModels;
 
-import com.example.viewobjects.ViewEdge;
 import com.example.viewobjects.ViewHex;
-import com.example.viewobjects.ViewIntersection;
 
 import javax.persistence.*;
 import java.util.ArrayList;
