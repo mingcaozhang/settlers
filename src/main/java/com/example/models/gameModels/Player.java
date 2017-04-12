@@ -5,9 +5,51 @@ import java.util.Map;
 
 @Entity
 public class Player {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long gameid;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
+
+        Player player = (Player) o;
+
+        if (aIndex != player.aIndex) return false;
+        if (aVPs != player.aVPs) return false;
+        if (aGold != player.aGold) return false;
+        if (aRouteLength != player.aRouteLength) return false;
+        if (aProgressCardAmount != player.aProgressCardAmount) return false;
+        if (aMerchant != player.aMerchant) return false;
+        if (aLongestTradeRoute != player.aLongestTradeRoute) return false;
+        if (aAqueduct != player.aAqueduct) return false;
+        if (aFortress != player.aFortress) return false;
+        if (aTradingHouse != player.aTradingHouse) return false;
+        if (gameid != null ? !gameid.equals(player.gameid) : player.gameid != null) return false;
+        if (aColor != null ? !aColor.equals(player.aColor) : player.aColor != null) return false;
+        if (aUsername != null ? !aUsername.equals(player.aUsername) : player.aUsername != null) return false;
+        if (aResourceCards != null ? !aResourceCards.equals(player.aResourceCards) : player.aResourceCards != null)
+            return false;
+        if (aCommodityCards != null ? !aCommodityCards.equals(player.aCommodityCards) : player.aCommodityCards != null)
+            return false;
+        if (aTradeCards != null ? !aTradeCards.equals(player.aTradeCards) : player.aTradeCards != null) return false;
+        if (aPoliticsCards != null ? !aPoliticsCards.equals(player.aPoliticsCards) : player.aPoliticsCards != null)
+            return false;
+        if (aScienceCards != null ? !aScienceCards.equals(player.aScienceCards) : player.aScienceCards != null)
+            return false;
+        if (aBuildings != null ? !aBuildings.equals(player.aBuildings) : player.aBuildings != null) return false;
+        if (aKnights != null ? !aKnights.equals(player.aKnights) : player.aKnights != null) return false;
+        if (aTransports != null ? !aTransports.equals(player.aTransports) : player.aTransports != null) return false;
+        return exec != null ? exec.equals(player.exec) : player.exec == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = gameid.hashCode();
+        return result;
+    }
 
     @Override
     public String toString() {
@@ -29,9 +71,6 @@ public class Player {
     private boolean aAqueduct;
     private boolean aFortress;
     private boolean aTradingHouse;
-
-    @ElementCollection
-    private HashMap<StealableCard.Resource, Integer> aMaritimeTradeRates = new HashMap<>();
     @ElementCollection
     private Map<StealableCard.Resource, Integer> aResourceCards = new HashMap<>();
     @ElementCollection
@@ -56,7 +95,6 @@ public class Player {
         aColor = null;
         aIndex = 0;
     }
-
     public Player(String pUsername, String pColor, int pIndex) {
         aUsername = pUsername;
         aColor = pColor;
@@ -71,9 +109,15 @@ public class Player {
         aFortress = false;
         aTradingHouse = false;
 
-        for (StealableCard.Resource resource : StealableCard.Resource.values()) {
-            aMaritimeTradeRates.put(resource, 4);
-        }
+        aResourceCards = new HashMap<>();
+        aCommodityCards = new HashMap<>();
+        aTradeCards = new HashMap<>();
+        aPoliticsCards = new HashMap<>();
+        aScienceCards = new HashMap<>();
+        aBuildings = new HashMap<>();
+        aKnights = new HashMap<>();
+        aTransports = new HashMap<>();
+
         for (StealableCard.Resource resource : StealableCard.Resource.values()) {
             aResourceCards.put(resource, 0);
         }
@@ -269,14 +313,6 @@ public class Player {
 
     public void setaTransports(HashMap<Unit.Transport, Integer> aTransports) {
         this.aTransports = aTransports;
-    }
-
-    public HashMap<StealableCard.Resource, Integer> getaMaritimeTradeRates() {
-        return aMaritimeTradeRates;
-    }
-
-    public void setaMaritimeTradeRates(HashMap<StealableCard.Resource, Integer> aMaritimeTradeRates) {
-        this.aMaritimeTradeRates = aMaritimeTradeRates;
     }
 
     public ExecuteCard getExec() {

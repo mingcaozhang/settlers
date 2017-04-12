@@ -13,13 +13,13 @@ public class OwnedKnight {
 
     @ManyToOne(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private Player aOwner;
+
     private Unit.Knight aUnit;
     private boolean aActiveState;
 
     public OwnedKnight(Player pOwner, Unit.Knight pUnit){
         aOwner= pOwner;
         aUnit = pUnit;
-        aActiveState = false;
     }
 
     @Override
@@ -30,6 +30,7 @@ public class OwnedKnight {
                 ", aActiveState=" + aActiveState +
                 '}';
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -75,13 +76,5 @@ public class OwnedKnight {
             return false;
         }
         return true;
-    }
-
-    public void activate(){
-        aActiveState = true;
-    }
-
-    public void deactivate(){
-        aActiveState = false;
     }
 }

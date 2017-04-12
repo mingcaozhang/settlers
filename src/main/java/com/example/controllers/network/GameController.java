@@ -87,6 +87,8 @@ public class GameController {
         return pNew;
     }
 
+
+
     @MessageMapping("/placecity")
     @SendTo("/topic/city")
     public ViewPiece placeCity(ViewPiece pNew, Principal caller){
@@ -159,20 +161,6 @@ public class GameController {
         pNew.setIsValid(isValid);
         return pNew;
     }
-
-    @MessageMapping("/activateknight")
-    @SendTo("/topic/knight")
-    public ViewPiece activateKnight(ViewPiece pNew, Principal caller){
-        Player checkee = gameManager.getPlayerFromString(caller.getName());
-        Intersection checker = gameManager.getGame().getBoard().getIntersections().get(pNew.getId());
-        boolean isValid = gameManager.checkActivateEligibility(checker, pNew.getColor());
-        if (isValid){
-            gameManager.payActivation(checkee);
-            gameManager.activateKnight(checker);
-        }
-        pNew.setValid(isValid);
-        return pNew;
-    }
     // SETUP IS FIRST 2 TURNS
 
     @MessageMapping("/setupsettlement")
@@ -220,10 +208,11 @@ public class GameController {
         return pNew;
     }
 
-    @SendTo("/topic/playerIncrement")
-    public void setupPayout(){
+    @MessageMapping("/setupDone")
+    @SendTo("/topic/setupDone")
+    public boolean setupPayout(){
         gameManager.setupPayout();
-        showPlayerIncrement();
+        return true;
     }
 
     @MessageMapping("/rolldice")
@@ -243,58 +232,59 @@ public class GameController {
 
     private void setPlayerIncrement(PlayerIncrement pIncrement){
         for (String pUsername : currPlayerList){
-            for (Player player : gameManager.getGame().getPlayers()) {
-                if (pUsername.equals(player.getaUsername())) {
-                    int index = currPlayerList.indexOf(player.getaUsername());
-                    switch (index) {
-                        case 1:
-                            pIncrement.setp1(
-                                    player.getaGold(),
-                                    player.getaResourceCards().get(StealableCard.Resource.ORE),
-                                    player.getaResourceCards().get(StealableCard.Resource.BRICK),
-                                    player.getaResourceCards().get(StealableCard.Resource.WOOD),
-                                    player.getaResourceCards().get(StealableCard.Resource.SHEEP),
-                                    player.getaResourceCards().get(StealableCard.Resource.WHEAT),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.COIN),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.CLOTH),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.PAPER));
-                        case 2:
-                            pIncrement.setp2(
-                                    player.getaGold(),
-                                    player.getaResourceCards().get(StealableCard.Resource.ORE),
-                                    player.getaResourceCards().get(StealableCard.Resource.BRICK),
-                                    player.getaResourceCards().get(StealableCard.Resource.WOOD),
-                                    player.getaResourceCards().get(StealableCard.Resource.SHEEP),
-                                    player.getaResourceCards().get(StealableCard.Resource.WHEAT),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.COIN),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.CLOTH),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.PAPER));
-                        case 3:
-                            pIncrement.setp3(
-                                    player.getaGold(),
-                                    player.getaResourceCards().get(StealableCard.Resource.ORE),
-                                    player.getaResourceCards().get(StealableCard.Resource.BRICK),
-                                    player.getaResourceCards().get(StealableCard.Resource.WOOD),
-                                    player.getaResourceCards().get(StealableCard.Resource.SHEEP),
-                                    player.getaResourceCards().get(StealableCard.Resource.WHEAT),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.COIN),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.CLOTH),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.PAPER));
-                        case 4:
-                            pIncrement.setp4(
-                                    player.getaGold(),
-                                    player.getaResourceCards().get(StealableCard.Resource.ORE),
-                                    player.getaResourceCards().get(StealableCard.Resource.BRICK),
-                                    player.getaResourceCards().get(StealableCard.Resource.WOOD),
-                                    player.getaResourceCards().get(StealableCard.Resource.SHEEP),
-                                    player.getaResourceCards().get(StealableCard.Resource.WHEAT),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.COIN),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.CLOTH),
-                                    player.getaCommodityCards().get(StealableCard.Commodity.PAPER));
-                    }
+            Player player = gameManager.getPlayerFromString(pUsername);
+            int index = currPlayerList.indexOf(player.getaUsername());
+            switch (index) {
+                case 0:
+                    pIncrement.setp1(
+                            player.getaGold(),
+                            player.getaResourceCards().get(StealableCard.Resource.ORE),
+                            player.getaResourceCards().get(StealableCard.Resource.BRICK),
+                            player.getaResourceCards().get(StealableCard.Resource.WOOD),
+                            player.getaResourceCards().get(StealableCard.Resource.SHEEP),
+                            player.getaResourceCards().get(StealableCard.Resource.WHEAT),
+                            player.getaCommodityCards().get(StealableCard.Commodity.COIN),
+                            player.getaCommodityCards().get(StealableCard.Commodity.CLOTH),
+                            player.getaCommodityCards().get(StealableCard.Commodity.PAPER));
+                    continue;
+                case 1:
+                    pIncrement.setp2(
+                            player.getaGold(),
+                            player.getaResourceCards().get(StealableCard.Resource.ORE),
+                            player.getaResourceCards().get(StealableCard.Resource.BRICK),
+                            player.getaResourceCards().get(StealableCard.Resource.WOOD),
+                            player.getaResourceCards().get(StealableCard.Resource.SHEEP),
+                            player.getaResourceCards().get(StealableCard.Resource.WHEAT),
+                            player.getaCommodityCards().get(StealableCard.Commodity.COIN),
+                            player.getaCommodityCards().get(StealableCard.Commodity.CLOTH),
+                            player.getaCommodityCards().get(StealableCard.Commodity.PAPER));
+                    continue;
+                case 2:
+                    pIncrement.setp3(
+                            player.getaGold(),
+                            player.getaResourceCards().get(StealableCard.Resource.ORE),
+                            player.getaResourceCards().get(StealableCard.Resource.BRICK),
+                            player.getaResourceCards().get(StealableCard.Resource.WOOD),
+                            player.getaResourceCards().get(StealableCard.Resource.SHEEP),
+                            player.getaResourceCards().get(StealableCard.Resource.WHEAT),
+                            player.getaCommodityCards().get(StealableCard.Commodity.COIN),
+                            player.getaCommodityCards().get(StealableCard.Commodity.CLOTH),
+                            player.getaCommodityCards().get(StealableCard.Commodity.PAPER));
+                    continue;
+                case 3:
+                    pIncrement.setp4(
+                            player.getaGold(),
+                            player.getaResourceCards().get(StealableCard.Resource.ORE),
+                            player.getaResourceCards().get(StealableCard.Resource.BRICK),
+                            player.getaResourceCards().get(StealableCard.Resource.WOOD),
+                            player.getaResourceCards().get(StealableCard.Resource.SHEEP),
+                            player.getaResourceCards().get(StealableCard.Resource.WHEAT),
+                            player.getaCommodityCards().get(StealableCard.Commodity.COIN),
+                            player.getaCommodityCards().get(StealableCard.Commodity.CLOTH),
+                            player.getaCommodityCards().get(StealableCard.Commodity.PAPER));
+                    continue;
                 }
             }
-        }
     }
 
     @MessageMapping("/traderequest")
@@ -310,19 +300,6 @@ public class GameController {
         boolean isValid = gameManager.checkPlayerTradeEligibility(aPlayerTrade);
         if (isValid){
             aPlayerTrade.execute();
-        }
-        pTrade.setValid(isValid);
-        return pTrade;
-    }
-
-
-    @MessageMapping("/maritimetrade")
-    @SendTo("/topic/maritimetrade")
-    public ViewMaritimeTrade maritimeTrade(ViewMaritimeTrade pTrade, Principal caller){
-        MaritimeTrade aMaritimeTrade = pTrade.toMaritimeTrade();
-        boolean isValid = gameManager.checkMaritimeTradeEligibility(aMaritimeTrade);
-        if (isValid){
-            aMaritimeTrade.execute();
         }
         pTrade.setValid(isValid);
         return pTrade;
@@ -357,140 +334,28 @@ public class GameController {
         //System.out.println("turn count = "+currPlayerTurn);
 
         this.turnCounter++;
-
+        for (String name : currPlayerList){
+            System.out.println(name);
+        }
         return pap;
     }
 
 
-    @MessageMapping("/edge")
-    public String getEdge(String edgeString) throws Exception{
-
-        //System.out.println("   Adding Edges to Hash");
-        JSONArray aArray = new JSONArray(edgeString);
-        Gson gson = new Gson();
-
-        for(int i=0;i<aArray.length();i++) {
-            JSONObject jsonHex = aArray.getJSONObject(i);
-
-            ViewEdge pEdge = gson.fromJson(jsonHex.toString(), ViewEdge.class);
-            Edge aEdge = new Edge(pEdge.getId());
-            gameManager.getGame().getBoard().getEdges().put(aEdge.getId(), aEdge);
-        }
-        return "edge";
-    }
-
     @MessageMapping("/hex")
-   // @SendTo("/topic/geo")
-    public String getHex(String bigJson) throws Exception{
-        //System.out.println("   Adding Hexes to Hash");
+       public void getHex(String bigJson) throws Exception{
 
         JSONArray aArray = new JSONArray(bigJson);
         Gson gson = new Gson();
 
         for(int i=0;i<aArray.length();i++) {
             JSONObject jsonHex = aArray.getJSONObject(i);
-
             ViewHex pHex = gson.fromJson(jsonHex.toString(), ViewHex.class);
-            //System.out.println(pHex.getId());
-            switch (pHex.getTerrainType()) {
-                case "wood":
-                    LandHex aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Forest);
-                    gameManager.getGame().getBoard().getHexes().put(aHex.getId(), aHex);
-                  //  gameManager.getGame().getBoard().getLandHexes().get(aHex.getProductionNumber()).add(aHex);
-                    break;
-                case "ore":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Mountains);
-                    gameManager.getGame().getBoard().getHexes().put(aHex.getId(), aHex);
-                 //   gameManager.getGame().getBoard().getLandHexes().get(aHex.getProductionNumber()).add(aHex);
-                    break;
-                case "brick":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Hills);
-                    gameManager.getGame().getBoard().getHexes().put(aHex.getId(), aHex);
-                 //   gameManager.getGame().getBoard().getLandHexes().get(aHex.getProductionNumber()).add(aHex);
-                    break;
-                case "sheep":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Pasture);
-                    gameManager.getGame().getBoard().getHexes().put(aHex.getId(), aHex);
-                //    gameManager.getGame().getBoard().getLandHexes().get(aHex.getProductionNumber()).add(aHex);
-                    break;
-                case "gold":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.GoldMine);
-                    gameManager.getGame().getBoard().getHexes().put(aHex.getId(), aHex);
-                //    gameManager.getGame().getBoard().getLandHexes().get(aHex.getProductionNumber()).add(aHex);
-                    break;
-                case "wheat":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Fields);
-                    gameManager.getGame().getBoard().getHexes().put(aHex.getId(), aHex);
-                 //   gameManager.getGame().getBoard().getLandHexes().get(aHex.getProductionNumber()).add(aHex);
-                    break;
-                case "desert":
-                    aHex = new LandHex(pHex.getId(), pHex.getNumber(), TerrainType.Desert);
-                    gameManager.getGame().getBoard().getHexes().put(aHex.getId(), aHex);
-                    break;
-                case "sea":
-                    SeaHex hHex = new SeaHex(pHex.getId());
-                default:
-                     hHex = new SeaHex(pHex.getId());
-            }
+            gameManager.getGame().getBoard().setHex(pHex);
         }
         //System.out.println("DONE");
         gameManager.getGame().getBoard().makeEdges();
         gameManager.getGame().getBoard().makeIntersections();
-
-        return "hex";
-    }
-
-    @MessageMapping("/intersection")
-  //  @SendTo("/topic/geo")
-    public String getIntersection(String intersectionString) throws Exception{
-        //System.out.println("   Adding Intersections to Hash");
-
-        JSONArray aArray = new JSONArray(intersectionString);
-        Gson gson = new Gson();
-
-        for(int i=0;i<aArray.length();i++) {
-            JSONObject jsonHex = aArray.getJSONObject(i);
-
-            ViewIntersection pIntersection = gson.fromJson(jsonHex.toString(), ViewIntersection.class);
-            Intersection aIntersection = new Intersection(pIntersection.getId(), HarbourType.None);
-            gameManager.getGame().getBoard().getIntersections().put(aIntersection.getId(), aIntersection);
-        }
-        return "intersection";
-    }
-
-
-    @MessageMapping("/geo")
-    public void getBoard(String aBoard) throws Exception{
-        //System.out.println("set everything");
-        JSONArray aArray = new JSONArray(aBoard);
-        Gson gson = new Gson();
-        //System.out.println(aArray.length());
-
-        for(int i=0;i<aArray.length();i++) {
-
-            JSONObject jsonGeo = aArray.getJSONObject(i);
-
-            ViewIntersection pIntersection = gson.fromJson(jsonGeo.toString(), ViewIntersection.class);
-            ViewEdge pEdge = gson.fromJson(jsonGeo.toString(), ViewEdge.class);
-            ViewHex pHex = gson.fromJson(jsonGeo.toString(), ViewHex.class);
-
-            if(pEdge != null)
-                gameManager.getGame().getBoard().setEdge(pEdge);
-            if(pHex !=null)
-                gameManager.getGame().getBoard().setHex(pHex);
-            if(pIntersection != null)
-                gameManager.getGame().getBoard().setIntersection(pIntersection);
-        }
-
-    }
-
-
-    @MessageMapping("/setNeighbours")
-    public void setNeighbours() throws Exception
-    {
-        //System.out.println("settingNeighbours");
         gameManager.getGame().getBoard().setAllNeighbours();
-        //gameManager.saveGame();
-
     }
+
 }
